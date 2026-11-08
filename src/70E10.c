@@ -44,7 +44,17 @@ void func_80095D70(s32 arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80095DE0);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_8009676C);
+s32 func_80043A04(s32 x, s32 z);
+
+/* pos is an x/y/z float vector; y is clamped to a height looked up from x
+ * and z (in 1/1024 units, offset by 0x1E00). */
+void func_8009676C(f32 *pos) {
+    f32 height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_800967F4);
 

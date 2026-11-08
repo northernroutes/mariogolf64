@@ -8,7 +8,40 @@ INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040234);
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800402F4);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040380);
+/* Placeholder types for func_80040380; real types unknown. */
+typedef struct Unk80040380 {
+    /* 0x0 */ u8 pad0[0x8];
+    /* 0x8 */ s8 unk8;
+    /* 0x9 */ s8 unk9;
+    /* 0xA */ s8 unkA;
+} Unk80040380;
+
+typedef struct Unk80040380Mask {
+    /* 0x0 */ u8 pad0[0x8];
+    /* 0x8 */ s32 unk8;
+} Unk80040380Mask;
+
+s32 func_800449D4(s32 arg0, Unk80040380 *arg1);
+
+void func_80040380(Unk80040380 *arg0, Unk80040380Mask *arg1, s32 *out) {
+    s32 v;
+
+    if (arg1->unk8 & func_800449D4(1, arg0)) {
+        out[0] = arg0->unk8;
+        out[1] = arg0->unk9;
+        return;
+    }
+    v = arg0->unk8 - arg0->unkA;
+    out[0] = v;
+    if (v < 5) {
+        out[0] = 5;
+    }
+    v = arg0->unk9 - arg0->unkA;
+    out[1] = v;
+    if (v < 5) {
+        out[1] = 5;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040428);
 
@@ -39,7 +72,17 @@ INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041160);
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041344);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800413A0);
+/* Object returned by func_80041344; only the s16 at 2 is known. */
+typedef struct Unk80041344 {
+    /* 0x0 */ s16 unk0;
+    /* 0x2 */ s16 unk2;
+} Unk80041344;
+
+Unk80041344 *func_80041344(void);
+
+s16 func_800413A0(void) {
+    return func_80041344()->unk2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800413C0);
 
