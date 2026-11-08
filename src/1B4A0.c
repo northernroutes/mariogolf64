@@ -51,20 +51,27 @@ f32 func_800407D8(s32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800407E8);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040E20);
+s32 func_800407E8(s32 arg0, s32 arg1, s32 arg2);
+
+/* Passes its first two arguments straight through. */
+s32 func_80040E20(s32 arg0, s32 arg1) {
+    return func_800407E8(arg0, arg1, 0);
+}
 
 s32 func_80032E60(s32);
 s32 func_80040E20();
 
-void func_80040E3C(void) {
-    func_80032E60(func_80040E20());
+void func_80040E3C(s32 arg0, s32 arg1) {
+    func_80032E60(func_80040E20(arg0, arg1));
 }
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040E60);
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040EF8);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041058);
+s32 func_80041058(s32 arg0, s32 arg1, s32 arg2) {
+    return func_80040E20(arg0, arg2) == 5;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_8004107C);
 
@@ -76,6 +83,10 @@ INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041344);
 typedef struct Unk80041344 {
     /* 0x0 */ s16 unk0;
     /* 0x2 */ s16 unk2;
+    /* 0x4 */ u8 pad4[0x8];
+    /* 0xC */ u8 unkC;
+    /* 0xD */ u8 unkD;
+    /* 0xE */ u8 unkE;
 } Unk80041344;
 
 Unk80041344 *func_80041344(void);
@@ -86,9 +97,17 @@ s16 func_800413A0(void) {
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800413C0);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041464);
+void func_80041464(s32 arg0, s32 arg1, s32 arg2) {
+    func_80041344()->unk2 = arg2 & 0xFFFE;
+}
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041490);
+void func_80041490(s32 arg0, s32 arg1, u8 arg2) {
+    Unk80041344 *p = func_80041344();
+
+    p->unkC = arg2;
+    p->unkD = arg2;
+    p->unkE = arg2;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800414C0);
 
