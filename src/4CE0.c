@@ -15,13 +15,40 @@ void func_800299D0(void) {
     func_80029250(&D_800B67D8, 3);
 }
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_800299F4);
+/* A 256-entry bit array of game flags: check / set / clear / toggle flag n.
+ * func_800299F4 is the "is flag set" check used throughout the game. */
+extern u8 D_801052F8[];
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029A30);
+s32 func_800299F4(u32 n) {
+    if (n >= 0x100) {
+        return 0;
+    }
+    return (D_801052F8[n >> 3] & (0x80 >> (n & 7))) != 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029A6C);
+void func_80029A30(u32 n) {
+    u32 i = n >> 3;
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029AA8);
+    if (n < 0x100) {
+        D_801052F8[i] |= 0x80 >> (n & 7);
+    }
+}
+
+void func_80029A6C(u32 n) {
+    u32 i = n >> 3;
+
+    if (n < 0x100) {
+        D_801052F8[i] &= 0xFF7F >> (n & 7);
+    }
+}
+
+void func_80029AA8(u32 n) {
+    u32 i = n >> 3;
+
+    if (n < 0x100) {
+        D_801052F8[i] ^= 0x80 >> (n & 7);
+    }
+}
 
 extern s8 D_80105317;
 
