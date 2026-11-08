@@ -70,7 +70,13 @@ Unk800BB258 *func_800448E0(u32 arg0) {
     return arg0 < 0xFC ? &D_800BB258[arg0] : &D_800BE588;
 }
 
-INCLUDE_ASM("asm/nonmatchings/1EEF0", func_8004491C);
+extern s32 D_800FBE58;
+extern s32 D_800FBE74;
+extern s16 D_801B7222[][0x5C];
+
+Unk800BB258 *func_8004491C(void) {
+    return &D_800BB258[D_801B7222[D_800FBE74][D_800FBE58]];
+}
 
 void func_8004497C(void) {
     func_80043B14(func_8004491C(), D_800FBE54);

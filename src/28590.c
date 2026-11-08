@@ -4,7 +4,7 @@ INCLUDE_ASM("asm/nonmatchings/28590", func_8004D190);
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004D4B8);
 
-s32 func_8004D9C0();
+void func_8004D9C0();
 void func_8004D5F0(s8 c, s32 x, s32 y);
 
 void func_8004D580(char *str, s32 x, s32 y) {
@@ -45,9 +45,30 @@ void func_8004D99C(s32 arg0) {
     D_800BFEE4 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004D9C0);
+extern u8 D_800DAF60[0x4B0];
 
-s32 func_8004D9C0();
+/* Writes a string into the 40x30 text buffer at (x, y), or'ing in the attribute bit. */
+void func_8004D9C0(s8 *str, s32 x, s32 y) {
+    u8 attr = D_800BFEE4;
+    u8 *p = &D_800DAF60[y * 40 + x];
+    s32 c;
+
+    while (1) {
+        c = *str++;
+        if (c == 0) {
+            break;
+        }
+        if (p >= D_800DAF60) {
+            if (p < D_800DAF60 + 0x4B0) {
+                *p = attr | c;
+            }
+        }
+        p++;
+    }
+    D_800BFEE4 = 0;
+}
+
+void func_8004D9C0();
 extern s8 D_800B67C0;
 
 void func_8004DA24(char *arg0, s32 arg1, s32 arg2) {

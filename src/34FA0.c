@@ -9,6 +9,8 @@ typedef struct Unk8012F720 {
     /* 0x29 */ s8 unk29;
     /* 0x2A */ s8 unk2A;
     /* 0x2B */ s8 unk2B;
+    /* 0x2C */ u8 pad2C[0x12F4];
+    /* 0x1320 */ s8 unk1320[6][6];
 } Unk8012F720;
 
 /* D_801323A0, returned by func_8005AF74. */
@@ -109,9 +111,33 @@ void func_8005C018(u32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005C038);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005C458);
+s32 func_8005C458(void) {
+    Unk8012F720 *p = func_8005AF50();
+    s32 count = 0;
+    s32 i;
+    s32 j;
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005C4B4);
+    for (i = 0; i != 6; i++) {
+        for (j = 0; j != 6; j++) {
+            count += p->unk1320[i][j] != 0;
+        }
+    }
+    return count == 36;
+}
+
+s32 func_8005C4B4(void) {
+    Unk8012F720 *p = func_8005AF50();
+    s32 count = 0;
+    s32 i;
+    s32 j;
+
+    for (i = 0; i != 6; i++) {
+        for (j = 0; j != 6; j++) {
+            count += p->unk1320[i][j] != 0;
+        }
+    }
+    return count >= 30;
+}
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005C510);
 
