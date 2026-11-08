@@ -58,9 +58,22 @@ INCLUDE_ASM("asm/nonmatchings/28590", func_8004DD70);
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DDE4);
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004DE44);
+/* 0x18-byte entries of D_800DC6F0. Placeholder. */
+typedef struct Unk800DC6F0 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ s32 unk4;
+    /* 0x08 */ u8 pad8[0x10];
+} Unk800DC6F0; /* size = 0x18 */
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004DE60);
+extern Unk800DC6F0 D_800DC6F0[];
+
+s32 func_8004DE44(s32 arg0) {
+    return D_800DC6F0[arg0].unk0;
+}
+
+s32 func_8004DE60(s32 arg0) {
+    return D_800DC6F0[arg0].unk4;
+}
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DE7C);
 
