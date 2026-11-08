@@ -89,16 +89,16 @@ segments:
       - [0x37B0, c, libnusys/nusched]
       - [0x4650, asm]
       - [0x4840, c, libnusys/nugfxtaskmgr]
-      - [0x4CE0, asm]
+      - [0x4CE0, c]
       - [0x5A40, c]
       - [0xDCE0, asm]
       - [0xE260, asm]
       - [0x142B0, asm]
       - [0x193D0, asm]
-      - [0x1B4A0, asm]
+      - [0x1B4A0, c]
       - [0x1EEF0, c]
       - [0x207E0, c]
-      - [0x28590, asm]
+      - [0x28590, c]
       - [0x299A0, asm]
       - [0x2B4E0, asm]
       - [0x2B800, c]
@@ -117,16 +117,16 @@ segments:
       - [0x45400, asm]
       - [0x456C0, c]
       - [0x49E90, c]
-      - [0x4A5A0, asm]
+      - [0x4A5A0, c]
       - [0x4C3D0, asm]
       - [0x4C770, c]
       - [0x51900, asm]
       - [0x526B0, asm]
       - [0x52FF0, asm]
       - [0x53D10, asm]
-      - [0x5B620, asm]
+      - [0x5B620, c]
       - [0x68500, c]
-      - [0x70E10, asm]
+      - [0x70E10, c]
       - [0x74890, asm]
       - [0x748B0, c]
       - [0x78330, asm]
@@ -441,7 +441,7 @@ segments:
     symbol_name_format: ovl0_$VRAM
     subsegments:
       - [0xADD30, asm]
-      - [0xADD40, asm]
+      - [0xADD40, c]
       - [0xB68F0, c]
       - [0xBBD00, c]
       - [0xC7A40, asm]
@@ -506,7 +506,7 @@ segments:
     exclusive_ram_id: ovl5
     symbol_name_format: ovl5_$VRAM
     subsegments:
-      - [0x1300A0, asm]
+      - [0x1300A0, c]
       - [0x1363F0, data]
       - { start: 0x136BA0, type: bss, vram: 0x80254300 }
 
