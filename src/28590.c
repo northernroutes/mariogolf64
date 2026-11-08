@@ -4,7 +4,17 @@ INCLUDE_ASM("asm/nonmatchings/28590", func_8004D190);
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004D4B8);
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004D580);
+s32 func_8004D9C0();
+void func_8004D5F0(s8 c, s32 x, s32 y);
+
+void func_8004D580(char *str, s32 x, s32 y) {
+    func_8004D9C0();
+    while (*str != 0) {
+        func_8004D5F0(*str, x, y);
+        str++;
+        x++;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004D5F0);
 

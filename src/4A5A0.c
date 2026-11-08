@@ -6,7 +6,10 @@ typedef struct Unk800FF1E8 {
     /* 0x01 */ u8 unk1;
     /* 0x02 */ u8 pad2[0x26];
     /* 0x28 */ s32 unk28;
-    /* 0x2C */ u8 pad2C[0x60];
+    /* 0x2C */ u8 pad2C[0x8];
+    /* 0x34 */ s32 unk34;
+    /* 0x38 */ s32 unk38;
+    /* 0x3C */ u8 pad3C[0x50];
 } Unk800FF1E8; /* size = 0x8C */
 
 extern Unk800FF1E8 D_800FF1E8[];

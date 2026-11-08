@@ -31,7 +31,28 @@ INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F4AEC);
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F5C24);
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F5E9C);
+void func_8004E47C(void *);
+extern s32 D_ovl0_8022573C;
+extern u8 D_ovl0_802256C8[];
+extern u8 D_ovl0_802256CC[];
+extern u8 D_ovl0_802256D0[];
+extern u8 D_ovl0_8022570C[];
+extern u8 D_ovl0_80225710[];
+extern u8 D_ovl0_80225714[];
+
+void func_ovl0_801F5E9C(void) {
+    func_8004E47C(D_ovl0_80225710);
+    func_8004E47C(D_ovl0_80225714);
+    if (D_ovl0_8022573C == 1) {
+        func_8004E47C(D_ovl0_802256C8);
+    }
+    if (D_ovl0_8022573C == 2) {
+        func_8004E47C(D_ovl0_8022570C);
+        func_8004E47C(D_ovl0_802256CC);
+        func_8004E47C(D_ovl0_802256D0);
+    }
+    D_ovl0_8022573C = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F5F2C);
 
@@ -87,7 +108,38 @@ void func_ovl0_801F7418(Gfx **gdl, s32 x, s32 y, s32 idx, s32 arg4) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F7518);
+extern s32 D_ovl0_80225748;
+extern s32 D_ovl0_8022574C;
+extern s32 D_ovl0_80225750;
+extern s32 D_ovl0_80225754;
+extern f32 D_ovl0_80225758;
+extern s32 D_ovl0_8022575C;
+extern s32 D_ovl0_80225760;
+extern s32 D_ovl0_80225764;
+extern s32 D_ovl0_80225768;
+extern s32 D_ovl0_8022576C;
+
+void func_ovl0_801F7518(s32 arg0) {
+    D_ovl0_8022573C = arg0;
+    switch (arg0) {
+        case 0:
+            break;
+        case 1:
+            D_ovl0_80225748 = 0;
+            D_ovl0_8022574C = 0;
+            D_ovl0_80225750 = 320;
+            D_ovl0_80225754 = 0;
+            D_ovl0_80225758 = -1.57f;
+            break;
+        case 2:
+            D_ovl0_8022575C = 0;
+            D_ovl0_80225760 = 0;
+            D_ovl0_80225764 = 0;
+            D_ovl0_80225768 = 0;
+            D_ovl0_8022576C = 0;
+            break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F75B0);
 
