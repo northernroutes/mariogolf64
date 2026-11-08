@@ -32,18 +32,23 @@ loop_3:
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D8B4);
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D958);
-
 /* 0xB8-byte entries starting at D_801B71F3 (s8 at the start). Placeholder. */
 typedef struct Unk801B71F3 {
     /* 0x00 */ s8 unk0;
     /* 0x01 */ u8 pad1[0xB7];
 } Unk801B71F3; /* size = 0xB8 */
 
+extern Unk801B71F3 D_801B71ED[];
 extern Unk801B71F3 D_801B71F3[];
 extern s8 D_800BAA04;
 extern s32 D_ovl5_8025C640;
 extern s32 D_ovl5_8025C884;
+
+extern s8 D_ovl5_80253B52[][0xE];
+
+s8 func_ovl5_8024D958(void) {
+    return D_ovl5_80253B52[D_801B71ED[D_ovl5_8025C884].unk0][0];
+}
 
 s32 func_ovl5_8024D99C(void) {
     return D_801B71F3[D_ovl5_8025C884].unk0 >= D_800BAA04 + D_ovl5_8025C640 - 1;

@@ -65,9 +65,32 @@ void func_80029AE4(void) {
     } while (var_v1 >= 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029B08);
+extern char D_800CA1B8[];
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029B58);
+void func_80029B08(void) {
+    s32 i;
+
+    while (1) {
+        for (i = 0; i != 100000000; i++) {
+        }
+        osSyncPrintf(D_800CA1B8, 100000000);
+    }
+}
+
+extern char D_800CA1C4[];
+extern u8 D_80132D00[];
+s32 func_800577D0(void);
+void func_800577DC(s32, void *);
+
+void func_80029B58(void) {
+    s32 n;
+
+    n = func_800577D0();
+    func_800577DC(1, D_80132D00);
+    func_800577DC(3, D_80132D00 + n);
+    func_800577DC(2, D_80132D00 + n * 2);
+    osSyncPrintf(D_800CA1C4, 0x827E0 - n * 3);
+}
 
 s32 func_8006F4F0();
 extern s8 g_mus_audio_paused;
@@ -81,7 +104,25 @@ INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029C00);
 
 INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029C34);
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029EEC);
+s32 func_80029EEC(s32 arg0, s32 arg1, u32 arg2, u32 arg3) {
+    u32 mag;
+
+    mag = arg0;
+    if (arg0 < 0) {
+        mag = -arg0;
+    }
+    if (mag > arg3) {
+        if (mag < arg2) {
+            arg0 = arg1;
+        }
+    } else {
+        return 0;
+    }
+    if (arg0 == 0) {
+        return 0;
+    }
+    return (arg0 < 0) ? -1 : 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029F28);
 

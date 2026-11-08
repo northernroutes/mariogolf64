@@ -112,7 +112,19 @@ INCLUDE_ASM("asm/nonmatchings/70E10", func_800989EC);
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80098C6C);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80098CA0);
+u8 func_80098CA0(u8 n) {
+    u8 r = 0;
+    s32 i;
+
+    for (i = 0; i < 8; i++) {
+        r = r * 2;
+        if (n & 1) {
+            r |= 1;
+        }
+        n >>= 1;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80098CD8);
 
