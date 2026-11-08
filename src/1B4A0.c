@@ -89,7 +89,7 @@ typedef struct Unk80041344 {
     /* 0xE */ u8 unkE;
 } Unk80041344;
 
-Unk80041344 *func_80041344(void);
+Unk80041344 *func_80041344();
 
 s16 func_800413A0(void) {
     return func_80041344()->unk2;
@@ -143,7 +143,16 @@ INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80042738);
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800427E8);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80042DF4);
+Unk80041344 *func_80042DF4(Unk80041344 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    Unk80041344 *ret;
+
+    if (arg3 & 0x80) {
+        ret = func_80041344(arg1 * 2 + ((arg3 >> 2) & 3), arg2 * 2 + (arg3 & 3));
+    } else {
+        ret = &arg0[arg3];
+    }
+    return ret;
+}
 
 s32 func_80042E40(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     return ((arg2 - arg0) * (arg5 - arg1)) - ((arg3 - arg1) * (arg4 - arg0));

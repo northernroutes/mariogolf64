@@ -1,21 +1,28 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/4A5A0", func_8006F1A0);
+/* 0x8C-byte entries of D_800FF1E8. Placeholder. */
+typedef struct Unk800FF1E8 {
+    /* 0x00 */ u8 unk0;
+    /* 0x01 */ u8 unk1;
+    /* 0x02 */ u8 pad2[0x26];
+    /* 0x28 */ s32 unk28;
+    /* 0x2C */ u8 pad2C[0x60];
+} Unk800FF1E8; /* size = 0x8C */
+
+extern Unk800FF1E8 D_800FF1E8[];
+
+void func_8006F1A0(s32 arg0, s32 arg1) {
+    D_800FF1E8[arg0].unk28 += arg1;
+    if (D_800FF1E8[arg0].unk28 >= 10000) {
+        D_800FF1E8[arg0].unk28 = 9999;
+    }
+}
 
 extern s32 D_800FE4A8;
 
 s32 func_8006F1F0(void) {
     return D_800FE4A8;
 }
-
-/* 0x8C-byte entries of D_800FF1E8. Placeholder. */
-typedef struct Unk800FF1E8 {
-    /* 0x00 */ u8 unk0;
-    /* 0x01 */ u8 unk1;
-    /* 0x02 */ u8 pad2[0x8A];
-} Unk800FF1E8; /* size = 0x8C */
-
-extern Unk800FF1E8 D_800FF1E8[];
 
 s32 func_8006F1FC(s32 arg0) {
     return D_800FF1E8[arg0].unk0 == 1;

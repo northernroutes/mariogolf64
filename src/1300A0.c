@@ -104,7 +104,10 @@ INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_80252EE4);
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_80252F70);
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_80253180);
+s32 func_ovl5_80253180(s32 arg0, s32 arg1) {
+    arg0 = (s16)(arg0 - arg1);
+    return (arg0 < 0) ? -arg0 : arg0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8025319C);
 

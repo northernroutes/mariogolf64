@@ -40,15 +40,55 @@ INCLUDE_ASM("asm/nonmatchings/28590", func_8004D9C0);
 s32 func_8004D9C0();
 extern s8 D_800B67C0;
 
-void func_8004DA24(void) {
+void func_8004DA24(char *arg0, s32 arg1, s32 arg2) {
     if (D_800B67C0 != 0) {
-        func_8004D9C0();
+        func_8004D9C0(arg0, arg1, arg2);
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004DA4C);
+void func_8004DA4C(u32 n, s32 width, s32 arg2) {
+    char buf[9];
+    char *p;
+    s32 d;
+    s32 c;
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004DA9C);
+    p = &buf[8];
+    width += 8;
+    buf[8] = 0;
+    do {
+        d = n & 0xF;
+        c = d + '0';
+        if (c > '9') {
+            c = d + 'A' - 10;
+        }
+        *--p = c;
+        n >>= 4;
+        width--;
+    } while (n != 0);
+    func_8004DA24(p, width, arg2);
+}
+
+void func_8004DA9C(u32 n, s32 width, s32 arg2) {
+    char buf[9];
+    char *p;
+    s32 d;
+    s32 c;
+
+    p = &buf[8];
+    width += 8;
+    buf[8] = 0;
+    do {
+        d = n & 0xF;
+        c = d + '0';
+        if (c > '9') {
+            c = d + 'A' - 10;
+        }
+        *--p = c;
+        width--;
+        n >>= 4;
+    } while (p != buf);
+    func_8004DA24(p, width, arg2);
+}
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DAF4);
 
@@ -89,7 +129,40 @@ s32 func_8004E27C(void) {
     return D_800DC738;
 }
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004E288);
+/* Free-list node; the list head is a sentinel whose next field is D_800DC730. */
+typedef struct Unk800DC728 {
+    /* 0x0 */ u32 size;
+    /* 0x4 */ s32 inUse;
+    /* 0x8 */ struct Unk800DC728 *next;
+} Unk800DC728;
+
+extern Unk800DC728 *D_800DC730;
+extern u32 D_800DC73C;
+
+u32 func_8004E288(void) {
+    Unk800DC728 **head;
+    Unk800DC728 *p;
+    Unk800DC728 *end;
+    u32 max;
+
+    head = &D_800DC730;
+    p = *head;
+    head -= 2;
+    max = 0;
+    if (p != (Unk800DC728 *)head) {
+        end = (Unk800DC728 *)head;
+        do {
+            if (p->inUse == 0) {
+                if (max < p->size) {
+                    max = p->size;
+                }
+            }
+            p = p->next;
+        } while (p != end);
+    }
+    D_800DC73C = max;
+    return max;
+}
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004E2DC);
 
