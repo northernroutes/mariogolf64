@@ -27,7 +27,15 @@ INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F5F2C);
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F618C);
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F63CC);
+extern s32 D_ovl0_802257D8[4];
+extern s32 D_ovl0_802257E8[4];
+extern s32 D_ovl0_802257F8[4];
+
+void func_ovl0_801F63CC(s32 arg0, s32 arg1) {
+    D_ovl0_802257D8[arg1] = arg0;
+    D_ovl0_802257E8[arg1] = 0;
+    D_ovl0_802257F8[arg1] = 0;
+}
 
 s32 func_80050BF0(s32, s32, s32);
 extern s32 D_800C0E60;

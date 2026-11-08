@@ -17,7 +17,25 @@ INCLUDE_ASM("asm/nonmatchings/70E10", func_80095A68);
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80095C10);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80095D10);
+s32 func_80056494(s32 arg0, s32 arg1);
+extern s32 D_800E4C50;
+extern s32 D_800E4C5C;
+extern s32 D_800E4C54;
+extern s32 D_800E4C58;
+extern s8 D_800E4C90;
+extern s8 D_800E4C91;
+extern s32 D_800C73A0;
+
+/* arg0 passes straight through to func_80056494. */
+void func_80095D10(s32 arg0, s32 arg1, s32 arg2) {
+    D_800E4C50 = arg1;
+    D_800E4C5C = 0;
+    D_800C73A0 = 0;
+    D_800E4C90 = 0;
+    D_800E4C91 = 0;
+    D_800E4C54 = arg2;
+    D_800E4C58 = func_80056494(arg0, arg2);
+}
 
 extern s32 D_800E4C5C;
 
@@ -104,4 +122,16 @@ INCLUDE_ASM("asm/nonmatchings/70E10", func_80098E48);
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_800990D0);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80099454);
+/* 3-byte records; ids >= 0xC0 fall back to the first one. Placeholder. */
+typedef struct Unk800C7464 {
+    /* 0x0 */ u8 unk0[3];
+} Unk800C7464;
+
+extern Unk800C7464 D_800C7464[];
+
+Unk800C7464 *func_80099454(u8 n) {
+    if (n >= 0xC0) {
+        return D_800C7464;
+    }
+    return &D_800C7464[n];
+}
