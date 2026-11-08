@@ -41,7 +41,7 @@ void func_8004E47C(s32 *arg0);
 void func_80095D64(void);
 void func_ovl0_80203B4C(void);
 s32 func_ovl0_80207250(s32 arg0);
-s32 func_ovl0_802072AC(s32 arg0);
+s32 func_ovl0_802072AC();
 
 void func_ovl0_80202A00(void) {
     nuSiSendMesg(0x305, NULL);
@@ -236,7 +236,33 @@ s32 func_ovl0_80207250(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_802072AC);
+/* K&R definition: the only caller passes just arg0, but arg2 is read. */
+s32 func_ovl0_802072AC(arg0, arg1, arg2)
+    s32 arg0;
+    s32 arg1;
+    s32 arg2;
+{
+    s32 base;
+
+    switch (func_800544B4()) {
+        case 0:
+            base = 1;
+            break;
+        case 1:
+            base = 4;
+            break;
+        case 2:
+            base = 7;
+            break;
+        case 3:
+            base = 10;
+            break;
+        default:
+            base = 0;
+            break;
+    }
+    return base + (arg2 == 2);
+}
 
 void func_ovl0_80207328(s32 arg0) {
     func_800560FC(arg0, func_ovl0_80207250(arg0));

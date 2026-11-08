@@ -10,7 +10,9 @@ typedef struct Unk800CABD0 {
 /* 0x34-byte entries of D_800BB258; D_800BE588 is the fallback entry
  * (see func_800448E0 / func_8004491C). */
 typedef struct Unk800BB258 {
-    /* 0x00 */ u8 pad0[0x34];
+    /* 0x00 */ u8 pad0[0x8];
+    /* 0x08 */ s32 unk8;
+    /* 0x0C */ u8 padC[0x28];
 } Unk800BB258; /* size = 0x34 */
 
 /* Object read by func_800448D0: an s32 array starting at 0x18. */
@@ -26,8 +28,8 @@ extern s32 D_800FBE54;
 extern s32 D_800FBE70;
 
 s32 func_80032E60(s32 arg0);
-void func_80043B14(Unk800BB258 *arg0, s32 arg1);
-void func_80043BB0(Unk800BB258 *arg0, s32 arg1);
+s32 func_80043B14(Unk800BB258 *arg0, s32 arg1);
+s32 func_80043BB0(Unk800BB258 *arg0, s32 arg1);
 Unk800BB258 *func_8004491C(void);
 void func_800449D4(s32 arg0, s32 arg1);
 s32 func_80044AC8(s32 arg0, s32 arg1, s32 arg2);

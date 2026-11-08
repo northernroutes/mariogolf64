@@ -8,7 +8,7 @@ extern u8 D_ovl16_802237B9;
 
 void func_800560FC(s32 arg0, s32 arg1);
 s32 func_ovl16_801F5138(s32 arg0);
-s32 func_ovl16_801F5194(s32 arg0);
+s32 func_ovl16_801F5194();
 
 s32 func_ovl16_801F4A40(void) {
     return D_801B724B & 3;
@@ -74,7 +74,33 @@ s32 func_ovl16_801F5138(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/16D660", func_ovl16_801F5194);
+/* K&R definition: the only caller passes just arg0, but arg2 is read. */
+s32 func_ovl16_801F5194(arg0, arg1, arg2)
+    s32 arg0;
+    s32 arg1;
+    s32 arg2;
+{
+    s32 base;
+
+    switch (func_800544B4()) {
+        case 0:
+            base = 1;
+            break;
+        case 1:
+            base = 4;
+            break;
+        case 2:
+            base = 7;
+            break;
+        case 3:
+            base = 10;
+            break;
+        default:
+            base = 0;
+            break;
+    }
+    return base + (arg2 == 2);
+}
 
 void func_ovl16_801F5210(s32 arg0) {
     func_800560FC(arg0, func_ovl16_801F5138(arg0));
