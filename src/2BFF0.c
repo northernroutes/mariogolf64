@@ -81,7 +81,17 @@ void func_800511D8(s32 arg0, s32 arg1) {
 INCLUDE_ASM("asm/nonmatchings/2BFF0", func_80051210);
 
 
-INCLUDE_ASM("asm/nonmatchings/2BFF0", func_80051778);
+s32 func_8009A130(s32, f32);
+
+void func_80051778(s32 index, f32 arg1) {
+    OSIntMask mask = osSetIntMask(1);
+    s32 handle = D_800C0E6C[index];
+
+    if (handle != -1) {
+        func_8009A130(handle, arg1);
+    }
+    osSetIntMask(mask);
+}
 
 INCLUDE_ASM("asm/nonmatchings/2BFF0", func_800517E0);
 

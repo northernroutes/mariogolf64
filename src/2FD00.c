@@ -346,7 +346,25 @@ s32 func_800577D0(void) {
 
 INCLUDE_ASM("asm/nonmatchings/2FD00", func_800577DC);
 
-INCLUDE_ASM("asm/nonmatchings/2FD00", func_800578AC);
+/* 0x18C-byte entries starting at D_801F4424. Placeholder. */
+typedef struct Unk801F4424 {
+    /* 0x000 */ s32 unk0;
+    /* 0x004 */ u8 pad4[0x188];
+} Unk801F4424; /* size = 0x18C */
+
+extern Unk801F4424 D_801F4424[4];
+void func_800543A4(void);
+void func_800577DC(s32, s32);
+
+void func_800578AC(void) {
+    s32 i;
+
+    func_800543A4();
+    for (i = 0; i < 4; i++) {
+        D_801F4424[i].unk0 = -4;
+        func_800577DC(i, 0x8030F800);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/2FD00", func_80057914);
 

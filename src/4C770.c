@@ -184,7 +184,14 @@ void func_80074960(void) {
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80074968);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80074CA8);
+void func_80074CA8(Gfx **gdl, s32 r, s32 g, s32 b) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gDPSetPrimColor(gfx++, 0, 0, r, g, b, 255);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80074D0C);
 

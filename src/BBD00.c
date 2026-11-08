@@ -272,7 +272,23 @@ void func_ovl0_80207A10(void) {
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80207A34);
 
-INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80207B8C);
+/* 0xB8-byte entries starting at D_801B7250. Placeholder. */
+typedef struct Unk801B7250 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ s32 unk4;
+    /* 0x08 */ u8 pad8[0xB0];
+} Unk801B7250; /* size = 0xB8 */
+
+extern Unk801B7250 D_801B7250[];
+
+void func_ovl0_80207B8C(s32 i) {
+    if (D_801B7250[i].unk0 == -2) {
+        D_801B7250[i].unk0 = -1;
+    }
+    if (D_801B7250[i].unk4 == -2) {
+        D_801B7250[i].unk4 = -1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80207BEC);
 
