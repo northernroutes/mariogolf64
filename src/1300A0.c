@@ -1,10 +1,34 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D800);
+extern s8 D_ovl5_8025C848;
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D80C);
+void func_ovl5_8024D800(void) {
+    D_ovl5_8025C848 = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D870);
+void func_ovl5_8024D870(void *);
+extern s32 D_ovl5_80253C64;
+extern OSThread D_ovl5_80254300;
+extern s32 D_ovl5_8025A640;
+
+void func_ovl5_8024D80C(void) {
+    func_ovl5_8024D800();
+    D_ovl5_80253C64 = 0;
+    osCreateThread(&D_ovl5_80254300, 0xB, func_ovl5_8024D870, NULL, &D_ovl5_8025A640, 0x14);
+    osStartThread(&D_ovl5_80254300);
+}
+
+s32 func_ovl5_8024DBF8(s32 *);
+extern s32 D_ovl5_802544B0;
+
+void func_ovl5_8024D870(void *arg0) {
+    do {
+
+    } while (func_ovl5_8024DBF8(&D_ovl5_802544B0) == -1);
+    D_ovl5_80253C64 = 2;
+loop_3:
+    goto loop_3;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D8B4);
 
@@ -16,7 +40,15 @@ INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024D9E8);
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024DBF8);
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024F070);
+s32 func_8006A0CC(s32, s32);
+extern s32 D_800BA9D8;
+extern s32 D_800BA9E0;
+extern s32 D_ovl5_8025C874;
+extern s32 D_ovl5_8025C87C;
+
+void func_ovl5_8024F070(void) {
+    func_8006A0CC(D_ovl5_8025C874 - D_800BA9D8, D_ovl5_8025C87C - D_800BA9E0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_8024F0B0);
 
