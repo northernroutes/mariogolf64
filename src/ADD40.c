@@ -192,4 +192,21 @@ INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801FC3D4);
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801FCC48);
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801FD578);
+void func_ovl0_801F7740(Gfx **);
+void func_ovl0_801F8094(Gfx **);
+
+void func_ovl0_801FD578(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+
+    switch (D_ovl0_8022573C) {
+        case 0:
+            break;
+        case 1:
+            func_ovl0_801F7740(&gfx);
+            break;
+        case 2:
+            func_ovl0_801F8094(&gfx);
+            break;
+    }
+    *gdl = gfx;
+}

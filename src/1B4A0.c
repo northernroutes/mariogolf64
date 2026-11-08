@@ -2,7 +2,50 @@
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800400A0);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_8004018C);
+typedef struct Unk800BB040 {
+    /* 0x0 */ s8 r;
+    /* 0x1 */ s8 g;
+    /* 0x2 */ s8 b;
+    /* 0x3 */ s8 unk3;
+} Unk800BB040; /* size = 0x4 */
+
+extern Unk800BB040 D_800BB040[];
+
+/* Index of the palette entry closest (Manhattan distance) to an RGBA5551 colour. */
+s32 func_8004018C(s32 color) {
+    s32 best = 1000000;
+    s32 bestIdx = 0;
+    s32 r = (color >> 11) & 0x1F;
+    s32 g = (color >> 6) & 0x1F;
+    s32 b = (color >> 1) & 0x1F;
+    s32 dr;
+    s32 dg;
+    s32 db;
+    s32 dist;
+    s32 i;
+
+    for (i = 0; i < 11; i++) {
+        dr = r - D_800BB040[i].r;
+        if (dr < 0) {
+            dr = -dr;
+        }
+        dg = g - D_800BB040[i].g;
+        if (dg < 0) {
+            dg = -dg;
+        }
+        db = b - D_800BB040[i].b;
+        dist = dr + dg;
+        if (db < 0) {
+            db = -db;
+        }
+        dist += db;
+        if (dist < best) {
+            best = dist;
+            bestIdx = i;
+        }
+    }
+    return bestIdx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040234);
 
@@ -109,7 +152,13 @@ void func_80041490(s32 arg0, s32 arg1, u8 arg2) {
     p->unkE = arg2;
 }
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800414C0);
+typedef struct Unk800414C0 {
+    /* 0x0 */ u8 data[0x10];
+} Unk800414C0;
+
+void func_800414C0(s32 arg0, s32 arg1, Unk800414C0 *src) {
+    *(Unk800414C0 *)func_80041344(arg0, arg1) = *src;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041524);
 
