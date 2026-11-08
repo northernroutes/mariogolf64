@@ -91,12 +91,12 @@ def fix_table_arith(code):
     def byte_ptr(x, expr):
         return f"((__typeof__({x}) *)((u8 *)&{x} + ({expr})))"
     # 2D form: *((i * a) + ((j * b) + &X))
-    code = re.sub(r"\*\(\(([^()]*? \* \d+)\) \+ \(\(([^()]*? \* \d+)\) \+ &(\w+)\)\)",
+    code = re.sub(r"\*\(\(([^()]*? \* (?:0x[0-9A-Fa-f]+|\d+))\) \+ \(\(([^()]*? \* (?:0x[0-9A-Fa-f]+|\d+))\) \+ &(\w+)\)\)",
                   lambda m: "*" + byte_ptr(m.group(3), f"({m.group(2)}) + ({m.group(1)})"), code)
-    code = re.sub(r"\*\(&(\w+) \+ \(([^()]*? \* \d+)\)\)", lambda m: "*" + byte_ptr(m.group(1), m.group(2)), code)
-    code = re.sub(r"\*\(\(([^()]*? \* \d+)\) \+ &(\w+)\)", lambda m: "*" + byte_ptr(m.group(2), m.group(1)), code)
-    code = re.sub(r"\(&(\w+) \+ \(([^()]*? \* \d+)\)\)", lambda m: byte_ptr(m.group(1), m.group(2)), code)
-    code = re.sub(r"\(([^()]*? \* \d+)\) \+ &(\w+)", lambda m: byte_ptr(m.group(2), m.group(1)), code)
+    code = re.sub(r"\*\(&(\w+) \+ \(([^()]*? \* (?:0x[0-9A-Fa-f]+|\d+))\)\)", lambda m: "*" + byte_ptr(m.group(1), m.group(2)), code)
+    code = re.sub(r"\*\(\(([^()]*? \* (?:0x[0-9A-Fa-f]+|\d+))\) \+ &(\w+)\)", lambda m: "*" + byte_ptr(m.group(2), m.group(1)), code)
+    code = re.sub(r"\(&(\w+) \+ \(([^()]*? \* (?:0x[0-9A-Fa-f]+|\d+))\)\)", lambda m: byte_ptr(m.group(1), m.group(2)), code)
+    code = re.sub(r"\(([^()]*? \* (?:0x[0-9A-Fa-f]+|\d+))\) \+ &(\w+)", lambda m: byte_ptr(m.group(2), m.group(1)), code)
     return code
 
 
