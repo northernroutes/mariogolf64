@@ -211,7 +211,22 @@ s32 func_8005F248(s32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005F290);
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_8005F30C);
+s32 func_80043A20(void);
+extern s8 D_801B60C2;
+extern s32 D_800FBE68;
+
+s32 func_8005F30C(void) {
+    s32 r = func_80043A20();
+    s32 t;
+    s32 pos;
+
+    if ((D_801B60C2 == 0) & (r > 0)) {
+        t = D_800FBE68;
+        pos = t > 0;
+        r = t & -pos;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005F360);
 

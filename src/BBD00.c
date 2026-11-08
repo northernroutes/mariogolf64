@@ -130,7 +130,22 @@ INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_8020439C);
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80204460);
 
-INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80204568);
+extern s8 D_801B55D9;
+
+void func_ovl0_80204568(void) {
+    s32 v = D_801B55D9;
+    s32 *p;
+    s32 a;
+
+    a = v;
+    if (v < 0) {
+        a = -v;
+    }
+    if (a >= 9) {
+        p = &D_800FBE78.unkC;
+        *p -= (v / 16) * 0x600;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_802045BC);
 
