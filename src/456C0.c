@@ -43,7 +43,14 @@ void func_8006ACD8(void) {
     func_8006B54C();
 }
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006AD1C);
+extern u16 D_800C4026[][2];
+
+void func_8006AD1C(s32 i) {
+    s32 sp10[8];
+
+    func_8005062C(D_800C4026[i % 14][0], sp10);
+    func_800506D4(D_800E1C04, sp10);
+}
 
 void func_8006AD88(void) {
     D_800C4020 = 0;

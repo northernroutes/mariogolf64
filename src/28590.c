@@ -125,8 +125,6 @@ INCLUDE_ASM("asm/nonmatchings/28590", func_8004DAF4);
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DC44);
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004DD70);
-
 /* 0x18-byte entries of D_800DC6E0; each holds a list head pointing to itself. Placeholder. */
 typedef struct Unk800DC6E0 {
     /* 0x00 */ s32 unk0;
@@ -138,6 +136,19 @@ typedef struct Unk800DC6E0 {
 } Unk800DC6E0; /* size = 0x18 */
 
 extern Unk800DC6E0 D_800DC6E0[];
+
+/* Appends the block [blk, end) to the free list of entry i. */
+void func_8004DD70(s32 i, Unk800DC6E0 *blk, u8 *end) {
+    s32 size = end - (u8 *)blk;
+
+    blk->unk0 = size;
+    D_800DC6E0[i].unk10 += size;
+    blk->unk4 = 0;
+    blk->unk8 = &D_800DC6E0[i];
+    blk->unkC = D_800DC6E0[i].unkC;
+    D_800DC6E0[i].unkC->unk8 = blk;
+    D_800DC6E0[i].unkC = blk;
+}
 
 void func_8004DDE4(s32 arg0) {
     Unk800DC6E0 *p = &D_800DC6E0[arg0];
