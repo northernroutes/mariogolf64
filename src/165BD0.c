@@ -116,7 +116,35 @@ s32 func_ovl15_801F686C(UnkSaveBlock *arg0) {
     return sum;
 }
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F6890);
+/* Placeholder layout of D_800FE450 as used here. */
+typedef struct Unk800FE450_Player {
+    /* 0x00 */ u8 unk0;
+    /* 0x01 */ u8 pad1[0x8B];
+} Unk800FE450_Player; /* size = 0x8C */
+
+typedef struct Unk800FE450 {
+    /* 0x000 */ u8 pad0[0xCC];
+    /* 0x0CC */ Unk800FE450_Player unkCC[12];
+    /* 0x75C */ u8 pad75C[0x7C];
+    /* 0x7D8 */ s8 unk7D8[12];
+} Unk800FE450;
+
+extern Unk800FE450 D_800FE450;
+
+void func_ovl15_801F6890(void) {
+    Unk800FE450 *d = &D_800FE450;
+    s32 n = 0;
+    s32 i;
+
+    for (i = 0; i != 12; i++) {
+        if (d->unkCC[i].unk0 == 1) {
+            d->unk7D8[n++] = i;
+        }
+    }
+    for (; n != 12; n++) {
+        d->unk7D8[n] = -1;
+    }
+}
 
 /* Object passed to func_ovl15_801F68FC; only the mode at 0x7A8 is known. */
 typedef struct UnkOvl15_801F68FC {

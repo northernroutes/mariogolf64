@@ -90,7 +90,22 @@ INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_80251198);
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_80251378);
 
-INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_80251570);
+typedef struct Unk80251570 {
+    /* 0x0 */ s32 x;
+    /* 0x4 */ s32 y;
+    /* 0x8 */ s32 z;
+} Unk80251570;
+
+s32 func_ovl5_80251378(Unk80251570 *, Unk80251570 *, Unk80251570 *);
+
+s32 func_ovl5_80251570(Unk80251570 *a, Unk80251570 *b) {
+    Unk80251570 hit;
+
+    if (func_ovl5_80251378(a, b, &hit) == 1) {
+        return func_8006A0CC(hit.x - a->x, hit.z - a->z);
+    }
+    return func_8006A0CC(b->x - a->x, b->z - a->z);
+}
 
 INCLUDE_ASM("asm/nonmatchings/1300A0", func_ovl5_802515DC);
 
