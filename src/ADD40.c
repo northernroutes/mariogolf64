@@ -1,6 +1,16 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F4A40);
+s32 func_8005B0A0(s32);
+
+s32 func_ovl0_801F4A40(s32 arg0) {
+    s32 sum = 0;
+    s32 i;
+
+    for (i = 1; i < arg0 + 1; i++) {
+        sum += func_8005B0A0(i);
+    }
+    return sum;
+}
 
 s32 func_ovl0_801F4AEC();
 s32 func_ovl0_801F618C();
@@ -62,7 +72,20 @@ INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F6DFC);
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F7294);
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F7418);
+void func_8006A2C0(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_8006A548(Gfx **, s32);
+void func_8006A84C(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern s32 D_ovl0_802256D8[];
+extern s32 D_ovl0_802256E8[];
+
+void func_ovl0_801F7418(Gfx **gdl, s32 x, s32 y, s32 idx, s32 arg4) {
+    Gfx *gfx = *gdl;
+
+    func_8006A548(&gfx, D_ovl0_802256E8[idx]);
+    func_8006A84C(&gfx, D_ovl0_802256D8[idx], 2, 1, 0x20, 0x20, 0, 1, 0, 5, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 0x20) * 4, (y + 0x20) * 4, 0, arg4 << 10, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F7518);
 

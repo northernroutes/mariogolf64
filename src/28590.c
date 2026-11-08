@@ -96,23 +96,35 @@ INCLUDE_ASM("asm/nonmatchings/28590", func_8004DC44);
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DD70);
 
-INCLUDE_ASM("asm/nonmatchings/28590", func_8004DDE4);
-
-/* 0x18-byte entries of D_800DC6F0. Placeholder. */
-typedef struct Unk800DC6F0 {
+/* 0x18-byte entries of D_800DC6E0; each holds a list head pointing to itself. Placeholder. */
+typedef struct Unk800DC6E0 {
     /* 0x00 */ s32 unk0;
     /* 0x04 */ s32 unk4;
-    /* 0x08 */ u8 pad8[0x10];
-} Unk800DC6F0; /* size = 0x18 */
+    /* 0x08 */ struct Unk800DC6E0 *unk8;
+    /* 0x0C */ struct Unk800DC6E0 *unkC;
+    /* 0x10 */ s32 unk10;
+    /* 0x14 */ s32 unk14;
+} Unk800DC6E0; /* size = 0x18 */
 
-extern Unk800DC6F0 D_800DC6F0[];
+extern Unk800DC6E0 D_800DC6E0[];
+
+void func_8004DDE4(s32 arg0) {
+    Unk800DC6E0 *p = &D_800DC6E0[arg0];
+
+    D_800DC6E0[arg0].unk10 = 0;
+    D_800DC6E0[arg0].unk0 = 0;
+    D_800DC6E0[arg0].unk4 = -1;
+    p->unkC = p;
+    D_800DC6E0[arg0].unk8 = p;
+    D_800DC6E0[arg0].unk14 = -1;
+}
 
 s32 func_8004DE44(s32 arg0) {
-    return D_800DC6F0[arg0].unk0;
+    return D_800DC6E0[arg0].unk10;
 }
 
 s32 func_8004DE60(s32 arg0) {
-    return D_800DC6F0[arg0].unk4;
+    return D_800DC6E0[arg0].unk14;
 }
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DE7C);
