@@ -120,8 +120,6 @@ INCLUDE_ASM("asm/nonmatchings/1B4A0", func_8004107C);
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041160);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041344);
-
 /* Object returned by func_80041344; only the s16 at 2 is known. */
 typedef struct Unk80041344 {
     /* 0x0 */ s16 unk0;
@@ -130,22 +128,35 @@ typedef struct Unk80041344 {
     /* 0xC */ u8 unkC;
     /* 0xD */ u8 unkD;
     /* 0xE */ u8 unkE;
-} Unk80041344;
+    /* 0xF */ u8 padF;
+} Unk80041344; /* size = 0x10 */
 
-Unk80041344 *func_80041344();
+extern Unk80041344 D_80182D00[];
 
-s16 func_800413A0(void) {
-    return func_80041344()->unk2;
+/* Out-of-range coordinates fall back to entry 0. */
+Unk80041344 *func_80041344(u32 x, u32 y) {
+    Unk80041344 *ret;
+
+    if ((x >= 18) | (y >= 34)) {
+        ret = &D_80182D00[0];
+    } else {
+        ret = &D_80182D00[y * 17 + (x >> 1) + (x & 1) * 9];
+    }
+    return ret;
+}
+
+s16 func_800413A0(s32 arg0, s32 arg1) {
+    return func_80041344(arg0, arg1)->unk2;
 }
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800413C0);
 
 void func_80041464(s32 arg0, s32 arg1, s32 arg2) {
-    func_80041344()->unk2 = arg2 & 0xFFFE;
+    func_80041344(arg0, arg1)->unk2 = arg2 & 0xFFFE;
 }
 
 void func_80041490(s32 arg0, s32 arg1, u8 arg2) {
-    Unk80041344 *p = func_80041344();
+    Unk80041344 *p = func_80041344(arg0, arg1);
 
     p->unkC = arg2;
     p->unkD = arg2;
