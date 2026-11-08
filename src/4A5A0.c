@@ -8,9 +8,22 @@ s32 func_8006F1F0(void) {
     return D_800FE4A8;
 }
 
-INCLUDE_ASM("asm/nonmatchings/4A5A0", func_8006F1FC);
+/* 0x8C-byte entries of D_800FF1E8. Placeholder. */
+typedef struct Unk800FF1E8 {
+    /* 0x00 */ u8 unk0;
+    /* 0x01 */ u8 unk1;
+    /* 0x02 */ u8 pad2[0x8A];
+} Unk800FF1E8; /* size = 0x8C */
 
-INCLUDE_ASM("asm/nonmatchings/4A5A0", func_8006F228);
+extern Unk800FF1E8 D_800FF1E8[];
+
+s32 func_8006F1FC(s32 arg0) {
+    return D_800FF1E8[arg0].unk0 == 1;
+}
+
+u8 *func_8006F228(s32 arg0) {
+    return &D_800FF1E8[arg0].unk1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4A5A0", func_8006F24C);
 
