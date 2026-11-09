@@ -71,16 +71,20 @@ def compile_c(path, obj):
 
 
 def func_words(obj, func):
-    """Instruction words of func; words with a relocation become None."""
+    """Instruction words of func as (word, mask) pairs. A relocation only
+    masks the field it fills (the low 16 bits for HI16/LO16, 26 for jumps),
+    so register and opcode differences in relocated instructions still show."""
     out = run(["mips-linux-gnu-objdump", "-dr", f"--disassemble={func}", obj]).stdout
     words = []
     for line in out.splitlines():
-        if "R_MIPS_" in line:
+        m = re.search(r"R_MIPS_(\w+)", line)
+        if m:
             if words:
-                words[-1] = None
+                w, _ = words[-1]
+                words[-1] = (w, ~0x3FFFFFF if m.group(1) == "26" else ~0xFFFF)
         elif re.match(r"^\s+[0-9a-f]+:\s+[0-9a-f]{8}\b", line):
-            words.append(line.split()[1])
-    while words and words[-1] == "00000000":  # alignment padding
+            words.append((int(line.split()[1], 16), 0xFFFFFFFF))
+    while words and words[-1][0] == 0:  # alignment padding
         words.pop()
     return words
 
@@ -201,7 +205,7 @@ def pad_frame(code, func, nbytes):
 def compare(a, b):
     if len(a) != len(b):
         return f"length {len(b)} vs {len(a)}"
-    diffs = sum(1 for x, y in zip(a, b) if x is not None and y is not None and x != y)
+    diffs = sum(1 for (x, mx), (y, my) in zip(a, b) if (x & mx & my) != (y & mx & my))
     return "MATCH" if diffs == 0 else f"{diffs} words differ"
 
 
