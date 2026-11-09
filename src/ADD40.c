@@ -87,7 +87,20 @@ INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F6450);
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F6718);
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F6D0C);
+extern u8 *D_ovl0_80225704;
+void func_8006A548(Gfx **, s32);
+void func_8006A84C(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_8006A2C0(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+
+/* Draws 32x32 icon idx from the D_ovl0_80225704 atlas (TLUT at +8, images from +0x208). */
+void func_ovl0_801F6D0C(Gfx **gdl, s32 x, s32 y, s32 idx) {
+    Gfx *gfx = *gdl;
+
+    func_8006A548(&gfx, (s32)(D_ovl0_80225704 + 8));
+    func_8006A84C(&gfx, (s32)(D_ovl0_80225704 + ((idx << 10) + 0x208)), 2, 1, 0x20, 0x20, 0, 0, 0, 0, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 0x20) * 4, (y + 0x20) * 4, 0, 0, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F6DFC);
 

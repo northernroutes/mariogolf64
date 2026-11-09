@@ -13,6 +13,7 @@ typedef struct Unk800FEC00 {
     /* 0x38 */ s32 unk38;
     /* 0x3C */ u8 pad3C[0x50];
     /* 0x8C */ s32 unk8C;
+    /* 0x90 */ s32 unk90;
 } Unk800FEC00;
 
 /* A 0x200-byte block: a little-endian 16-bit sum at 0x30, then the bytes
@@ -132,7 +133,11 @@ typedef struct Unk800FE450_Player {
 } Unk800FE450_Player; /* size = 0x8C */
 
 typedef struct Unk800FE450 {
-    /* 0x000 */ u8 pad0[0xCC];
+    /* 0x000 */ u8 pad0[0x40];
+    /* 0x040 */ u8 *unk40; /* image atlas: TLUT at +8, images from +0x208 */
+    /* 0x044 */ u8 pad44[0xC];
+    /* 0x050 */ u8 *unk50; /* image atlas: TLUT at +8, images from +0x208 */
+    /* 0x054 */ u8 pad54[0x78];
     /* 0x0CC */ Unk800FE450_Player unkCC[12];
     /* 0x75C */ u8 pad75C[0x10];
     /* 0x76C */ s32 unk76C[12];
@@ -311,7 +316,18 @@ s32 func_ovl15_801FA35C(void) {
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA368);
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA720);
+/* Draws ten 216x9 strips from the D_800FE450.unk50 atlas down the screen. */
+void func_ovl15_801FA720(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 i;
+
+    func_8006A548(&gfx, D_800FE450.unk50 + 8);
+    for (i = 0; i != 10; i++) {
+        func_8006A84C(&gfx, D_800FE450.unk50 + 0x208 + i * 0x798, 2, 1, 0xD8, 9, 0, 0, 0, 0, 0, 0, 0);
+        func_8006A2C0(&gfx, 0xD0, 0x100 + i * 0x24, 0x430, 0x124 + i * 0x24, 0, 0, 0, 0x400, 0x400);
+    }
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA844);
 
