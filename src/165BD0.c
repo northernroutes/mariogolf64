@@ -35,6 +35,16 @@ typedef struct UnkOvl15_801F7664 {
     /* 0x00 */ u8 pad0[0xC];
     /* 0x0C */ void *tlut[4];
     /* 0x1C */ void *tex[4];
+    /* 0x2C */ u8 pad2C[0x8];
+    /* 0x34 */ u8 *unk34; /* CI4 atlas: palette at +8, image at +0x28 */
+    /* 0x38 */ u8 pad38[0x770];
+    /* 0x7A8 */ s32 unk7A8;
+    /* 0x7AC */ u8 pad7AC[0x8];
+    /* 0x7B4 */ s32 unk7B4;
+    /* 0x7B8 */ u8 pad7B8[0x2C];
+    /* 0x7E4 */ s32 unk7E4;
+    /* 0x7E8 */ s32 unk7E8;
+    /* 0x7EC */ s32 unk7EC[1]; /* length unknown */
 } UnkOvl15_801F7664;
 
 void func_ovl15_801F7664(Gfx **arg0, UnkOvl15_801F7664 *arg1);
