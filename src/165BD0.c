@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 /* Placeholder types; real types unknown. Rename once identified. */
@@ -27,7 +29,14 @@ extern s32 D_ovl15_801FBB78;
 extern s32 D_ovl15_801FBB7C;
 extern s32 D_ovl15_801FBB80;
 
-void func_ovl15_801F7664(s32 *arg0);
+/* Argument of func_ovl15_801F7664: per-character texture tables. Placeholder. */
+typedef struct UnkOvl15_801F7664 {
+    /* 0x00 */ u8 pad0[0xC];
+    /* 0x0C */ void *tlut[4];
+    /* 0x1C */ void *tex[4];
+} UnkOvl15_801F7664;
+
+void func_ovl15_801F7664(Gfx **arg0, UnkOvl15_801F7664 *arg1);
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F4A40);
 
@@ -190,12 +199,42 @@ INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F7074);
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F71F8);
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F7664);
+/* 0x8C-byte player records at D_800FF1E8 (Unk800FF1E8 in 4A5A0). Placeholder. */
+typedef struct UnkOvl15_800FF1E8 {
+    /* 0x00 */ u8 unk0;
+    /* 0x01 */ u8 pad1[0x18];
+    /* 0x19 */ u8 unk19;
+    /* 0x1A */ u8 pad1A[0x72];
+} UnkOvl15_800FF1E8; /* size = 0x8C */
 
-void func_ovl15_801F77D4(s32 *arg0) {
-    s32 tmp = *arg0;
+extern UnkOvl15_800FF1E8 D_800FF1E8[4];
+void func_8006A548(Gfx **, void *);
+void func_8006A84C(Gfx **, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_8006A2C0(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 
-    func_ovl15_801F7664(&tmp);
+/* Draws the icon of each active player. */
+void func_ovl15_801F7664(Gfx **gdl, UnkOvl15_801F7664 *arg1) {
+    Gfx *gfx = *gdl;
+    s32 i;
+    s32 idx;
+
+    gDPPipeSync(gfx++);
+    gDPSetTextureLUT(gfx++, G_TT_RGBA16);
+    for (i = 0; i != 4; i++) {
+        if (D_800FF1E8[i].unk0 == 1) {
+            idx = D_800FF1E8[i].unk19;
+            func_8006A548(&gfx, arg1->tlut[idx]);
+            func_8006A84C(&gfx, arg1->tex[idx], 2, 1, 32, 32, 0, 0, 0, 0, 0, 0, 0);
+            func_8006A2C0(&gfx, i * 0xA0 + 0x60, 0x220, i * 0xA0 + 0xE0, 0x2A0, 0, 0, 0, 0x400, 0x400);
+        }
+    }
+    *gdl = gfx;
+}
+
+void func_ovl15_801F77D4(Gfx **arg0, UnkOvl15_801F7664 *arg1) {
+    Gfx *tmp = *arg0;
+
+    func_ovl15_801F7664(&tmp, arg1);
     *arg0 = tmp;
 }
 
