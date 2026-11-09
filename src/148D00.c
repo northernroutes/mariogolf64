@@ -1,6 +1,25 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/148D00", func_ovl7_80206680);
+s32 func_800542A0(s32);
+void func_80055AF4(s32, s32, s32);
+void func_800560FC(s32, s32);
+void func_800562F4(s32, f32);
+void func_80054240(s32);
+
+s32 func_ovl7_80206680(s32 arg0, s32 arg1) {
+    s32 ret;
+
+    if (func_800542A0(arg0) == 0) {
+        func_80055AF4(arg0, arg1, 4);
+        func_800560FC(arg0, 13);
+        func_800562F4(arg0, 1.0f);
+        ret = 1;
+    } else {
+        func_80054240(arg0);
+        ret = 0;
+    }
+    return ret;
+}
 
 /* 0x1C-byte entries of D_ovl7_8020B564. Placeholder. */
 typedef struct UnkOvl7_8020B564 {

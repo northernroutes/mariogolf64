@@ -2,7 +2,27 @@
 #define F3DEX_GBI_2
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/F3480", func_ovl3_80209500);
+extern s16 D_800C2900[4];
+extern s32 D_ovl3_8022FF1C;
+extern s32 D_ovl3_8022FF20;
+extern s32 D_ovl3_8022FF24;
+extern s32 D_ovl3_8022FF28;
+
+void func_ovl3_80209500(void) {
+    s32 a = D_800C2900[0];
+    s32 b = D_800C2900[1];
+    s32 c = D_800C2900[2];
+    s32 d = D_800C2900[3];
+
+    D_800C2900[0] = -1;
+    D_800C2900[1] = -1;
+    D_800C2900[2] = -1;
+    D_800C2900[3] = -1;
+    D_ovl3_8022FF1C = a;
+    D_ovl3_8022FF20 = b;
+    D_ovl3_8022FF24 = c;
+    D_ovl3_8022FF28 = d;
+}
 
 INCLUDE_ASM("asm/nonmatchings/F3480", func_ovl3_80209568);
 
@@ -14,7 +34,23 @@ INCLUDE_ASM("asm/nonmatchings/F3480", func_ovl3_80209D50);
 
 INCLUDE_ASM("asm/nonmatchings/F3480", func_ovl3_8020B2C4);
 
-INCLUDE_ASM("asm/nonmatchings/F3480", func_ovl3_8020B3CC);
+extern s16 D_800C28E4[][7];
+s8 *func_8005AF74(void);
+
+void func_ovl3_8020B3CC(void) {
+    s8 *p = func_8005AF74();
+    s32 i;
+    s32 j;
+
+    for (i = 0; i != 2; i++) {
+        for (j = 0; j != 7; j++) {
+            if (D_800C28E4[i][j] < -10) {
+                p[4] = j;
+                p[8] = i;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/F3480", func_ovl3_8020B438);
 
