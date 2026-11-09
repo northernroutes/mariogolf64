@@ -282,7 +282,44 @@ INCLUDE_ASM("asm/nonmatchings/5B620", func_800880A0);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80088890);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_80088A90);
+/* Draws a string with the digit font: 0-9 plus 'f', 'm', 'y', '.' and ' ' (a gap). */
+void func_80088A90(Gfx **gdl, s32 x, s32 y, u8 *str) {
+    Gfx *gfx = *gdl;
+    u8 c;
+    s32 w;
+    s32 s;
+
+    for (c = *str; c != 0; c = *++str) {
+        switch (c) {
+            case ' ':
+                continue;
+            case '.':
+                w = 4;
+                s = 0x70;
+                break;
+            case 'm':
+                w = 8;
+                s = 0x50;
+                break;
+            case 'y':
+                w = 8;
+                s = 0x58;
+                break;
+            case 'f':
+                w = 16;
+                s = 0x60;
+                break;
+            default:
+                w = 8;
+                s = (*str - '0') * 8;
+                break;
+        }
+        gSPTextureRectangle(gfx++, x << 2, y << 2, (x + w) << 2, (y + 12) << 2, G_TX_RENDERTILE, s << 5, 0, 1 << 10,
+                            1 << 10);
+        x += w;
+    }
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80088BDC);
 
