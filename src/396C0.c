@@ -346,7 +346,30 @@ void func_800627F8(f64 *src, f64 *dst) {
     dst[1] = src[1];
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_8006280C);
+/* Marks the 3x3 neighbourhood of (x, y) >> 19 in the 8x16 grid D_80104EB8. */
+void func_8006280C(u32 x, u32 y) {
+    s32 dx;
+    s32 dy;
+
+    if (D_801B60C2 != 0) {
+        return;
+    }
+    x >>= 19;
+    y >>= 19;
+    if (x >= 8) {
+        return;
+    }
+    if (y >= 16) {
+        return;
+    }
+    for (dy = -1; dy < 2; dy++) {
+        for (dx = -1; dx < 2; dx++) {
+            if ((u32)(x + dx) < 8 && (u32)(y + dy) < 16) {
+                D_80104EB8[(y + dy) * 8 + (x + dx)] = 1;
+            }
+        }
+    }
+}
 
 void func_800628A0(void) {
     bzero(D_80104EB8, 0x80);

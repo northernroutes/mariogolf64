@@ -211,7 +211,23 @@ INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F93DC);
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F9688);
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F9CEC);
+s32 func_ovl15_801F9D80(s32, s32, s32);
+
+/* Tries func_ovl15_801F9D80 up to three times, reinitialising the GB Pak manager between attempts. */
+s32 func_ovl15_801F9CEC(s32 arg0, s32 arg1, s32 arg2) {
+    s32 i = 0;
+    s32 ret;
+
+    do {
+        ret = func_ovl15_801F9D80(arg0, arg1, arg2);
+        if (ret == 1) {
+            return 1;
+        }
+        nuContGBPakMgrInit();
+        i++;
+    } while (i != 3);
+    return ret;
+}
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F9D80);
 

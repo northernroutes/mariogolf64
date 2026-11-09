@@ -346,7 +346,26 @@ INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80208850);
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_802088B0);
 
-INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_8020D6F0);
+extern s32 D_ovl0_80224034;
+s32 func_8005062C(s32 arg0, void *arg1);
+s32 func_8004E2DC(s32);
+void func_800506D4(s32 arg0, void *arg1);
+
+void func_ovl0_8020D6F0(void) {
+    s32 sp10[8];
+    s32 handle;
+
+    handle = func_8004E2DC(func_8005062C(0x6E0, sp10));
+    D_ovl0_80227C90[0] = handle;
+    func_800506D4(handle, sp10);
+    handle = func_8004E2DC(func_8005062C(0x6E5, sp10));
+    D_ovl0_80227C90[1] = handle;
+    func_800506D4(handle, sp10);
+    handle = func_8004E2DC(func_8005062C(0x6F0, sp10));
+    D_ovl0_80227C98 = handle;
+    func_800506D4(handle, sp10);
+    D_ovl0_80224034 = 0;
+}
 
 void func_ovl0_8020D784(void) {
     func_8004E47C(&D_ovl0_80227C90[0]);

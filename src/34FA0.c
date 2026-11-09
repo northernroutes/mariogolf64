@@ -41,7 +41,7 @@ extern u8 D_800C2BD4;
 extern s32 D_801EFFA0;
 
 void func_80099490(void);
-void func_8005DF54(Unk8012F720 *arg0, s32 arg1);
+void func_8005DF54(Unk8012F720 *arg0, u8 arg1);
 Unk8012F720 *func_8005AF50(void);
 Unk801323A0 *func_8005AF74(void);
 s32 func_8005D23C(void);
