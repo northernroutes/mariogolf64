@@ -169,3 +169,7 @@ help:
 	@echo 'Variables: V=1 (full commands), NONMATCHING=1 (WIP C, skip md5).'
 
 .PHONY: all clean distclean setup extract help
+
+# Some game segments were built with -ffast-math (bare sqrt.s, no errno check).
+FAST_MATH_SEGS := 40180 45400
+$(foreach s,$(FAST_MATH_SEGS),$(BUILD_DIR)/$(SRC_DIR)/$(s).o): C_PROFILE_CFLAGS = $(CFLAGS) -ffast-math
