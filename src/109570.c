@@ -14,7 +14,12 @@ INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220BB0);
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220D68);
 
-INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220DF8);
+u8 *func_8005AF74(void);
+extern s16 D_ovl3_8023B684[];
+
+s16 func_ovl3_80220DF8(void) {
+    return D_ovl3_8023B684[(s8)func_8005AF74()[0x42]];
+}
 
 u32 func_ovl3_80220E28(u8 *arg0) {
     return arg0[0x36] >> 7;

@@ -4,7 +4,22 @@ INCLUDE_ASM("asm/nonmatchings/D7850", func_ovl0_8021E550);
 
 INCLUDE_ASM("asm/nonmatchings/D7850", func_ovl0_8021E5F4);
 
-INCLUDE_ASM("asm/nonmatchings/D7850", func_ovl0_8021E6B8);
+extern s32 D_ovl0_80224B2C;
+extern s32 D_ovl0_8022D690;
+extern s32 D_ovl0_8022D694;
+extern s32 D_801B5CD0[];
+void func_8004E47C(void *);
+
+void func_ovl0_8021E6B8(void) {
+    s32 *p;
+
+    D_ovl0_80224B2C = -1;
+    func_8004E47C(&D_ovl0_8022D690);
+    func_8004E47C(&D_ovl0_8022D694);
+    p = &D_801B5CD0[12];
+    func_8004E47C(p);
+    func_8004E47C(p + 1);
+}
 
 extern u8 D_ovl0_80224B23;
 extern s32 D_ovl0_80224B24;
