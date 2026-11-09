@@ -216,7 +216,25 @@ s32 func_ovl0_80207048(UnkOvl0_80207014 *arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80207080);
 
-INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_802071B8);
+/* 0xB8-byte entries starting at D_801B71D0. Placeholder. */
+typedef struct Unk801B71D0 {
+    /* 0x00 */ u8 pad0[0x1E];
+    /* 0x1E */ s8 unk1E;
+    /* 0x1F */ u8 pad1F[0x4];
+    /* 0x23 */ s8 unk23;
+    /* 0x24 */ u8 pad24[0x94];
+} Unk801B71D0; /* size = 0xB8 */
+
+extern Unk801B71D0 D_801B71D0[];
+extern s8 D_800BAA04;
+void func_ovl0_80207080(s32);
+
+void func_ovl0_802071B8(s32 i) {
+    if (D_801B608C == 9 && D_801B71D0[i].unk23 <= D_800BAA04 && D_801B71D0[i].unk1E == 0 &&
+        func_ovl0_80207014((UnkOvl0_80207014 *)&D_801B71D0[i])) {
+        func_ovl0_80207080(i);
+    }
+}
 
 s32 func_800544B4(void);
 

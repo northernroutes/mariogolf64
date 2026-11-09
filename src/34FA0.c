@@ -91,13 +91,20 @@ s32 func_8005B0A0(s32 arg0) {
     return D_800C2B28[arg0];
 }
 
+/* 0x68-byte record (the same layout is loaded into D_80105F40 in 396C0). Placeholder. */
+typedef struct Unk80131510 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x28];
+    /* 0x2C */ s8 unk2C;
+    /* 0x2D */ u8 pad2D[0xD];
+    /* 0x3A */ u8 unk3A;
+    /* 0x3B */ u8 pad3B[0x2D];
+} Unk80131510; /* size = 0x68 */
+
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B0B4);
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B150);
 
-typedef struct Unk80131510 {
-    /* 0x00 */ s32 data[0x1A];
-} Unk80131510; /* size = 0x68 */
 
 extern Unk80131510 D_80131510[];
 
