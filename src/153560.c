@@ -4,11 +4,14 @@
 typedef struct Unk80104FD0 {
     /* 0x00 */ u8 pad0[0x20];
     /* 0x20 */ u8 *unk20; /* CI4 atlas: palette at +8, 80x18 images from +0x28 */
-    /* 0x24 */ u8 pad24[0x14];
+    /* 0x24 */ u8 pad24[0x10];
+    /* 0x34 */ u8 *unk34; /* CI4 font: palette at +8, glyphs from +0x28 */
     /* 0x38 */ u8 *unk38; /* image atlas: TLUT at +8 */
     /* 0x3C */ u8 pad3C[0x60];
     /* 0x9C */ void *tex[4];
     /* 0xAC */ void *tlut[4];
+    /* 0xBC */ u8 padBC[0xC];
+    /* 0xC8 */ s32 unkC8; /* text x offset */
 } Unk80104FD0;
 
 extern Unk80104FD0 D_80104FD0;
