@@ -60,7 +60,13 @@ void func_ovl0_80218D1C(void) {
     func_8002A97C(4, 0);
 }
 
-INCLUDE_ASM("asm/nonmatchings/D1FC0", func_ovl0_80218DB0);
+extern s32 D_ovl0_80224A80;
+extern s32 D_ovl0_8022D678;
+
+void func_ovl0_80218DB0(s32 arg0, s32 arg1) {
+    D_ovl0_80224A80 = (arg1 != 0) ? -1 : 1;
+    D_ovl0_8022D678 = arg0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/D1FC0", func_ovl0_80218DD0);
 

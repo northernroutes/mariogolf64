@@ -62,4 +62,8 @@ INCLUDE_ASM("asm/nonmatchings/2E3E0", func_8005470C);
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_8005483C);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800548DC);
+void func_80054550(s32, s32, s32);
+
+void func_800548DC(s32 arg0, s32 arg1) {
+    func_80054550(arg0, 2, arg1);
+}

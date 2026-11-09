@@ -16,7 +16,11 @@ void func_80025D54(void) {
     func_801F5018();
 }
 
-INCLUDE_ASM("asm/nonmatchings/1130", func_80025D78);
+extern s8 D_800D2930[];
+
+s32 func_80025D78(s32 i) {
+    return D_800D2930[i] | 0x100;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1130", func_80025D8C);
 
