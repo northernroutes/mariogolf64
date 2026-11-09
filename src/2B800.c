@@ -62,7 +62,18 @@ s32 func_80050598(Unk2B800 *arg0) {
     return arg0->unk4;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2B800", func_800505A0);
+extern char D_800CCB9C[];
+extern s32 D_8012D3A8;
+
+/* Reads the next `size` bytes of the stream described by src (cursor unk0, end unkC). */
+void func_800505A0(void *dst, u32 size, Unk2B800 *src) {
+    if (src->unk0 + size > (u32)src->unkC) {
+        size = src->unkC - src->unk0;
+        osSyncPrintf(D_800CCB9C, D_8012D3A8);
+    }
+    nuPiReadRom(src->unk0, dst, (size + 1) & ~1);
+    src->unk0 += size;
+}
 
 INCLUDE_ASM("asm/nonmatchings/2B800", func_8005062C);
 

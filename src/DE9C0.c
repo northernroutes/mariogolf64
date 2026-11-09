@@ -268,4 +268,32 @@ void func_ovl3_80209430(s32 *arg0) {
     *arg0 = tmp;
 }
 
-INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_80209478);
+typedef struct Unk8005AF50_DE9C0 {
+    /* 0x0000 */ u8 pad0[0x15CC];
+    /* 0x15CC */ s32 unk15CC;
+} Unk8005AF50_DE9C0;
+
+Unk8005AF50_DE9C0 *func_8005AF50(void);
+s32 func_800299F4(u32 n);
+s32 func_8005B070(s32);
+
+s32 func_ovl3_80209478(void) {
+    s32 v = func_8005AF50()->unk15CC;
+
+    if (func_800299F4(0x5C)) {
+        return 6;
+    }
+    if (func_800299F4(0x5B)) {
+        return 5;
+    }
+    if (func_800299F4(0x5A)) {
+        return 4;
+    }
+    if (func_800299F4(0x59)) {
+        return 3;
+    }
+    if (func_800299F4(0x58)) {
+        return 2;
+    }
+    return func_8005B070(v);
+}

@@ -111,7 +111,24 @@ void func_8005EE94(void) {
     nuScAddClient(&D_800E129C, &D_80132198, 3);
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_8005EEF8);
+extern u8 D_800C2FFD;
+
+void func_8005EEF8(void) {
+    OSMesg msg;
+
+    while (1) {
+        osRecvMesg(&D_80132198, &msg, OS_MESG_BLOCK);
+        if (*(s16 *)msg == 1) {
+            break;
+        }
+        if (*(s16 *)msg == 2) {
+            if (D_800C3000 != NULL) {
+                ((void (*)(s32, s32))D_800C3000)(2, D_800C2FFD);
+            }
+            D_800C2FFD++;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005EF88);
 

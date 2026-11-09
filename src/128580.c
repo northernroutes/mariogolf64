@@ -152,7 +152,35 @@ void func_ovl4_80250EE0(void) {
     D_ovl4_8025D354 = 0x80315000;
 }
 
-INCLUDE_ASM("asm/nonmatchings/128580", func_ovl4_80250F04);
+typedef struct Unk800FBEA0 {
+    /* 0x0 */ s16 unk0;
+    /* 0x2 */ s16 unk2;
+    /* 0x4 */ s16 unk4;
+    /* 0x6 */ s8 unk6;
+    /* 0x7 */ u8 pad7;
+    /* 0x8 */ s8 unk8;
+    /* 0x9 */ u8 pad9;
+    /* 0xA */ s16 unkA;
+    /* 0xC */ s16 unkC;
+    /* 0xE */ s16 unkE;
+} Unk800FBEA0; /* size = 0x10 */
+
+extern Unk800FBEA0 D_800FBEA0[0x80];
+
+void func_ovl4_80250F04(void) {
+    s32 i;
+
+    for (i = 0; i < 0x80; i++) {
+        D_800FBEA0[i].unk0 = 0;
+        D_800FBEA0[i].unk2 = 0;
+        D_800FBEA0[i].unk4 = 0;
+        D_800FBEA0[i].unk6 = -1;
+        D_800FBEA0[i].unk8 = 0;
+        D_800FBEA0[i].unkA = 1;
+        D_800FBEA0[i].unkC = 0x40;
+        D_800FBEA0[i].unkE = 0x100;
+    }
+}
 
 void func_ovl4_80250F90(void) {
     bzero(D_8018D220, 0x3C00);
