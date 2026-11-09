@@ -103,7 +103,45 @@ void func_80071954(u8 *src) {
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_800719A0);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80071B34);
+/* 0x2C-byte drawable objects at D_8012F518. Placeholder. */
+typedef struct Unk8012F518 {
+    /* 0x00 */ s32 type;
+    /* 0x04 */ s32 unk4;
+    /* 0x08 */ s32 flags;
+    /* 0x0C */ s32 id;
+    /* 0x10 */ u8 r;
+    /* 0x11 */ u8 g;
+    /* 0x12 */ u8 b;
+    /* 0x13 */ u8 a;
+    /* 0x14 */ u8 pad14[0x18];
+} Unk8012F518; /* size = 0x2C */
+
+extern Unk8012F518 D_8012F518[12];
+void func_80071608(Gfx **);
+void func_80071CE4(Gfx **, s32);
+void func_80072A08(Gfx **, s32);
+
+void func_80071B34(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 i;
+
+    func_80071608(&gfx);
+    for (i = 0; i != 12; i++) {
+        if (D_8012F518[i].id == -1) {
+            continue;
+        }
+        if (D_8012F518[i].flags & 0x20) {
+            continue;
+        }
+        gDPSetPrimColor(gfx++, 0, 0, D_8012F518[i].r, D_8012F518[i].g, D_8012F518[i].b, D_8012F518[i].a);
+        if (D_8012F518[i].type == 10) {
+            func_80072A08(&gfx, i);
+        } else {
+            func_80071CE4(&gfx, i);
+        }
+    }
+    *gdl = gfx;
+}
 
 void func_80071C74(s32 arg0) {
     D_8012F510[arg0].unkC = 0xFF;
