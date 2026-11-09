@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 /* Placeholder types; real types unknown. Rename once identified. */
@@ -197,7 +199,23 @@ INCLUDE_ASM("asm/nonmatchings/4C770", func_80074D0C);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80074E5C);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80074EFC);
+/* Draws str centred on x using the 6-pixel font tiles (character c is at s = c - 0x27). */
+void func_80074EFC(Gfx **gdl, s16 x, s16 y, u8 *str) {
+    Gfx *gfx = *gdl;
+    s32 n;
+    s32 c;
+
+    gDPPipeSync(gfx++);
+    for (n = 0; str[n] != 0; n++) {
+    }
+    x -= n * 3;
+    for (c = *str; c != 0; c = *++str, x += 6) {
+        gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 7) << 2, (y + 8) << 2, G_TX_RENDERTILE, (c - 0x27) << 8,
+                            3 << 8, 1 << 10, 1 << 10);
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80075010);
 

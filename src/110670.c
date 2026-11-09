@@ -174,7 +174,28 @@ INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022A8F4);
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022ADE8);
 
-INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B360);
+extern char D_80105118[];
+extern char D_ovl3_80231AA8[];
+void func_80074CA8(Gfx **, s32, s32, s32);
+void func_8007624C(Gfx **, s32, s32, char *, s32, s32, s32);
+
+/* Draws the eight entered code characters (0xFF = empty slot). */
+void func_ovl3_8022B360(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 i;
+
+    gDPPipeSync(gfx++);
+    func_80071608(&gfx);
+    func_80074CA8(&gfx, 0xFF, 0xFF, 0xFF);
+    for (i = 0; i != 8; i++) {
+        if (D_ovl3_80230FD4[i] != 0xFF) {
+            sprintf(D_80105118, D_ovl3_80231AA8, D_ovl3_80230FD4[i]);
+            func_8007624C(&gfx, i * 0x18 + 0x61, 0x96, D_80105118, -1, -1, 0);
+        }
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B46C);
 
