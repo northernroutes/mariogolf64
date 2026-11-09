@@ -125,7 +125,11 @@ typedef struct Unk800FE450_Player {
 typedef struct Unk800FE450 {
     /* 0x000 */ u8 pad0[0xCC];
     /* 0x0CC */ Unk800FE450_Player unkCC[12];
-    /* 0x75C */ u8 pad75C[0x7C];
+    /* 0x75C */ u8 pad75C[0x10];
+    /* 0x76C */ s32 unk76C[12];
+    /* 0x79C */ s32 unk79C;
+    /* 0x7A0 */ s32 unk7A0;
+    /* 0x7A4 */ u8 pad7A4[0x34];
     /* 0x7D8 */ s8 unk7D8[12];
 } Unk800FE450;
 
@@ -201,7 +205,25 @@ INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F7ED4);
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F8110);
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F8BC8);
+extern s32 D_800FE4AC;
+
+void func_ovl15_801F8BC8(void) {
+    Unk800FE450 *d = &D_800FE450;
+    s32 i;
+    s32 j;
+
+    if (D_800FE4AC == 2) {
+        D_800FE450.unk7A0 = 0;
+        func_ovl15_801F67F4();
+        for (i = 0; i != 4; i++) {
+            for (j = 0; j != 3; j++) {
+                d->unk76C[i * 3 + j] = 0;
+                d->unkCC[i * 3 + j].unk0 = 0;
+            }
+        }
+        d->unk79C = 0;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F8C60);
 

@@ -296,7 +296,30 @@ s32 func_80060190(s32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_80060210);
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_800602B4);
+typedef struct Unk80105F40 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x30];
+    /* 0x34 */ s8 unk34;
+    /* 0x35 */ s8 unk35;
+    /* 0x36 */ u8 pad36[0x4];
+    /* 0x3A */ u8 unk3A;
+    /* 0x3B */ u8 pad3B[0x2D];
+} Unk80105F40; /* size = 0x68 */
+
+extern Unk80105F40 D_80105F40;
+extern s32 D_801B6094;
+extern s32 D_801B6098;
+extern u8 D_800FE330;
+void func_8005F540(void);
+
+void func_800602B4(Unk80105F40 *src) {
+    D_80105F40 = *src;
+    D_801B608C = 9;
+    D_801B6094 = src->unk34;
+    D_801B6098 = src->unk35;
+    D_800FE330 = src->unk3A;
+    func_8005F540();
+}
 
 void func_8006034C(u8 arg0) {
     D_800C30A4 = arg0;
