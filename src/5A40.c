@@ -1,3 +1,5 @@
+/* stage00.c builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 extern s32 D_800B680C;
@@ -51,10 +53,34 @@ INCLUDE_ASM("asm/nonmatchings/5A40", func_8002B280);
 
 INCLUDE_ASM("asm/nonmatchings/5A40", func_8002B924);
 
-void func_8002BD9C(void) {
+void func_8002BD9C(Gfx **gdl) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/5A40", func_8002BDA4);
+extern Gfx *D_801B93DC;
+void func_8002A9C4(Gfx **);
+void func_8002B280(Gfx **);
+void func_8002B924(Gfx **);
+
+typedef struct Unk8002BDA4 {
+    /* 0x000 */ u8 pad0[0x1C0];
+    /* 0x1C0 */ Mtx unk1C0;
+} Unk8002BDA4;
+
+void func_8002BDA4(Unk8002BDA4 *arg0) {
+    if (D_800B680C == 0) {
+        func_8002B924(&D_801B93DC);
+        gSPPopMatrix(D_801B93DC++, G_MTX_MODELVIEW);
+        gSPMatrix(D_801B93DC++, &arg0->unk1C0, G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+    } else if (D_800B680C == 2) {
+        func_8002A9C4(&D_801B93DC);
+    } else if (D_800B680C == 1) {
+        func_8002BD9C(&D_801B93DC);
+        gSPPopMatrix(D_801B93DC++, G_MTX_MODELVIEW);
+        gSPMatrix(D_801B93DC++, &arg0->unk1C0, G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+    } else if (D_800B680C == 3) {
+        func_8002B280(&D_801B93DC);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/5A40", func_8002BE78);
 
