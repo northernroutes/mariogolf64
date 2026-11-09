@@ -1,6 +1,24 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/CFE10", func_ovl0_80216B10);
+extern s8 D_ovl0_80229236[5];
+extern s32 D_ovl0_80224860;
+extern s32 D_800C1B70;
+extern s32 D_ovl0_802246F8;
+extern s8 D_ovl0_802291D8[30];
+
+void func_ovl0_80216B10(void) {
+    s32 i;
+
+    D_ovl0_80224860 = 0;
+    D_800C1B70 = 0;
+    D_ovl0_802246F8 = -1;
+    for (i = 0; i != 5; i++) {
+        D_ovl0_80229236[i] = -1;
+    }
+    for (i = 0; i != 30; i++) {
+        D_ovl0_802291D8[i] = 0;
+    }
+}
 
 s32 func_80078D94();
 s32 func_8008679C(s32);
