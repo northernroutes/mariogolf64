@@ -1,6 +1,7 @@
 /* This file builds F3DEX2 display lists. */
 #define F3DEX_GBI_2
 #include "common.h"
+#include "nusys.h"
 
 extern void *D_800C2FF0;
 extern void *D_800C2FF4;
@@ -100,10 +101,9 @@ void func_8005ED8C(u8 *arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005EDD0);
 
-s32 nuScAddClient(s32 *, OSMesgQueue *, s32);
 extern void *D_800E1290;
 extern void *D_800E1298;
-extern s32 D_800E129C;
+extern NUScClient D_800E129C;
 extern OSMesgQueue D_800FC8C0;
 extern OSMesgQueue D_80132198;
 

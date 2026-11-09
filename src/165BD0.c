@@ -317,4 +317,20 @@ INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA844);
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA990);
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FB348);
+/* Integer part of f, rounded up when the first two decimals round to >= 0.95; capped at 999. */
+s32 func_ovl15_801FB348(f32 f) {
+    s32 whole = f;
+    s32 frac = (f - whole) * 100.0f;
+
+    if (frac % 10 >= 5) {
+        frac += 10;
+    }
+    frac /= 10;
+    if (frac >= 10) {
+        whole++;
+        if (whole >= 1000) {
+            whole = 999;
+        }
+    }
+    return whole;
+}
