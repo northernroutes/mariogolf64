@@ -22,7 +22,24 @@ INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800542A0);
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054310);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054354);
+/* 0x18C-byte slots at D_801F43F0 (see Unk801F4424 in 2FD00). Placeholder. */
+typedef struct Unk801F43F0 {
+    /* 0x000 */ u8 pad0[0x8];
+    /* 0x008 */ s32 unk8;
+    /* 0x00C */ u8 padC[0x180];
+} Unk801F43F0; /* size = 0x18C */
+
+extern Unk801F43F0 D_801F43F0[4];
+
+/* Slot i if it is in use (unk8 != -1), else NULL. */
+Unk801F43F0 *func_80054354(u32 i) {
+    if (i < 4) {
+        if (D_801F43F0[i].unk8 != -1) {
+            return &D_801F43F0[i];
+        }
+    }
+    return NULL;
+}
 
 
 void func_800543A4(void) {
