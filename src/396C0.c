@@ -252,7 +252,30 @@ INCLUDE_ASM("asm/nonmatchings/396C0", func_800600C0);
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_80060128);
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_80060190);
+extern s8 D_800BAA04;
+extern s32 D_801B608C;
+
+s32 func_80060190(s32 arg0) {
+    s32 d = arg0 - D_800BAA04;
+
+    if (arg0 == 1) {
+        return 0x80;
+    }
+    switch (d) {
+        case -3:
+            return 0x81;
+        case -2:
+            return 0x82;
+        case -1:
+            return 0x83;
+        case 0:
+            if (D_801B608C == 9) {
+                return 0x84;
+            }
+            break;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_80060210);
 

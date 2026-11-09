@@ -33,7 +33,24 @@ void func_800504E8(s32 arg0, Unk2B800 *arg1, s32 arg2) {
     func_80050428(arg0, arg1, arg2);
 }
 
-INCLUDE_ASM("asm/nonmatchings/2B800", func_80050504);
+extern char D_800CCB70[];
+extern char D_800CCB7C[];
+
+/* Claims a free D_800DE8A0 slot; arg1 is unused and arg2 is passed through. */
+Unk2B800 *func_80050504(s32 arg0, s32 arg1, s32 arg2) {
+    Unk2B800 *p;
+    s32 i;
+
+    for (i = 0, p = D_800DE8A0; i != 2; i++, p++) {
+        if (p->unk0 == 0) {
+            func_80050428(arg0, p, arg2);
+            return p;
+        }
+    }
+    osSyncPrintf(D_800CCB70, arg0);
+    osSyncPrintf(D_800CCB7C, arg0);
+    return NULL;
+}
 
 void func_80050588(Unk2B800 *arg0) {
     arg0->unkC = 0;

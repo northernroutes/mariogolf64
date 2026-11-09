@@ -146,11 +146,57 @@ INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B360);
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B46C);
 
-INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B5E0);
+extern s32 D_ovl3_80230F68;
+extern u8 D_ovl3_80230FD4[8];
+
+/* Deletes the last entered character; returns 1 if there was nothing to delete. */
+s32 func_ovl3_8022B5E0(void) {
+    s32 ret = 1;
+
+    if (D_ovl3_80230F68 > 0) {
+        if (D_ovl3_80230F68 == 8) {
+            D_ovl3_80230F68 = 7;
+        }
+        D_ovl3_80230FD4[D_ovl3_80230F68] = 0xFF;
+        D_ovl3_80230F68--;
+        ret = 0;
+    } else if (D_ovl3_80230FD4[0] != 0xFF) {
+        D_ovl3_80230FD4[0] = 0xFF;
+        ret = 0;
+    }
+    return ret;
+}
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B668);
 
-INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B75C);
+extern s32 D_ovl3_80230F6C;
+extern u8 D_ovl3_80230FDC[36][8];
+
+/* Returns the index of the D_ovl3_80230FDC entry equal to the entered code, or -1. */
+s32 func_ovl3_8022B75C(void) {
+    s32 found = -1;
+    s32 i;
+    s32 j;
+    s32 n;
+
+    for (i = 0; i != 36; i++) {
+        n = 0;
+        for (j = 0; j != 8; j++) {
+            if (D_ovl3_80230FD4[j] != D_ovl3_80230FDC[i][j]) {
+                break;
+            }
+            n++;
+        }
+        if (n == 8) {
+            found = i;
+            break;
+        }
+    }
+    if (found == -1) {
+        D_ovl3_80230F6C = 1;
+    }
+    return found;
+}
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B7E0);
 
