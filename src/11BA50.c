@@ -1,6 +1,10 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/11BA50", func_ovlgap_80451A50);
+extern s32 D_ovlgap_80451A60;
+
+s32 *func_ovlgap_80451A50(void) {
+    return &D_ovlgap_80451A60;
+}
 
 INCLUDE_ASM("asm/nonmatchings/11BA50", func_ovlgap_80451A5C);
 

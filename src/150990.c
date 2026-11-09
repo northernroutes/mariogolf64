@@ -26,7 +26,14 @@ INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_802438D0);
 
 INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_80243C48);
 
-INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_8024407C);
+s32 func_80054240(s32);
+extern s32 D_ovl11_8024C4A4;
+
+void func_ovl11_8024407C(void) {
+    func_80054240(0);
+    func_80054240(1);
+    D_ovl11_8024C4A4 = -1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_802440AC);
 

@@ -32,7 +32,27 @@ INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80221CC0);
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80221EBC);
 
-INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80222038);
+s32 func_8005062C(s32, s32 *);
+s32 func_800506D4(s32, s32 *);
+extern s32 D_ovl3_8023BD78;
+extern s32 D_ovl3_8023BD7C;
+
+void func_ovl3_80222038(s32 arg0, s32 arg1) {
+    s32 sp10[8];
+    s32 temp_a1;
+
+    temp_a1 = arg1 & 0xFF;
+    switch (temp_a1) {
+    case 1:
+        D_ovl3_8023BD78 = arg0;
+        return;
+    case 2:
+        D_ovl3_8023BD7C = arg0;
+        func_8005062C(0x528, sp10);
+        func_800506D4(D_ovl3_8023BD7C, sp10);
+        return;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_8022209C);
 

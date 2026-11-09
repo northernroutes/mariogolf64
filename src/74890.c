@@ -1,3 +1,7 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/74890", func_80099490);
+s32 nuPiInitSram();
+
+void func_80099490(void) {
+    nuPiInitSram();
+}

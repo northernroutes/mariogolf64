@@ -2,7 +2,17 @@
 
 INCLUDE_ASM("asm/nonmatchings/FD310", func_ovl3_80213390);
 
-INCLUDE_ASM("asm/nonmatchings/FD310", func_ovl3_8021342C);
+s32 func_8005062C(s32, s32 *);
+s32 func_800506D4(s32, s32 *);
+extern s32 D_ovl3_8023AA44;
+
+void func_ovl3_8021342C(s32 arg0) {
+    s32 sp10[8];
+
+    D_ovl3_8023AA44 = arg0;
+    func_8005062C(0x8E9, sp10);
+    func_800506D4(D_ovl3_8023AA44, sp10);
+}
 
 INCLUDE_ASM("asm/nonmatchings/FD310", func_ovl3_80213464);
 
