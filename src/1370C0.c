@@ -80,7 +80,26 @@ INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801FA8D8);
 
 INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801FB864);
 
-INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801FBB10);
+/* 0x1208-byte sound slots at D_ovl7_80214C50. Placeholder. */
+typedef struct UnkOvl7_80214C50 {
+    /* 0x0000 */ u8 pad0[0x1208];
+} UnkOvl7_80214C50;
+
+extern u16 D_ovl7_8020AD8A[][2];
+extern UnkOvl7_80214C50 D_ovl7_80214C50[];
+extern s32 D_ovl7_8020AD70[];
+extern f32 D_ovl7_8020AD80[];
+s32 func_8005062C(s32, s32 *);
+s32 func_800506D4(s32 *, s32 *);
+
+void func_ovl7_801FBB10(s32 idx, s32 slot) {
+    s32 sp10[8];
+
+    func_8005062C(D_ovl7_8020AD8A[idx][0], sp10);
+    func_800506D4((s32 *)&D_ovl7_80214C50[slot], sp10);
+    D_ovl7_8020AD70[slot] = 0;
+    D_ovl7_8020AD80[slot] = 1.0f;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801FBB94);
 

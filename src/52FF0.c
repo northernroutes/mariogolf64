@@ -16,7 +16,28 @@ void func_80077C0C(void) {
 
 INCLUDE_ASM("asm/nonmatchings/52FF0", func_80077C18);
 
-INCLUDE_ASM("asm/nonmatchings/52FF0", func_80077DEC);
+/* 0x2C-byte entries of D_80105140. Placeholder. */
+typedef struct Unk80105140 {
+    /* 0x00 */ u8 pad0[0x2C];
+} Unk80105140;
+
+extern s32 D_800C4660;
+extern s32 D_800C4664;
+extern s32 D_800FE338;
+extern Unk80105140 D_80105140[];
+void func_8004E47C(void *);
+
+void func_80077DEC(void) {
+    s32 i;
+
+    if (D_800C4664 == 1) {
+        func_8004E47C(&D_800FE338);
+        for (i = 0; i != D_800C4660; i++) {
+            func_8004E47C(&D_80105140[i]);
+        }
+    }
+    D_800C4664 = 0;
+}
 
 extern s32 D_800C4664;
 
