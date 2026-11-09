@@ -19,9 +19,59 @@ INCLUDE_ASM("asm/nonmatchings/40180", func_80065650);
 
 INCLUDE_ASM("asm/nonmatchings/40180", func_80065898);
 
-INCLUDE_ASM("asm/nonmatchings/40180", func_80065A1C);
+/* Rotation (X, Y, Z radians) and translation to a 4x4 float matrix. */
+void func_80065A1C(f32 m[4][4], f32 *rot, f32 *pos) {
+    f32 sx = sinf(rot[0]);
+    f32 cx = cosf(rot[0]);
+    f32 sy = sinf(rot[1]);
+    f32 cy = cosf(rot[1]);
+    f32 sz = sinf(rot[2]);
+    f32 cz = cosf(rot[2]);
 
-INCLUDE_ASM("asm/nonmatchings/40180", func_80065B98);
+    m[0][0] = cy * cz;
+    m[0][1] = cy * sz;
+    m[0][2] = -sy;
+    m[0][3] = 0.0f;
+    m[1][0] = sx * sy * cz - cx * sz;
+    m[1][1] = sx * sy * sz + cx * cz;
+    m[1][2] = sx * cy;
+    m[1][3] = 0.0f;
+    m[2][0] = cx * sy * cz + sx * sz;
+    m[2][1] = cx * sy * sz - sx * cz;
+    m[2][2] = cx * cy;
+    m[2][3] = 0.0f;
+    m[3][0] = pos[0];
+    m[3][1] = pos[1];
+    m[3][2] = pos[2];
+    m[3][3] = 1.0f;
+}
+
+/* Rotation (X, Y, Z radians), per-row scale and translation to a 4x4 float matrix. */
+void func_80065B98(f32 m[4][4], f32 *rot, f32 *pos, f32 *scale) {
+    f32 sx = sinf(rot[0]);
+    f32 cx = cosf(rot[0]);
+    f32 sy = sinf(rot[1]);
+    f32 cy = cosf(rot[1]);
+    f32 sz = sinf(rot[2]);
+    f32 cz = cosf(rot[2]);
+
+    m[0][0] = cy * cz * scale[0];
+    m[0][1] = cy * sz * scale[0];
+    m[0][2] = -sy * scale[0];
+    m[0][3] = 0.0f;
+    m[1][0] = (sx * sy * cz - cx * sz) * scale[1];
+    m[1][1] = (sx * sy * sz + cx * cz) * scale[1];
+    m[1][2] = sx * cy * scale[1];
+    m[1][3] = 0.0f;
+    m[2][0] = (cx * sy * cz + sx * sz) * scale[2];
+    m[2][1] = (cx * sy * sz - sx * cz) * scale[2];
+    m[2][2] = cx * cy * scale[2];
+    m[2][3] = 0.0f;
+    m[3][0] = pos[0];
+    m[3][1] = pos[1];
+    m[3][2] = pos[2];
+    m[3][3] = 1.0f;
+}
 
 /* out = a * b for 4x4 float matrices. */
 void func_80065D5C(f32 a[4][4], f32 b[4][4], f32 out[4][4]) {
