@@ -329,7 +329,27 @@ void func_ovl15_801FA720(Gfx **gdl) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA844);
+extern s32 D_ovl15_801FBB84;
+
+/* Animated 24x24 sprite: 9-tick cycle, three ticks per image of the D_800FE450.unk40 atlas. */
+void func_ovl15_801FA844(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 *mode;
+    Unk800FE450 *state;
+
+    D_ovl15_801FBB84 = (D_ovl15_801FBB84 + 1) % 9;
+    state = &D_800FE450;
+    func_8006A548(&gfx, state->unk40 + 8);
+    mode = &D_800FEC00.unk90;
+    func_8006A84C(&gfx, state->unk40 + ((D_ovl15_801FBB84 / 3) * 0x240 + 0x208), 2, 1, 0x18, 0x18, 0, 0, 0, 0, 0, 0,
+                  0);
+    if (*mode == 1) {
+        func_8006A2C0(&gfx, 0x440, 0x300, 0x4A0, 0x360, 0, 0, 0, 0x400, 0x400);
+    } else {
+        func_8006A2C0(&gfx, 0x400, 0x200, 0x460, 0x260, 0, 0, 0, 0x400, 0x400);
+    }
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801FA990);
 
