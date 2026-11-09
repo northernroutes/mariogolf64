@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 extern s32 D_ovl3_80230E88;
