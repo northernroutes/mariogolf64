@@ -20,7 +20,15 @@ void func_ovl7_8020356C(f32 arg0, f32 arg1, s32 arg2, s32 arg3, f32 arg4, f32 ar
     func_ovl7_80203620();
 }
 
-INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_802035BC);
+extern s32 D_ovl7_8022BEA0[2];
+extern s32 D_ovl7_8022BEA8[2];
+
+void func_ovl7_802035BC(s32 i, s32 a, s32 b) {
+    s32 pad[2];
+
+    D_ovl7_8022BEA0[i] = a;
+    D_ovl7_8022BEA8[i] = b;
+}
 
 extern s32 D_ovl7_8022BEB0;
 extern s32 D_ovl7_8022BEB4;
