@@ -157,7 +157,31 @@ s32 func_8005C4B4(void) {
     return count >= 30;
 }
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005C510);
+s32 func_8005C510(void) {
+    Unk8012F720 *p = func_8005AF50();
+    s32 count = 0;
+    s32 i;
+    s32 j;
+
+    for (i = 0; i != 6; i++) {
+        for (j = 0; j != 6; j++) {
+            count += p->unk1320[i][j] != 0;
+        }
+    }
+    if (count == 4) {
+        return 1;
+    }
+    if (count == 8) {
+        return 2;
+    }
+    if (count == 12) {
+        return 3;
+    }
+    if (count == 16) {
+        return 4;
+    }
+    return (count == 20) ? 5 : 0;
+}
 
 s32 func_8005C5B4(void) {
     Unk8012F720 *p = func_8005AF50();

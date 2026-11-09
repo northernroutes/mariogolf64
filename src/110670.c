@@ -124,7 +124,39 @@ INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_802287EC);
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_80228A80);
 
-INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_80228B60);
+extern s32 D_ovl3_80230F5C;
+extern s32 D_ovl3_80230F60;
+extern s32 D_ovl3_80230F64;
+extern s32 D_ovl3_80230F68;
+extern s32 D_ovl3_80230F6C;
+extern s32 D_ovl3_80230F70;
+extern s32 D_ovl3_80230F74;
+extern s32 D_ovl3_80230F78;
+extern s32 D_ovl3_80230F7C;
+extern u8 D_ovl3_80230F80;
+extern u8 D_ovl3_80230FD4[8];
+
+void func_ovl3_80228B60(void) {
+    u8 *p = func_8005AF74(); /* layout unknown; bytes 0x47/0x48 are cleared */
+    s32 i;
+
+    p[0x47] = 0;
+    p[0x48] = 0;
+    D_ovl3_80230F74 = 0;
+    for (i = 0; i != 8; i++) {
+        D_ovl3_80230FD4[i] = 0xFF;
+    }
+    D_ovl3_80230F68 = 0;
+    D_ovl3_80230F6C = 0;
+    D_ovl3_80230F5C = 0;
+    D_ovl3_80230F60 = 0;
+    D_ovl3_80230F64 = 0;
+    D_ovl3_80230F78 = 0;
+    D_ovl3_80230F70 = 0;
+    D_ovl3_80230F80 = 0;
+    D_ovl3_80230F40 = 1;
+    D_ovl3_80230F7C = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_80228C00);
 

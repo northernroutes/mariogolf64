@@ -27,7 +27,12 @@ INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A2C0);
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A4A0);
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A548);
+void func_8006A548(Gfx **gdl, void *tlut) {
+    Gfx *gfx = *gdl;
+
+    gDPLoadTLUT_pal256(gfx++, (u32)tlut & ~7);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A5E4);
 

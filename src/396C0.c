@@ -294,7 +294,33 @@ s32 func_80060190(s32 arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_80060210);
+typedef struct Unk800FEDD8 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x30];
+    /* 0x34 */ s32 unk34;
+    /* 0x38 */ s8 unk38;
+    /* 0x39 */ s8 unk39;
+    /* 0x3A */ u8 pad3A[0x4];
+    /* 0x3E */ u8 unk3E;
+    /* 0x3F */ u8 pad3F[0x29];
+} Unk800FEDD8; /* size = 0x68 */
+
+extern Unk800FEDD8 D_800FEDD8;
+extern char D_800D1254[];
+extern s32 D_801B6094;
+extern s32 D_801B6098;
+extern u8 D_800FE330;
+void func_8005F540(void);
+
+void func_80060210(Unk800FEDD8 *src) {
+    D_800FEDD8 = *src;
+    D_801B608C = src->unk34;
+    D_801B6094 = src->unk38;
+    D_801B6098 = src->unk39;
+    D_800FE330 = src->unk3E;
+    func_8005F540();
+    osSyncPrintf(D_800D1254);
+}
 
 typedef struct Unk80105F40 {
     /* 0x00 */ s32 unk0;
