@@ -2,7 +2,9 @@
 
 /* Texture tables at D_80104FD0 + 0x9C. Placeholder. */
 typedef struct Unk80104FD0 {
-    /* 0x00 */ u8 pad0[0x9C];
+    /* 0x00 */ u8 pad0[0x38];
+    /* 0x38 */ u8 *unk38; /* image atlas: TLUT at +8 */
+    /* 0x3C */ u8 pad3C[0x60];
     /* 0x9C */ void *tex[4];
     /* 0xAC */ void *tlut[4];
 } Unk80104FD0;
@@ -33,7 +35,18 @@ void func_ovl11_802444B8(Gfx **gdl, s32 x, s32 y, s32 idx, s32 mask) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_802445C0);
+/* Draws image idx of the D_80104FD0.unk38 atlas twice: the 0x1208 bank at
+ * x + 24 and the 0x208 bank at x. */
+void func_ovl11_802445C0(Gfx **gdl, s32 x, s32 y, s32 idx) {
+    Gfx *gfx = *gdl;
+
+    func_8006A548(&gfx, D_80104FD0.unk38 + 8);
+    func_8006A84C(&gfx, D_80104FD0.unk38 + ((idx << 10) + 0x1208), 2, 1, 0x20, 0x20, 0, 0, 0, 0, 0, 0, 0);
+    func_8006A2C0(&gfx, (x + 24) * 4, y * 4, (x + 56) * 4, (y + 32) * 4, 0, 0, 0, 0x400, 0x400);
+    func_8006A84C(&gfx, D_80104FD0.unk38 + ((idx << 10) + 0x208), 2, 1, 0x20, 0x20, 0, 0, 0, 0, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 32) * 4, (y + 32) * 4, 0, 0, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_80244748);
 
