@@ -104,7 +104,20 @@ void func_ovl0_801F6D0C(Gfx **gdl, s32 x, s32 y, s32 idx) {
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F6DFC);
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F7294);
+extern u8 *D_ovl0_802256FC;
+void func_8006A4A0(Gfx **, s32, void *);
+
+/* Draws 72x18 CI4 image idx (80x18 slots of 0x2D0 bytes from +0x28) of the
+ * D_ovl0_802256FC atlas, palette 0 from +8. */
+void func_ovl0_801F7294(Gfx **gdl, s32 x, s32 y, s32 idx) {
+    Gfx *gfx = *gdl;
+
+    func_8006A4A0(&gfx, 0, D_ovl0_802256FC + 8);
+    gDPLoadTextureTile_4b(gfx++, (u32)(D_ovl0_802256FC + (idx * 0x2D0 + 0x28)) & ~7, G_IM_FMT_CI, 80, 18, 0, 0, 71,
+                          17, 0, 0, 0, 0, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 72) * 4, (y + 18) * 4, 0, 0, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
 
 void func_8006A2C0(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void func_8006A548(Gfx **, s32);

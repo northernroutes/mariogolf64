@@ -2,7 +2,9 @@
 
 /* Texture tables at D_80104FD0 + 0x9C. Placeholder. */
 typedef struct Unk80104FD0 {
-    /* 0x00 */ u8 pad0[0x38];
+    /* 0x00 */ u8 pad0[0x20];
+    /* 0x20 */ u8 *unk20; /* CI4 atlas: palette at +8, 80x18 images from +0x28 */
+    /* 0x24 */ u8 pad24[0x14];
     /* 0x38 */ u8 *unk38; /* image atlas: TLUT at +8 */
     /* 0x3C */ u8 pad3C[0x60];
     /* 0x9C */ void *tex[4];
@@ -48,7 +50,18 @@ void func_ovl11_802445C0(Gfx **gdl, s32 x, s32 y, s32 idx) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_80244748);
+void func_8006A4A0(Gfx **, s32, void *);
+
+/* Draws 80x18 CI4 image idx of the D_80104FD0.unk20 atlas (rectangle 54 wide). */
+void func_ovl11_80244748(Gfx **gdl, s32 x, s32 y, s32 idx) {
+    Gfx *gfx = *gdl;
+
+    func_8006A4A0(&gfx, 0, D_80104FD0.unk20 + 8);
+    gDPLoadTextureTile_4b(gfx++, (u32)(D_80104FD0.unk20 + (idx * 0x2D0 + 0x28)) & ~7, G_IM_FMT_CI, 80, 18, 0, 0, 79,
+                          17, 0, 0, 0, 0, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 54) * 4, (y + 18) * 4, 0, 0, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_802448D4);
 
