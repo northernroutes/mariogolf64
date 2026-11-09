@@ -234,4 +234,21 @@ void func_80043A04(void) {
     func_800437FC();
 }
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80043A20);
+s32 func_800437FC(s32, s32);
+s32 func_8003AE50(s32, s32, s32, s32, s32, s32, void *, f32 *);
+
+/* Height at (x, z): func_800437FC, lowered to a vertical ray hit if there is one. */
+s32 func_80043A20(s32 x, s32 z) {
+    s32 sp20[6];
+    f32 hit[0x22];
+    s32 h = func_800437FC(x, z);
+    s32 t;
+
+    if (func_8003AE50(x, -0x2EE000, z, x, 0x2EE000, z, sp20, hit)) {
+        t = hit[0] * 6144000.0f + -3072000.0f;
+        if (t < h) {
+            h = t;
+        }
+    }
+    return h;
+}
