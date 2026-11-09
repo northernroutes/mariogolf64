@@ -8,7 +8,33 @@ INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_80242334);
 
 INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_80242B74);
 
-INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_80242FC0);
+/* Fields of D_80104FD0 used by overlay 11's text layout. Placeholder. */
+typedef struct UnkOvl11_80104FD0 {
+    /* 0x00 */ u8 pad0[0xC8];
+    /* 0xC8 */ s32 unkC8;
+    /* 0xCC */ s32 unkCC;
+    /* 0xD0 */ u8 padD0[0x4];
+    /* 0xD4 */ s32 unkD4;
+} UnkOvl11_80104FD0;
+
+extern UnkOvl11_80104FD0 D_80104FD0;
+extern s32 D_800C0E60;
+extern s32 D_800C4140;
+void func_80050DA0(s32, s32, s32, s32, s32);
+
+void func_ovl11_80242FC0(s32 mode) {
+    if (mode == 0) {
+        func_80050DA0(0x47, D_800C0E60, 0x64, 0x14, 0xDF);
+    } else if (mode == 1) {
+        func_80050DA0(0x48, D_800C0E60, 0x64, 0x14, 0x20);
+    }
+    if (mode == 0) {
+        D_80104FD0.unkC8 = 0x140;
+        D_80104FD0.unkCC = 0;
+    }
+    D_800C4140 = mode;
+    D_80104FD0.unkD4 = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_80243050);
 

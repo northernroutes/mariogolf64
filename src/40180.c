@@ -35,6 +35,23 @@ void func_80065D5C(f32 a[4][4], f32 b[4][4], f32 out[4][4]) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/40180", func_80065DD8);
+/* guMtxF2L: float matrix to fixed-point Mtx. */
+void func_80065DD8(f32 mf[4][4], Mtx *m) {
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    s32 *ai = (s32 *)&m->m[0][0];
+    s32 *af = (s32 *)&m->m[2][0];
+
+    for (i = 0; i != 4; i++) {
+        for (j = 0; j != 2; j++) {
+            e1 = mf[i][j * 2] * 65536.0f;
+            e2 = mf[i][j * 2 + 1] * 65536.0f;
+            *(ai++) = (e1 & 0xFFFF0000) | ((u32)e2 >> 16);
+            *(af++) = (e1 << 16) | (e2 & 0xFFFF);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/40180", func_80065E6C);
