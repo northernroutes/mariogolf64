@@ -16,7 +16,9 @@ INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220D68);
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220DF8);
 
-INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220E28);
+u32 func_ovl3_80220E28(u8 *arg0) {
+    return arg0[0x36] >> 7;
+}
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220E34);
 
@@ -56,7 +58,26 @@ void func_ovl3_80222038(s32 arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_8022209C);
 
-INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80222C94);
+/* 0xA0-byte entries at 0x1FF8 in the object returned by func_8005AF50. Placeholder. */
+typedef struct UnkOvl3_8005AF50_Entry {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x9C];
+} UnkOvl3_8005AF50_Entry; /* size = 0xA0 */
+
+typedef struct UnkOvl3_8005AF50 {
+    /* 0x0000 */ u8 pad0[0x1FF8];
+    /* 0x1FF8 */ UnkOvl3_8005AF50_Entry unk1FF8[1]; /* length unknown */
+} UnkOvl3_8005AF50;
+
+UnkOvl3_8005AF50 *func_8005AF50(void);
+u8 *func_8005AF74(void);
+
+/* -1 if the current player's entry has unk0 == 0, else 0. */
+s32 func_ovl3_80222C94(void) {
+    UnkOvl3_8005AF50 *obj = func_8005AF50();
+
+    return -(((UnkOvl3_8005AF50_Entry *)((s8)func_8005AF74()[0x43] * 0xA0 + (u8 *)obj->unk1FF8))->unk0 == 0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80222CDC);
 
