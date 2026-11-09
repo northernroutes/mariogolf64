@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 s32 func_8004E2DC(s32);
@@ -25,9 +27,68 @@ void func_ovl0_8020E78C(void) {
 
 INCLUDE_ASM("asm/nonmatchings/C7A40", func_ovl0_8020E7B4);
 
-INCLUDE_ASM("asm/nonmatchings/C7A40", func_ovl0_8020EBBC);
+extern s32 D_ovl0_80224118;
+extern s32 D_ovl0_8022411C;
+extern Vtx D_ovl0_80224130[4];
+extern char D_ovl0_80225290[];
+extern u8 D_ovl0_8022BC80[];
+extern s32 D_800C54E0;
+extern u8 D_80105118[];
+void func_8006A84C(Gfx **, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 
-INCLUDE_ASM("asm/nonmatchings/C7A40", func_ovl0_8020ED54);
+/* Draws D_ovl0_80224118 as D_ovl0_8022411C billboarded digits (32x64 each;
+ * digit 0 uses the first image), one 0x90-byte matrix block per digit. */
+void func_ovl0_8020EBBC(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    u32 i;
+    s32 tex;
+    u8 *mtx;
+    Gfx *cmd;
+
+    sprintf((char *)D_80105118, D_ovl0_80225290, D_ovl0_80224118);
+    for (i = 0; i != D_ovl0_8022411C; i++) {
+        if (i == 0) {
+            tex = 0;
+        } else {
+            tex = (((&D_80105118[-1])[i] - '0') << 11) + 0x800;
+        }
+        func_8006A84C(&gfx, (u8 *)D_ovl0_8022D650 + (tex + 0x208), 2, 1, 0x20, 0x40, 0, 0, 0, 0, 0, 0, 0);
+        cmd = gfx++;
+        mtx = &D_ovl0_8022BC80[i * 0x90];
+        gSPMatrix(cmd, mtx + (D_800C54E0 << 6) - 0x80000000,
+                  G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+        gSPVertex(gfx++, D_ovl0_80224130, 4, 0);
+        gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
+
+extern s32 D_ovl0_80224114;
+extern s8 D_ovl0_80224174[][8];
+extern u8 D_ovl0_80227EB0[];
+
+/* Draws D_ovl0_80224174[D_ovl0_80224114][0] 32x64 billboards (consecutive
+ * images), loading the camera matrix and multiplying in each one's matrix. */
+void func_ovl0_8020ED54(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 i;
+    u8 *mtx;
+    Gfx *cmd;
+
+    for (i = 0; i != D_ovl0_80224174[D_ovl0_80224114][0]; i++) {
+        func_8006A84C(&gfx, (u8 *)D_ovl0_8022D650 + (i * 0x800 + 0x208), 2, 1, 0x20, 0x40, 0, 0, 0, 0, 0, 0, 0);
+        gSPMatrix(gfx++, D_ovl0_80227EB0 + (D_800C54E0 << 6) - 0x80000000,
+                  G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+        cmd = gfx++;
+        mtx = &D_ovl0_8022BC80[i * 0x90];
+        gSPMatrix(cmd, mtx + (D_800C54E0 << 6) - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+        gSPVertex(gfx++, D_ovl0_80224130, 4, 0);
+        gSP2Triangles(gfx++, 0, 1, 3, 0, 1, 2, 3, 0);
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 void func_ovl0_8020EEEC(s32 *arg0) {
     *arg0 = *arg0;
