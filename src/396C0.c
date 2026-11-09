@@ -132,7 +132,36 @@ void func_8005EEF8(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_8005EF88);
+/* The audio NUScTask has no symbol of its own: splat names its fields
+ * D_800FF1A8 (list.t.ucode) .. D_800FF1CC, and it starts at D_800FF1C8 - 0x40. */
+extern s32 D_800FF1A8;
+extern s32 D_800FF1B0;
+extern s32 D_800FF1C8;
+extern s32 D_800FF1CC;
+extern u8 D_800C2FFC;
+extern u8 D_800C2FFD;
+
+/* Submits the audio task described by arg0 (data, size, ucode, ucode data)
+ * and waits for it, then calls the D_800C3000 callback. */
+void func_8005EF88(s32 *arg0) {
+    s32 *ucode = &arg0[2];
+    s32 *ucodeData = &arg0[3];
+    s32 *data;
+
+    if (D_800C2FFC == 1) {
+        data = &D_800FF1C8;
+        *data = arg0[0];
+        D_800FF1CC = arg0[1];
+        D_800FF1A8 = *ucode;
+        D_800FF1B0 = *ucodeData;
+        osSendMesg(&nusched.audioRequestMQ, (u8 *)data - 0x40, OS_MESG_BLOCK);
+        osRecvMesg(&D_800FC8C0, NULL, OS_MESG_BLOCK);
+    }
+    if (D_800C3000 != NULL && D_800C2FFD != 0) {
+        ((void (*)(s32, s32))D_800C3000)(1, D_800C2FFD);
+        D_800C2FFD++;
+    }
+}
 
 void func_8005F048(s32 arg0) {
     D_800C2FF0 = __MusIntMemMalloc(arg0);
