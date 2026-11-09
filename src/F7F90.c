@@ -36,7 +36,14 @@ INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210D34);
 
 INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210D94);
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210DF4);
+void func_ovl3_80210E3C(Gfx **, s32, s32, s32, u8, s32);
+
+void func_ovl3_80210DF4(Gfx **gdl, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
+    Gfx *gfx = *gdl;
+
+    func_ovl3_80210E3C(&gfx, arg1, arg2, arg3, arg4, 5);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210E3C);
 

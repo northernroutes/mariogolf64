@@ -6,7 +6,18 @@ s32 func_800521C0(void) {
     return -((D_801B60AC & 2) != 0) & 9;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2D5C0", func_800521DC);
+extern s32 D_801B60AC;
+s32 func_800299F4(u32 n);
+
+s32 func_800521DC(void) {
+    if (func_800299F4(0x3D)) {
+        return 2;
+    }
+    if (D_801B60AC & 6) {
+        return 9;
+    }
+    return 18;
+}
 
 s32 func_800521C0();
 s32 func_800521DC();
