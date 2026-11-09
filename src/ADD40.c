@@ -141,7 +141,59 @@ void func_ovl0_801F7518(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F75B0);
+/* Object returned by func_8005AF50; only unk15CC is used here. */
+typedef struct UnkOvl0_8005AF50 {
+    /* 0x0000 */ u8 pad0[0x15CC];
+    /* 0x15CC */ s32 unk15CC;
+} UnkOvl0_8005AF50;
+
+UnkOvl0_8005AF50 *func_8005AF50(void);
+s32 func_8005B0A0(s32);
+extern s32 D_ovl0_8021FD40;
+extern s32 D_ovl0_8021FD48;
+extern f64 D_ovl0_80224CC0;
+extern f64 D_ovl0_80224CC8;
+extern f64 D_ovl0_80224CD0;
+
+void func_ovl0_801F75B0(void) {
+    f32 temp_fv0;
+    f32 temp_fv0_2;
+    f32 temp_fv1;
+    s32 temp_a0;
+    UnkOvl0_8005AF50 *temp_v0;
+
+    temp_v0 = func_8005AF50();
+    D_ovl0_8022574C += 1;
+    switch (D_ovl0_80225748) {
+    case 0:
+        temp_fv0 = -sinf(D_ovl0_80225758) * 160.0f;
+        D_ovl0_80225754 = 0;
+        temp_fv1 = (f32) ((f64) D_ovl0_80225758 + D_ovl0_80224CC0);
+        D_ovl0_80225758 = temp_fv1;
+        D_ovl0_80225750 = (s32) temp_fv0;
+        if (D_ovl0_80224CC8 < (f64) temp_fv1) {
+            D_ovl0_80225758 = 3.1415927f;
+        }
+        if (D_ovl0_8022574C >= 0x2E) {
+            D_ovl0_80225748 = 1;
+            return;
+        }
+        return;
+    case 1:
+        temp_fv0_2 = -sinf(D_ovl0_80225758) * 160.0f;
+        D_ovl0_80225758 = (f32) ((f64) D_ovl0_80225758 + D_ovl0_80224CD0);
+        D_ovl0_80225750 = (s32) temp_fv0_2;
+        if (D_ovl0_8022574C >= 0x33) {
+            func_ovl0_801F7518(0);
+            temp_a0 = D_ovl0_8021FD40 + 1;
+            D_ovl0_8021FD40 = temp_a0;
+            if (temp_a0 < 6) {
+                D_ovl0_8021FD48 = func_8005B0A0(temp_a0) - temp_v0->unk15CC;
+            }
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/ADD40", func_ovl0_801F7740);
 
