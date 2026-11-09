@@ -195,7 +195,31 @@ void func_80074CA8(Gfx **gdl, s32 r, s32 g, s32 b) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80074D0C);
+/* As func_80075010, but '.' is drawn narrow (3 px pulled in, 5 px advance). */
+void func_80074D0C(Gfx **gdl, s16 x, s16 y, u8 *str) {
+    Gfx *gfx = *gdl;
+    u8 c;
+    s32 i;
+    s32 s;
+
+    gDPPipeSync(gfx++);
+    for (c = *str; c != 0; c = *++str) {
+        if (c == '.') {
+            x -= 3;
+        }
+        i = c - 0x20;
+        s = (i % 31) << 8;
+        gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 8) << 2, (y + 8) << 2, G_TX_RENDERTILE, s,
+                            ((i / 31) << 8) & 0xFF00, 1 << 10, 1 << 10);
+        if (*str == '.') {
+            x += 5;
+        } else {
+            x += 8;
+        }
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80074E5C);
 
@@ -217,7 +241,23 @@ void func_80074EFC(Gfx **gdl, s16 x, s16 y, u8 *str) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80075010);
+/* Draws str at (x, y) with the 8x8 font (31 glyphs per row, starting at ' '). */
+void func_80075010(Gfx **gdl, s16 x, s16 y, u8 *str) {
+    Gfx *gfx = *gdl;
+    s32 c;
+    s32 i;
+    s32 s;
+
+    gDPPipeSync(gfx++);
+    for (c = *str; c != 0; c = *++str, x += 7) {
+        i = c - 0x20;
+        s = (i % 31) << 8;
+        gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 8) << 2, (y + 8) << 2, G_TX_RENDERTILE, s,
+                            ((i / 31) << 8) & 0xFF00, 1 << 10, 1 << 10);
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 void func_8007512C(void) {
     s32 i;
