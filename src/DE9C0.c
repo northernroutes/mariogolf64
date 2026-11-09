@@ -7,7 +7,9 @@ typedef struct Unk801323A0 {
     /* 0x02 */ u8 unk2;
     /* 0x03 */ u8 pad3[0x13];
     /* 0x16 */ s8 unk16;
-    /* 0x17 */ u8 pad17[0x14];
+    /* 0x17 */ u8 pad17[0x2];
+    /* 0x19 */ s8 unk19;
+    /* 0x1A */ u8 pad1A[0x11];
     /* 0x2B */ s8 unk2B;
     /* 0x2C */ s8 unk2C;
     /* 0x2D */ u8 pad2D[0x2];
@@ -23,8 +25,10 @@ extern u8 D_ovl3_80231198[];
 extern u8 D_ovl3_80231284[];
 
 void func_80050BF0(s32 arg0, s32 arg1, s32 arg2);
-void func_80074D0C(s32 *arg0, s32 arg1, s32 arg2, void *arg3);
-void func_ovl3_801FB54C(s32 *arg0, s32 arg1);
+void func_80074D0C(Gfx **arg0, s16 arg1, s16 arg2, void *arg3);
+void func_ovl3_801FB54C(Gfx **arg0, s32 arg1);
+void func_80074968(Gfx **arg0);
+void func_80074CA8(Gfx **arg0, s32 r, s32 g, s32 b);
 
 u8 *func_ovl3_801F4A40(void) {
     return D_ovl3_80232300;
@@ -223,8 +227,8 @@ INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_80202000);
 
 INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_802047F0);
 
-void func_ovl3_80204FF0(s32 *arg0) {
-    s32 tmp = *arg0;
+void func_ovl3_80204FF0(Gfx **arg0) {
+    Gfx *tmp = *arg0;
 
     func_80074D0C(&tmp, 0x60, 0x40, D_ovl3_80231198);
     *arg0 = tmp;
@@ -236,8 +240,8 @@ INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_802058B8);
 
 INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_80206180);
 
-void func_ovl3_80206A2C(s32 *arg0) {
-    s32 tmp = *arg0;
+void func_ovl3_80206A2C(Gfx **arg0) {
+    Gfx *tmp = *arg0;
 
     func_ovl3_801FB54C(&tmp, 0x3D);
     *arg0 = tmp;
@@ -245,7 +249,28 @@ void func_ovl3_80206A2C(s32 *arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_80206A68);
 
-INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_80207D08);
+extern u8 D_ovl3_8023176C[];
+extern u8 *D_ovl3_8022C0D0[2];
+
+void func_ovl3_80207D08(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 i;
+
+    func_ovl3_801FB54C(&gfx, 0x3D);
+    func_80074968(&gfx);
+    func_80074CA8(&gfx, 0xFF, 0xFF, 0xFF);
+    func_80074D0C(&gfx, 0x40, 0x20, D_ovl3_8023176C);
+    for (i = 0; i != 2; i++) {
+        if (D_801323A0.unk19 == i) {
+            func_80074CA8(&gfx, 0xFF, 0xFF, 0);
+        } else {
+            func_80074CA8(&gfx, 0xFF, 0xFF, 0xFF);
+        }
+        func_80074D0C(&gfx, 0x60, i * 8 + 0x40, D_ovl3_8022C0D0[i]);
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 void func_ovl3_80207E18(void) {
 }
@@ -261,8 +286,8 @@ INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_8020879C);
 
 INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_80208F8C);
 
-void func_ovl3_80209430(s32 *arg0) {
-    s32 tmp = *arg0;
+void func_ovl3_80209430(Gfx **arg0) {
+    Gfx *tmp = *arg0;
 
     func_80074D0C(&tmp, 0x40, 0x20, D_ovl3_80231284);
     *arg0 = tmp;

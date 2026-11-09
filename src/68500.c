@@ -102,7 +102,25 @@ INCLUDE_ASM("asm/nonmatchings/68500", func_8009548C);
 
 INCLUDE_ASM("asm/nonmatchings/68500", func_800957F0);
 
-INCLUDE_ASM("asm/nonmatchings/68500", func_800958D8);
+extern Gfx *D_801B93DC;
+typedef struct Unk801B7F30 {
+    /* 0x0 */ s16 ulx;
+    /* 0x2 */ s16 uly;
+    /* 0x4 */ s16 lrx;
+    /* 0x6 */ s16 lry;
+} Unk801B7F30;
+
+extern Unk801B7F30 D_801B7F30;
+
+void func_800958D8(void) {
+
+    D_801B7F30.ulx = 0;
+    D_801B7F30.lrx = 320;
+    D_801B7F30.lry = 240;
+    D_801B7F30.uly = 0;
+    gDPPipeSync(D_801B93DC++);
+    gDPSetScissor(D_801B93DC++, G_SC_NON_INTERLACE, D_801B7F30.ulx, D_801B7F30.uly, D_801B7F30.lrx, D_801B7F30.lry);
+}
 
 s32 func_800959F8(void) {
     return D_800C5EE4 < 1;
