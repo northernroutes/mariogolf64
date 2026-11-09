@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 /* D_801323A0: placeholder, real type unknown. splat labels part of it as
@@ -197,7 +199,36 @@ INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_801FB198);
 
 INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_801FB54C);
 
-INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_801FC60C);
+void func_ovl3_801FC754(Gfx **);
+void func_ovl3_801FCB74(Gfx **);
+void func_ovl3_801FD4F0(Gfx **);
+void func_ovl3_801FD7B0(Gfx **);
+
+void func_ovl3_801FC60C(Gfx **gdl, s32 layers) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gDPSetTextureLUT(gfx++, G_TT_NONE);
+    gDPSetCombine(gfx++, 0xFFFFFF, 0xFFFCF279);
+    gDPPipeSync(gfx++);
+    gSPSetOtherMode(gfx++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x0F0A7008);
+    gDPPipeSync(gfx++);
+    gDPSetTextureFilter(gfx++, G_TF_BILERP);
+    if (layers & 1) {
+        func_ovl3_801FC754(&gfx);
+    }
+    if (layers & 4) {
+        func_ovl3_801FCB74(&gfx);
+    }
+    if (layers & 0x10) {
+        func_ovl3_801FD4F0(&gfx);
+    }
+    if (layers & 8) {
+        func_ovl3_801FD7B0(&gfx);
+    }
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/DE9C0", func_ovl3_801FC754);
 
