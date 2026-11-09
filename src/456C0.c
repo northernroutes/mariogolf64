@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists (G_RDPHALF_1 = 0xE1 etc.). */
+#define F3DEX_GBI_2
 #include "common.h"
 
 extern s32 D_800C4010;
@@ -23,7 +25,14 @@ s32 func_8005062C(s32 arg0, void *arg1);
 void func_800506D4(s32 arg0, void *arg1);
 void func_8006B54C(void);
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A2C0);
+void func_8006A2C0(Gfx **gdl, s32 ulx, s32 uly, s32 lrx, s32 lry, s32 tile, s32 s, s32 t, s32 dsdx, s32 dtdy) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gSPScisTextureRectangle(gfx++, ulx, uly, lrx, lry, tile, s, t, dsdx, dtdy);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 void func_8006A4A0(Gfx **gdl, s32 pal, void *tlut) {
     Gfx *gfx = *gdl;
@@ -39,9 +48,44 @@ void func_8006A548(Gfx **gdl, void *tlut) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A5E4);
+void func_8006A5E4(Gfx **gdl, void *timg, s32 fmt, s32 width, s32 height, s32 pal, s32 cms, s32 cmt, s32 masks,
+                   s32 maskt, s32 shifts, s32 shiftt) {
+    Gfx *gfx = *gdl;
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A84C);
+    gDPLoadTextureBlock_4b(gfx++, (u32)timg & ~7, fmt, width, height, pal, cms, cmt, masks, maskt, shifts,
+                        shiftt);
+    *gdl = gfx;
+}
+
+/* gDPLoadTextureBlock with the render tile's size taken from a runtime value
+ * (`rsiz`) while the load uses the compile-time size `siz`. */
+#define gDPLoadTextureBlockRS(pkt, timg, fmt, siz, rsiz, width, height, pal, cms, cmt, masks, maskt, shifts, shiftt) \
+    {                                                                                                              \
+        gDPSetTextureImage(pkt, fmt, siz##_LOAD_BLOCK, 1, timg);                                                   \
+        gDPSetTile(pkt, fmt, siz##_LOAD_BLOCK, 0, 0, G_TX_LOADTILE, 0, cmt, maskt, shiftt, cms, masks, shifts);    \
+        gDPLoadSync(pkt);                                                                                          \
+        gDPLoadBlock(pkt, G_TX_LOADTILE, 0, 0, (((width) * (height) + siz##_INCR) >> siz##_SHIFT) - 1,             \
+                     CALC_DXT(width, siz##_BYTES));                                                                \
+        gDPPipeSync(pkt);                                                                                          \
+        gDPSetTile(pkt, fmt, rsiz, (((width) * siz##_LINE_BYTES) + 7) >> 3, 0, G_TX_RENDERTILE, pal, cmt, maskt,   \
+                   shiftt, cms, masks, shifts);                                                                    \
+        gDPSetTileSize(pkt, G_TX_RENDERTILE, 0, 0, ((width) - 1) << G_TEXTURE_IMAGE_FRAC,                          \
+                       ((height) - 1) << G_TEXTURE_IMAGE_FRAC)                                                     \
+    }
+
+void func_8006A84C(Gfx **gdl, void *timg, s32 fmt, s32 siz, s32 width, s32 height, s32 pal, s32 cms, s32 cmt,
+                   s32 masks, s32 maskt, s32 shifts, s32 shiftt) {
+    Gfx *gfx = *gdl;
+
+    if (siz == G_IM_SIZ_8b) {
+        gDPLoadTextureBlockRS(gfx++, (u32)timg & ~7, fmt, G_IM_SIZ_8b, siz, width, height, pal, cms, cmt, masks,
+                              maskt, shifts, shiftt);
+    } else {
+        gDPLoadTextureBlockRS(gfx++, (u32)timg & ~7, fmt, G_IM_SIZ_16b, siz, width, height, pal, cms, cmt, masks,
+                              maskt, shifts, shiftt);
+    }
+    *gdl = gfx;
+}
 
 void func_8006ACD8(void) {
     s32 sp10[8];
