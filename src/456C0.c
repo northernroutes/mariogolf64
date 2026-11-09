@@ -25,7 +25,12 @@ void func_8006B54C(void);
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A2C0);
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006A4A0);
+void func_8006A4A0(Gfx **gdl, s32 pal, void *tlut) {
+    Gfx *gfx = *gdl;
+
+    gDPLoadTLUT_pal16(gfx++, pal, (u32)tlut & ~7);
+    *gdl = gfx;
+}
 
 void func_8006A548(Gfx **gdl, void *tlut) {
     Gfx *gfx = *gdl;

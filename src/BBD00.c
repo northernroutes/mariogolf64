@@ -173,7 +173,27 @@ INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80205BB8);
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80205C78);
 
-INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80205D44);
+extern s32 D_801B6090;
+extern char D_ovl0_80225020[];
+s32 func_ovl0_80205BB8(s32, s32);
+void func_8004DA24(char *, s32, s32);
+
+/* Debug: prints the per-player total of func_ovl0_80205BB8 over 12 entries. */
+void func_ovl0_80205D44(void) {
+    char buf[0x80];
+    s32 i;
+    s32 j;
+    s32 sum;
+
+    for (i = 0; i < D_801B6090; i++) {
+        sum = 0;
+        for (j = 0; j < 12; j++) {
+            sum += func_ovl0_80205BB8(i, j);
+        }
+        sprintf(buf, D_ovl0_80225020, i, sum);
+        func_8004DA24(buf, 2, i + 3);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/BBD00", func_ovl0_80205DE8);
 
