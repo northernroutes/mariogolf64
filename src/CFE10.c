@@ -47,7 +47,24 @@ void func_ovl0_80216C18(void) {
     } while (var_s0 != 0x10);
 }
 
-INCLUDE_ASM("asm/nonmatchings/CFE10", func_ovl0_80216C58);
+extern s8 D_ovl0_80229236[5];
+extern s8 D_ovl0_8022923B[5];
+
+/* Claims the first free (-1) slot of five: marks it 1 with a timer of 20. */
+s32 func_ovl0_80216C58(void) {
+    s32 found = -1;
+    s32 i;
+
+    for (i = 0; i != 5; i++) {
+        if (D_ovl0_80229236[i] == -1) {
+            found = i;
+            D_ovl0_80229236[i] = 1;
+            D_ovl0_8022923B[found] = 20;
+            break;
+        }
+    }
+    return found;
+}
 
 INCLUDE_ASM("asm/nonmatchings/CFE10", func_ovl0_80216CAC);
 
