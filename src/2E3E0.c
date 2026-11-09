@@ -20,7 +20,18 @@ s32 func_80054240(u32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800542A0);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054310);
+s32 func_800542A0(s32);
+
+s32 func_80054310(void) {
+    s32 i;
+
+    for (i = 0; i < 4; i++) {
+        if (func_800542A0(i)) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 /* 0x18C-byte slots at D_801F43F0 (see Unk801F4424 in 2FD00). Placeholder. */
 typedef struct Unk801F43F0 {

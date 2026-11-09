@@ -27,7 +27,27 @@ INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801F4AEC);
 
 INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801F5018);
 
-INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801F5100);
+extern s32 D_801B7EE0;
+extern s32 D_ovl7_802259F8[2];
+extern s32 D_ovl7_80225A04;
+void func_8004E47C(void *);
+void func_80029B58(void);
+void func_800329D8(s32, s32, s32);
+void func_80078910(void);
+
+void func_ovl7_801F5100(void) {
+    s32 *p;
+    s32 i;
+
+    func_8004E47C(&D_801B7EE0);
+    for (i = 0, p = D_ovl7_802259F8; i < 2; i++, p++) {
+        func_8004E47C(p);
+    }
+    func_80029B58();
+    func_8004E47C(&D_ovl7_80225A04);
+    func_800329D8(0xFF, 0xFF, 0xFF);
+    func_80078910();
+}
 
 s32 func_80058D04(s32, s32, s32);
 extern s32 D_801B93DC;

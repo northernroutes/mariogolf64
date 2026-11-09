@@ -1,8 +1,37 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_802443D0);
+/* Texture tables at D_80104FD0 + 0x9C. Placeholder. */
+typedef struct Unk80104FD0 {
+    /* 0x00 */ u8 pad0[0x9C];
+    /* 0x9C */ void *tex[4];
+    /* 0xAC */ void *tlut[4];
+} Unk80104FD0;
 
-INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_802444B8);
+extern Unk80104FD0 D_80104FD0;
+void func_8006A548(Gfx **, void *);
+void func_8006A84C(Gfx **, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_8006A2C0(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+
+void func_ovl11_802443D0(Gfx **gdl, s32 x, s32 y, s32 idx) {
+    Gfx *gfx = *gdl;
+
+    func_8006A548(&gfx, D_80104FD0.tlut[idx]);
+    func_8006A84C(&gfx, D_80104FD0.tex[idx], 2, 1, 0x20, 0x20, 0, 0, 0, 0, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 0x20) * 4, (y + 0x20) * 4, 0, 0, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
+
+extern void *D_801321C8[];
+extern void *D_801B55E0[];
+
+void func_ovl11_802444B8(Gfx **gdl, s32 x, s32 y, s32 idx, s32 mask) {
+    Gfx *gfx = *gdl;
+
+    func_8006A548(&gfx, D_801321C8[idx]);
+    func_8006A84C(&gfx, D_801B55E0[idx], 2, 1, 0x20, 0x18, 0, 1, 1, mask * 5, 0, 0, 0);
+    func_8006A2C0(&gfx, x * 4, y * 4, (x + 0x20) * 4, (y + 0x18) * 4, 0, mask << 10, 0, 0x400, 0x400);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_802445C0);
 
