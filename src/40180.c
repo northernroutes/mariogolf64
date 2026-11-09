@@ -23,7 +23,17 @@ INCLUDE_ASM("asm/nonmatchings/40180", func_80065A1C);
 
 INCLUDE_ASM("asm/nonmatchings/40180", func_80065B98);
 
-INCLUDE_ASM("asm/nonmatchings/40180", func_80065D5C);
+/* out = a * b for 4x4 float matrices. */
+void func_80065D5C(f32 a[4][4], f32 b[4][4], f32 out[4][4]) {
+    s32 i;
+    s32 j;
+
+    for (i = 0; i != 4; i++) {
+        for (j = 0; j != 4; j++) {
+            out[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j] + a[i][2] * b[2][j] + a[i][3] * b[3][j];
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/40180", func_80065DD8);
 

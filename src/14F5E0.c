@@ -23,6 +23,20 @@ INCLUDE_ASM("asm/nonmatchings/14F5E0", func_ovl8_801F5604);
 
 INCLUDE_ASM("asm/nonmatchings/14F5E0", func_ovl8_801F56E4);
 
-INCLUDE_ASM("asm/nonmatchings/14F5E0", func_ovl8_801F5780);
+void func_ovl8_801F5780(void) {
+    s32 obj = func_8005AF50();
+    s32 i;
+    s32 j;
+
+    func_80099490();
+    func_8005DF54(obj, 0);
+    for (i = 0; i != 6; i++) {
+        for (j = 0; j != 3; j++) {
+            /* 0x74-byte entries from 0xEA4; s32[3] at 0x24 within each */
+            ((s32 *)(obj + i * 0x74 + 0xEC8))[j] = 1;
+        }
+    }
+    func_8005DF54(obj, 1);
+}
 
 INCLUDE_ASM("asm/nonmatchings/14F5E0", func_ovl8_801F57F8);
