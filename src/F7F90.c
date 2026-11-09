@@ -52,11 +52,44 @@ void func_ovl3_80210C74(Gfx **gdl, s32 arg1, s32 arg2, s32 v, u8 arg4) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210CD4);
+void func_ovl3_80210CD4(Gfx **gdl, s32 arg1, s32 arg2, s32 v, u8 arg4) {
+    Gfx *gfx = *gdl;
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210D34);
+    if (v >= 100) {
+        v = 99;
+    }
+    if (v < -99) {
+        v = -99;
+    }
+    func_ovl3_80210E3C(&gfx, arg1, arg2, v, arg4, 2);
+    *gdl = gfx;
+}
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_80210D94);
+void func_ovl3_80210D34(Gfx **gdl, s32 arg1, s32 arg2, s32 v, u8 arg4) {
+    Gfx *gfx = *gdl;
+
+    if (v >= 1000) {
+        v = 999;
+    }
+    if (v < -999) {
+        v = -999;
+    }
+    func_ovl3_80210E3C(&gfx, arg1, arg2, v, arg4, 3);
+    *gdl = gfx;
+}
+
+void func_ovl3_80210D94(Gfx **gdl, s32 arg1, s32 arg2, s32 v, u8 arg4) {
+    Gfx *gfx = *gdl;
+
+    if (v >= 10000) {
+        v = 9999;
+    }
+    if (v < -9999) {
+        v = -9999;
+    }
+    func_ovl3_80210E3C(&gfx, arg1, arg2, v, arg4, 4);
+    *gdl = gfx;
+}
 
 void func_ovl3_80210E3C(Gfx **, s32, s32, s32, u8, s32);
 
