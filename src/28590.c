@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004D190);

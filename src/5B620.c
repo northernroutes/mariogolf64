@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80080220);
@@ -213,7 +215,46 @@ INCLUDE_ASM("asm/nonmatchings/5B620", func_8008534C);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80085F98);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_8008658C);
+extern Gfx *D_801B93DC;
+extern u16 D_801B7EE4;
+extern Mtx D_800E2050;
+extern Mtx D_800FE2F0;
+void func_80065B98(f32 (*)[4], f32 *, f32 *, f32 *);
+void func_80065DD8(f32 (*)[4], Mtx *);
+void func_80085F98(s32);
+
+void func_8008658C(void) {
+    f32 pos[3];
+    f32 scale[3];
+    f32 rot[3];
+    f32 mf[4][4];
+
+    rot[0] = 0;
+    rot[1] = 0;
+    rot[2] = 0;
+    pos[0] = -240.0f;
+    pos[1] = 180.0f;
+    pos[2] = -500.0f;
+    scale[0] = 0.1f;
+    scale[1] = 0.1f;
+    scale[2] = 0.1f;
+    func_80065B98(mf, rot, pos, scale);
+    func_80065DD8(mf, &D_800E2050);
+    gDPPipeSync(D_801B93DC++);
+    gDPPipeSync(D_801B93DC++);
+    gDPSetCycleType(D_801B93DC++, G_CYC_1CYCLE);
+    gSPClearGeometryMode(D_801B93DC++, 0xFFFFFFFF);
+    gSPSetGeometryMode(D_801B93DC++, G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH);
+    gDPPipeSync(D_801B93DC++);
+    gSPSetOtherMode(D_801B93DC++, G_SETOTHERMODE_L, G_MDSFT_RENDERMODE, 29, 0x00552048);
+    gSPPerspNormalize(D_801B93DC++, D_801B7EE4);
+    gDPPipeSync(D_801B93DC++);
+    gDPSetTexturePersp(D_801B93DC++, G_TP_PERSP);
+    gSPMatrix(D_801B93DC++, (u8 *)&D_800FE2F0 - 0x80000000, G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
+    gSPMatrix(D_801B93DC++, (u8 *)&D_800E2050 - 0x80000000, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+    func_80085F98(0);
+    gDPPipeSync(D_801B93DC++);
+}
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_8008679C);
 
