@@ -199,7 +199,41 @@ s32 func_ovl3_8022B5E0(void) {
     return ret;
 }
 
-INCLUDE_ASM("asm/nonmatchings/110670", func_ovl3_8022B668);
+s32 func_ovl3_80226764(void);
+void func_80071608(Gfx **);
+void func_800719A0(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_80071CE4(Gfx **, s32);
+
+void func_ovl3_8022B668(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 x = 0;
+    s32 dy;
+    s32 flags;
+
+    switch (D_ovl3_80230F6C) {
+        case 0:
+            dy = 0;
+            x = 0x38;
+            flags = (func_ovl3_80226764() == 0) ? 0x21 : 0x20;
+            break;
+        case 1:
+            dy = 1;
+            x = 0x18;
+            flags = 0x21;
+            break;
+        default:
+            dy = -1;
+            flags = 0x21;
+            break;
+    }
+    if (dy >= 0) {
+        gDPPipeSync(gfx++);
+        func_80071608(&gfx);
+        func_800719A0(x, 0xB4, dy + 0x165, 1, 0, flags, 0xFF, 0xFF, 0xFF, 0xFF);
+        func_80071CE4(&gfx, 0);
+    }
+    *gdl = gfx;
+}
 
 extern s32 D_ovl3_80230F6C;
 extern u8 D_ovl3_80230FDC[36][8];

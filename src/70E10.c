@@ -1,3 +1,5 @@
+/* This file builds F3DEX2 display lists. */
+#define F3DEX_GBI_2
 #include "common.h"
 
 f32 func_80095A10(f32 arg0, f32 arg1, f32 arg2) {
@@ -15,7 +17,28 @@ f32 func_80095A10(f32 arg0, f32 arg1, f32 arg2) {
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80095A68);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80095C10);
+extern s32 D_800E4C5C;
+extern Light D_800C73B0[3];
+
+/* gSPSetLights3 on the Lights3 whose diffuse lights are D_800C73B0; its
+ * ambient light (the tail of D_800C73A0) sits 8 bytes before. */
+s32 func_80095C10(Gfx **gdl, Lights3 *src) {
+    Gfx *gfx = *gdl;
+
+    if (D_800E4C5C != 0) {
+        D_800C73B0[0] = src->l[0];
+        D_800C73B0[1] = src->l[1];
+        gSPNumLights(gfx++, NUMLIGHTS_3);
+        gSPLight(gfx++, &D_800C73B0[0], 1);
+        gSPLight(gfx++, &D_800C73B0[1], 2);
+        gSPLight(gfx++, &D_800C73B0[2], 3);
+        gSPLight(gfx++, (u8 *)D_800C73B0 - 8, 4);
+        *gdl = gfx;
+        return 1;
+    }
+    *gdl = gfx;
+    return 0;
+}
 
 s32 func_80056494(s32 arg0, s32 arg1);
 extern s32 D_800E4C50;
