@@ -8,7 +8,15 @@ INCLUDE_ASM("asm/nonmatchings/2E3E0", func_8005342C);
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80053604);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054240);
+extern s8 D_800D0488;
+extern s32 D_801F43F8;
+
+s32 func_80054240(u32 arg0) {
+    osSyncPrintf(&D_800D0488, arg0);
+    if (arg0 < 4U) {
+        *((__typeof__(D_801F43F8) *)((u8 *)&D_801F43F8 + (arg0 * 0x18C))) = -1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800542A0);
 
@@ -16,7 +24,16 @@ INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054310);
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054354);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800543A4);
+
+void func_800543A4(void) {
+    s32 var_s0;
+
+    var_s0 = 0;
+    do {
+        func_80054240(var_s0);
+        var_s0 += 1;
+    } while (var_s0 < 4);
+}
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800543DC);
 
