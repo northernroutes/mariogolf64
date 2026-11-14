@@ -188,7 +188,33 @@ void func_8007E30C(void) {
     D_800FF418.z = D_800FF418.z * len + D_801B54F4;
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E438);
+s32 rand(void);
+extern f32 D_801B54F0;
+
+/* Respawns a particle at a random point around D_800FF418, 105..300 units above
+ * the camera and shifted upwind so it lands near there; its tail is a 90-unit
+ * streak along the wind. */
+void func_8007E438(Particle *p) {
+    f32 t;
+    f32 len;
+
+    p->pos[0] = (f32)((rand() % 200 - 100) * 0x600) * 0.0009765625f + D_800FF418.x;
+    p->pos[1] = (f32)(-0x1A400 - (rand() % 200) * 0x600) * 0.0009765625f;
+    p->pos[2] = (f32)((rand() % 200 - 100) * 0x600) * 0.0009765625f + D_800FF418.z;
+    t = p->pos[1] / D_80104F44.y;
+    p->pos[1] += D_801B54F0 + 15.0f;
+    p->pos[0] += D_80104F44.x * t;
+    p->pos[2] += D_80104F44.z * t;
+    len = 90.0f;
+    p->tail[1] = p->pos[1] + len;
+    p->tail[0] = p->pos[0] + D_801049FC * len;
+    p->tail[2] = p->pos[2] + D_800FE380 * len;
+    p->ground = 0.0f;
+    p->timer = -1;
+    p->unk2D = 0;
+    p->unk1C = 1.0f;
+    p->flags = 0;
+}
 
 s32 rand(void);
 s32 func_80043A04(s32, s32);
