@@ -11,12 +11,23 @@ typedef struct CameraView {
     /* 0x20 */ f32 dist;
     /* 0x24 */ u8 pad24[0x4];
     /* 0x28 */ f32 target[2][3];
-    /* 0x40 */ u8 pad40[0x30];
+    /* 0x40 */ f32 vel[2][3];
+    /* 0x58 */ u8 pad58[0xC];
+    /* 0x64 */ f32 pitchDelta;
+    /* 0x68 */ f32 yawDelta;
+    /* 0x6C */ f32 distTarget;
     /* 0x70 */ f32 speed[2];
     /* 0x78 */ f32 accel[2];
-    /* 0x80 */ u8 pad80[0x18];
+    /* 0x80 */ f32 yawSpeed;
+    /* 0x84 */ f32 yawAccel;
+    /* 0x88 */ f32 pitchSpeed;
+    /* 0x8C */ f32 pitchAccel;
+    /* 0x90 */ f32 distSpeed;
+    /* 0x94 */ f32 distAccel;
     /* 0x98 */ f32 brake[2];
-    /* 0xA0 */ u8 padA0[0xC];
+    /* 0xA0 */ f32 pitchBrake;
+    /* 0xA4 */ f32 yawBrake;
+    /* 0xA8 */ f32 distBrake;
     /* 0xAC */ s32 flags[2];
     /* 0xB4 */ s32 axis[2];
 } CameraView;
@@ -179,7 +190,38 @@ s32 func_ovl7_80203DE8(s32 mask) {
     return 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203E14);
+/* Resets the camera motion state to its defaults and recomputes yaw/pitch/dist. */
+void func_ovl7_80203E14(void) {
+    s32 i;
+
+    /* vel is cleared twice in the original. */
+    for (i = 0; i != 2; i++) {
+        D_ovl7_8022BE30.target[i][0] = 0.0f;
+        D_ovl7_8022BE30.target[i][1] = 0.0f;
+        D_ovl7_8022BE30.target[i][2] = 0.0f;
+        D_ovl7_8022BE30.vel[i][0] = 0.0f;
+        D_ovl7_8022BE30.vel[i][1] = 0.0f;
+        D_ovl7_8022BE30.vel[i][2] = 0.0f;
+        D_ovl7_8022BE30.vel[i][0] = 0.0f;
+        D_ovl7_8022BE30.vel[i][1] = 0.0f;
+        D_ovl7_8022BE30.vel[i][2] = 0.0f;
+        D_ovl7_8022BE30.speed[i] = 30.0f;
+        D_ovl7_8022BE30.accel[i] = 3.0f;
+        D_ovl7_8022BE30.brake[i] = 0.0f;
+        D_ovl7_8022BE30.axis[i] = 0;
+        D_ovl7_8022BE30.flags[i] = 0;
+    }
+    D_ovl7_8022BE30.pitchBrake = 0.0f;
+    D_ovl7_8022BE30.yawBrake = 0.0f;
+    D_ovl7_8022BE30.distBrake = 0.0f;
+    D_ovl7_8022BE30.yawSpeed = 0.104719758f;
+    D_ovl7_8022BE30.yawAccel = 0.0349065848f;
+    D_ovl7_8022BE30.pitchSpeed = 0.052359879f;
+    D_ovl7_8022BE30.pitchAccel = 0.0174532924f;
+    D_ovl7_8022BE30.distSpeed = 10.0f;
+    D_ovl7_8022BE30.distAccel = 1.0f;
+    func_ovl7_80203620();
+}
 
 INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203F70);
 
