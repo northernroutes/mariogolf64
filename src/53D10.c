@@ -74,7 +74,41 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_80078DC0);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80078FA8);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80079358);
+s32 func_8005483C(s32, s32, f32 *);
+s32 func_80043A04(s32, s32);
+extern s32 D_800FC8B8;
+
+/* Spawns an effect within +/-1.5 units of the point func_8005483C(arg0, arg1)
+ * reports, recording the ground height there in D_800FC8B8. */
+void func_80079358(s32 arg0, s32 arg1) {
+    f32 unused[28]; /* never touched; keeps the frame layout */
+    f32 pos[3];
+    s32 i;
+    Effect *e;
+
+    if (func_8005483C(arg0, arg1, pos) == 0) {
+        D_800FC8B8 = (f32)func_80043A04(pos[0] * 1024.0f, pos[2] * 1024.0f);
+        for (i = 0; i != 40; i++) {
+            e = &D_801B74E0[i];
+            if (e->state == -1) {
+                e->pos[0] = pos[0] + (f32)(guRandom() % 3072 - 0x600) * 0.0009765625f;
+                e->pos[1] = pos[1] + (f32)(guRandom() % 3072 - 0x600) * 0.0009765625f;
+                e->pos[2] = pos[2] + (f32)(guRandom() % 3072 - 0x600) * 0.0009765625f;
+                e->unk0C = 0.0f;
+                e->unk10 = 0.0025585936f;
+                e->unk14 = 0.0f;
+                e->unk38 = 0;
+                e->alpha = 255.0f;
+                e->alphaVel = -4.0f;
+                e->unk30 = 6.0f;
+                e->unk34 = -0.2f;
+                e->state = 8;
+                e->unk3B = 0;
+                return;
+            }
+        }
+    }
+}
 
 void func_80065B98(f32 (*mf)[4], f32 *rot, f32 *pos, f32 *scale);
 void func_80065DD8(f32 (*mf)[4], Mtx *m);
