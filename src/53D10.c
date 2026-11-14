@@ -7,7 +7,8 @@ typedef struct Effect {
     /* 0x0C */ f32 unk0C;
     /* 0x10 */ f32 unk10;
     /* 0x14 */ f32 unk14;
-    /* 0x18 */ u8 pad18[0x10];
+    /* 0x18 */ u8 pad18[0xC];
+    /* 0x24 */ f32 unk24;
     /* 0x28 */ f32 alpha;
     /* 0x2C */ f32 alphaVel;
     /* 0x30 */ f32 unk30;
@@ -123,7 +124,62 @@ void func_8007955C(s32 *pos) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_800796F8);
+extern const f64 D_800D1978; /* pi / 64 */
+extern const f64 D_800D1980; /* pi / 4 */
+extern s32 D_800FC8B8;
+extern s32 D_800B7780;
+extern Mtx D_801B9418[];
+
+/* Records the ground height under pos in D_800FC8B8, then spawns an effect at
+ * pos with a random outward velocity (32 directions over a quarter turn) and
+ * builds its matrix in D_801B9418[D_800B7780]. */
+void func_800796F8(s32 *pos) {
+    f32 p[3];
+    f32 scale[3];
+    f32 rot[3];
+    f32 mf[4][4];
+    s32 i;
+    Effect *e;
+    s32 r;
+    f32 speed;
+    f32 angle;
+    f32 sn;
+
+    D_800FC8B8 = (f32)func_80043A04(pos[0], pos[2]);
+    for (i = 0; i < 40; i++) {
+        e = &D_801B74E0[i];
+        if (e->state == -1) {
+            e->pos[0] = pos[0] * 0.0009765625f;
+            e->pos[1] = pos[1] * 0.0009765625f;
+            e->pos[2] = pos[2] * 0.0009765625f;
+            r = guRandom() % 32;
+            speed = r * 20 + 200;
+            angle = (f32)(r * D_800D1978) - D_800D1980;
+            e->unk0C = cosf(angle) * speed * 0.0009765625f;
+            sn = sinf(angle) * speed;
+            e->unk10 = -2.6367188f - (f32)(r * 20) * 0.0009765625f;
+            e->unk24 = 0.0f;
+            e->state = 5;
+            e->alphaVel = 0.0f;
+            e->unk34 = 0.0f;
+            e->alpha = 255.0f;
+            e->unk30 = 0.5f;
+            e->unk14 = sn * 0.0009765625f;
+            p[0] = e->pos[0];
+            p[1] = e->pos[1];
+            p[2] = e->pos[2];
+            rot[0] = e->unk24;
+            rot[1] = 0.0f;
+            rot[2] = e->unk24;
+            scale[0] = e->unk30;
+            scale[1] = e->unk30;
+            scale[2] = e->unk30;
+            func_80065B98(mf, rot, p, scale);
+            func_80065DD8(mf, &D_801B9418[D_800B7780]);
+            return;
+        }
+    }
+}
 
 /* Spawns an effect at pos (1/1024 units) in the first free slot, if any. */
 void func_80079940(s32 *pos) {
