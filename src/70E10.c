@@ -239,7 +239,87 @@ INCLUDE_ASM("asm/nonmatchings/70E10", func_8009806C);
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80098310);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_800985B4);
+void func_800660A0(void);
+void func_8003E628(void);
+void func_8004DA24(char *, s32, s32);
+void func_80095DE0(void);
+int sprintf(char *, const char *, ...);
+void func_80097E30(s32, f32 *);
+void func_80096C04(s32, f32 *);
+void func_80097218(s32, f32 *);
+void func_800974D8(s32, f32 *);
+void func_80097A08(s32, f32 *);
+void func_80098310(s32, f32 *);
+void func_8009806C(s32, f32 *);
+void func_800977E0(s32, f32 *);
+void func_80096F44(s32, f32 *);
+void func_80097C18(s32, f32 *);
+
+extern f32 D_801B54EC[6]; /* camera eye[3], at[3] */
+
+/* Per-frame camera update: counts frames, then runs the camera function for
+ * the current object's mode (obj[2] % 18) on the camera D_801B54EC. Implicit
+ * int in the original (no return value). */
+s32 func_800985B4(s32 player) {
+    char buf[128];
+    s32 *obj;
+    f32 *cam;
+
+    obj = func_80054354();
+    D_800C73A0++;
+    func_800660A0();
+    func_8003E628();
+    if (func_800299F4(0x3E)) {
+        sprintf(buf, "FRAME %d  ", D_800C73A0);
+        func_8004DA24(buf, 3, 4);
+    }
+    func_80095DE0();
+    if (obj != NULL) {
+        cam = D_801B54EC;
+        switch (obj[2] % 18) {
+            case 5:
+                func_80097E30(player, cam);
+                break;
+            case 9:
+            case 13:
+                func_800967F4(player, cam);
+                break;
+            case 7:
+                func_80096C04(player, cam);
+                break;
+            case 10:
+                func_80097218(player, cam);
+                break;
+            case 12:
+                func_800974D8(player, cam);
+                break;
+            case 11:
+                func_80097A08(player, cam);
+                break;
+            case 14:
+                func_80098310(player, cam);
+                break;
+            case 15:
+                func_8009806C(player, cam);
+                break;
+            case 16:
+                func_800977E0(player, cam);
+                break;
+            case 3:
+                func_80096F44(player, cam);
+                break;
+            case 0:
+            case 1:
+            case 2:
+            case 4:
+            case 6:
+            case 8:
+            default:
+                func_80097C18(player, cam);
+                break;
+        }
+    }
+}
 
 extern s8 D_800E4CC8;
 
