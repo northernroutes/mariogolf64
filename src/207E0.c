@@ -213,7 +213,50 @@ void func_8004C6B0(void) {
 void func_8004C6B8(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/207E0", func_8004C6C0);
+/* Fills a 32x32 byte mask with a radial falloff from (32, 32); mode 0 is a ring,
+ * otherwise a disc that fades out past radius 15. */
+void func_8004C6C0(u8 *buf, s32 mode) {
+    s32 i = 0;
+    s32 w = 32, h = 32, m = 31;
+    s32 x, y, d, v, k;
+    f32 dist;
+
+    if (mode == 0) {
+        for (y = 0; y != h; y++) {
+            for (x = 0; x != w; x++) {
+                s32 dy = y - h;
+                s32 dx = x - w;
+                d = sqrtf((f32)(dy * dy + dx * dx));
+                if (d < 17) {
+                    v = 210;
+                } else if (d < 25) {
+                    v = 210 - (d - 16) * 26;
+                } else if (d < 32) {
+                    v = (d - 24) * 16;
+                } else {
+                    v = 0;
+                }
+                buf[i++] = v;
+            }
+        }
+    } else {
+        for (y = 0, k = 15; y != h; y++) {
+            for (x = 0; x != w; x++) {
+                s32 dy = y - h;
+                s32 dx = x - w;
+                dist = sqrtf((f32)(dy * dy + dx * dx));
+                if ((s32)dist <= k) {
+                    v = 210;
+                } else if ((s32)dist <= m) {
+                    v = 210 - (s32)(dist - k) * 12;
+                } else {
+                    v = 0;
+                }
+                buf[i++] = v;
+            }
+        }
+    }
+}
 
 /* Fills a w*h byte mask with a radial ring falloff centred on (w, h). */
 void func_8004C860(u8 *buf, s32 w, s32 h) {
