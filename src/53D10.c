@@ -1,6 +1,26 @@
 #define F3DEX_GBI_2
 #include "common.h"
 
+/* Effect pool D_801B74E0 (40 entries); state -1 = free. */
+typedef struct Effect {
+    /* 0x00 */ f32 pos[3];
+    /* 0x0C */ f32 unk0C;
+    /* 0x10 */ f32 unk10;
+    /* 0x14 */ f32 unk14;
+    /* 0x18 */ u8 pad18[0x10];
+    /* 0x28 */ f32 alpha;
+    /* 0x2C */ f32 alphaVel;
+    /* 0x30 */ f32 unk30;
+    /* 0x34 */ f32 unk34;
+    /* 0x38 */ s16 unk38;
+    /* 0x3A */ s8 state;
+    /* 0x3B */ s8 unk3B;
+    /* 0x3C */ s8 mtxIndex;
+    /* 0x3D */ u8 pad3D[3];
+} Effect;
+extern Effect D_801B74E0[40];
+
+
 s32 func_8004E47C(s32 *);
 extern s32 D_800C53B8;
 extern s32 D_800E1DA0;
@@ -38,7 +58,16 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_800789C8);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80078BDC);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80078D94);
+/* Frees every effect slot. */
+void func_80078D94(void) {
+    s32 i;
+    Effect *e;
+
+    for (i = 0; i != 40; i++) {
+        e = &D_801B74E0[i];
+        e->state = -1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80078DC0);
 
@@ -50,7 +79,31 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007955C);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_800796F8);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80079940);
+/* Spawns an effect at pos (1/1024 units) in the first free slot, if any. */
+void func_80079940(s32 *pos) {
+    s32 i;
+    Effect *e;
+
+    for (i = 0; i != 40; i++) {
+        e = &D_801B74E0[i];
+        if (e->state == -1) {
+            e->pos[0] = pos[0] * 0.0009765625f;
+            e->pos[1] = pos[1] * 0.0009765625f;
+            e->pos[2] = pos[2] * 0.0009765625f;
+            e->unk0C = 0.0f;
+            e->unk10 = 0.0025585936f;
+            e->unk14 = 0.0f;
+            e->unk38 = 0;
+            e->alpha = 255.0f;
+            e->alphaVel = -4.0f;
+            e->unk30 = 24.0f;
+            e->unk34 = -0.2f;
+            e->state = 8;
+            e->unk3B = 0;
+            return;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80079A08);
 
@@ -81,14 +134,14 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007DB08);
 extern Mtx D_800FD8F0[];
 extern Vtx D_800C5338[];
 
-/* Draws a grey quad (vertices D_800C5338) with alpha obj->f28 under matrix
- * D_800FD8F0[obj->s3C]. */
-void func_8007DE9C(Gfx **gdl, u8 *obj) {
+/* Draws a grey quad (vertices D_800C5338) with the effect's alpha under matrix
+ * D_800FD8F0[e->mtxIndex]. */
+void func_8007DE9C(Gfx **gdl, Effect *e) {
     Gfx *gfx = *gdl;
 
     gDPPipeSync(gfx++);
-    gDPSetPrimColor(gfx++, 0, 0, 0xE6, 0xE6, 0xE6, (u32)*(f32 *)(obj + 0x28));
-    gSPMatrix(gfx++, (u8 *)&D_800FD8F0[*(s8 *)(obj + 0x3C)] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gDPSetPrimColor(gfx++, 0, 0, 0xE6, 0xE6, 0xE6, (u32)e->alpha);
+    gSPMatrix(gfx++, (u8 *)&D_800FD8F0[e->mtxIndex] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPVertex(gfx++, D_800C5338, 4, 0);
     gDPPipeSync(gfx++);
     gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
@@ -100,12 +153,12 @@ void func_8007DE9C(Gfx **gdl, u8 *obj) {
 extern Vtx D_800C5378[];
 
 /* As func_8007DE9C, with vertices D_800C5378. */
-void func_8007DFD0(Gfx **gdl, u8 *obj) {
+void func_8007DFD0(Gfx **gdl, Effect *e) {
     Gfx *gfx = *gdl;
 
     gDPPipeSync(gfx++);
-    gDPSetPrimColor(gfx++, 0, 0, 0xE6, 0xE6, 0xE6, (u32)*(f32 *)(obj + 0x28));
-    gSPMatrix(gfx++, (u8 *)&D_800FD8F0[*(s8 *)(obj + 0x3C)] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gDPSetPrimColor(gfx++, 0, 0, 0xE6, 0xE6, 0xE6, (u32)e->alpha);
+    gSPMatrix(gfx++, (u8 *)&D_800FD8F0[e->mtxIndex] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
     gSPVertex(gfx++, D_800C5378, 4, 0);
     gDPPipeSync(gfx++);
     gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
