@@ -233,7 +233,52 @@ void func_80078DC0(s32 arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80078FA8);
+s32 func_8005483C(s32, s32, f32 *);
+s32 func_80043A04(s32, s32);
+extern s32 D_800FC8B8;
+
+/* Spawns an effect near the point func_8005483C(arg0, arg1) reports, thrown
+ * along direction `dir` with a random speed (recording the ground height in
+ * D_800FC8B8). The 614.4 and -1075.2 doubles are each one ulp off the
+ * correctly rounded values in the original, so they are written out exactly. */
+void func_80078FA8(s32 arg0, s32 arg1, f32 dir) {
+    f32 unused[28]; /* never touched; keeps the frame layout */
+    f32 pos[3];
+    s32 i;
+    Effect *e;
+
+    if (func_8005483C(arg0, arg1, pos) == 0) {
+        D_800FC8B8 = (f32)func_80043A04(pos[0] * 1024.0f, pos[2] * 1024.0f);
+        for (i = 0; i != 40; i++) {
+            e = &D_801B74E0[i];
+            if (e->state == -1) {
+                e->pos[0] = pos[0] + (f32)(guRandom() % 3072 - 0x600) * 0.0001953125f;
+                e->pos[1] = pos[1] + (f32)(guRandom() % 3072 - 0x600) * 0.0001953125f;
+                e->pos[2] = pos[2] + (f32)(guRandom() % 3072 - 0x600) * 0.0001953125f;
+                e->unk0C = 0.0f;
+                e->unk10 = 0.0025585936f;
+                e->unk0C = cosf(dir) * (guRandom() % 1536 + 614.4000000000001) * 0.0009765625;
+                e->unk10 = (-1075.1999999999998 - (f32)(guRandom() % 1536) * 0.3f) * 0.0009765625;
+                e->unk14 = sinf(dir) * (guRandom() % 1536 + 614.4000000000001) * 0.0009765625;
+                e->pos[0] += e->unk0C;
+                e->pos[1] += e->unk10;
+                e->pos[2] += e->unk14;
+                e->state = 20;
+                e->unk38 = 0;
+                e->alpha = 159.0f;
+                e->alphaVel = -1.0f;
+                e->unk30 = 1.3f;
+                e->unk34 = -0.04f;
+                if (arg1 == 3) {
+                    e->unk3B = 1;
+                } else {
+                    e->unk3B = 0;
+                }
+                return;
+            }
+        }
+    }
+}
 
 s32 func_8005483C(s32, s32, f32 *);
 s32 func_80043A04(s32, s32);
