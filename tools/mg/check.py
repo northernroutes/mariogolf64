@@ -31,6 +31,10 @@ def main():
         if errs:
             print(f'{func} COMPILE ERROR'); print('\n'.join(errs[:5])); sys.exit(1)
         ours, dis = object_words(obj, func)
+        hdr = subprocess.run(['mips-linux-gnu-objdump', '-h', obj], capture_output=True, text=True).stdout
+    for name, size in re.findall(r'^\s*\d+\s+(\.(?:rodata|data|sdata|bss)\S*)\s+([0-9a-f]{8})', hdr, re.M):
+        if int(size, 16):
+            print(f'warning: {name} is {int(size, 16)} bytes; game objects should have none (constants must be immediates or externs)')
     tgt = target_words(seg, func)
     while tgt and tgt[-1] == 0 and len(tgt) > len(ours): tgt.pop()   # trailing alignment nops
     while ours and ours[-1][0] == 0 and len(ours) > len(tgt): ours.pop()

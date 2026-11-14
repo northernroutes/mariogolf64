@@ -46,24 +46,7 @@ Unk8012F720 *func_8005AF50(void);
 Unk801323A0 *func_8005AF74(void);
 s32 func_8005D23C(void);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_80059BA0);
-
-/* func_80059BC0 is fdlibm's __ieee754_acosf (e_acosf.c); the constants are
- * immediates in the original, hence the macros. */
-#define AC_PI 3.1415925026e+00f
-#define AC_PIO2_HI 1.5707962513e+00f
-#define AC_PIO2_LO 7.5497894159e-08f
-#define AC_PS0 1.6666667163e-01f
-#define AC_PS1 -3.2556581497e-01f
-#define AC_PS2 2.0121252537e-01f
-#define AC_PS3 -4.0055535734e-02f
-#define AC_PS4 7.9153501429e-04f
-#define AC_PS5 3.4793309169e-05f
-#define AC_QS1 -2.4033949375e+00f
-#define AC_QS2 2.0209457874e+00f
-#define AC_QS3 -6.8828397989e-01f
-#define AC_QS4 7.7038154006e-02f
-
+/* fdlibm word access (math_private.h). */
 typedef union {
     f32 value;
     s32 word;
@@ -82,6 +65,31 @@ typedef union {
         sf_u.word = (i);               \
         (d) = sf_u.value;              \
     } while (0)
+
+/* fdlibm fabsf (s_fabsf.c). */
+f32 func_80059BA0(f32 x) {
+    s32 ix;
+
+    GET_FLOAT_WORD(ix, x);
+    SET_FLOAT_WORD(x, ix & 0x7FFFFFFF);
+    return x;
+}
+
+/* func_80059BC0 is fdlibm's __ieee754_acosf (e_acosf.c); the constants are
+ * immediates in the original, hence the macros. */
+#define AC_PI 3.1415925026e+00f
+#define AC_PIO2_HI 1.5707962513e+00f
+#define AC_PIO2_LO 7.5497894159e-08f
+#define AC_PS0 1.6666667163e-01f
+#define AC_PS1 -3.2556581497e-01f
+#define AC_PS2 2.0121252537e-01f
+#define AC_PS3 -4.0055535734e-02f
+#define AC_PS4 7.9153501429e-04f
+#define AC_PS5 3.4793309169e-05f
+#define AC_QS1 -2.4033949375e+00f
+#define AC_QS2 2.0209457874e+00f
+#define AC_QS3 -6.8828397989e-01f
+#define AC_QS4 7.7038154006e-02f
 
 f32 func_80059BC0(f32 x) {
     f32 z, p, q, r, w, s, c, df;
@@ -130,9 +138,161 @@ f32 func_80059BC0(f32 x) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_80059FAC);
+#define AT2_TINY 1.0e-30f
+#define AT2_PI_O_4 7.8539818525e-01f
+#define AT2_PI_O_2 1.5707963705e+00f
+#define AT2_PI 3.1415925026e+00f
+#define AT2_PI_LO 1.5099578832e-07f
+f32 func_80059BA0(f32 x);
+f32 func_8005A2AC(f32 x);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005A2AC);
+/* fdlibm __ieee754_atan2f(y, x) (e_atan2f.c), the older version with
+ * pi = 0x40490fda and pi_lo = 0x34222168. */
+extern f32 D_800D089C;
+
+f32 func_80059FAC(f32 y, f32 x) {
+    f32 z;
+    s32 k, m, hx, hy, ix, iy;
+
+    GET_FLOAT_WORD(hx, x);
+    ix = hx & 0x7FFFFFFF;
+    GET_FLOAT_WORD(hy, y);
+    iy = hy & 0x7FFFFFFF;
+    if ((ix > 0x7F800000) || (iy > 0x7F800000)) {
+        return x + y;
+    }
+    if (hx == 0x3F800000) {
+        return func_8005A2AC(y);
+    }
+    m = ((hy >> 31) & 1) | ((hx >> 30) & 2);
+
+    if (iy == 0) {
+        switch (m) {
+            case 0:
+            case 1:
+                return y;
+            case 2:
+                return AT2_PI + AT2_TINY;
+            case 3:
+                return -AT2_PI - AT2_TINY;
+        }
+    }
+    if (ix == 0) {
+        return (hy < 0) ? -AT2_PI_O_2 - AT2_TINY : AT2_PI_O_2 + AT2_TINY;
+    }
+    if (ix == 0x7F800000) {
+        if (iy == 0x7F800000) {
+            switch (m) {
+                case 0:
+                    return AT2_PI_O_4 + AT2_TINY;
+                case 1:
+                    return -AT2_PI_O_4 - AT2_TINY;
+                case 2:
+                    return 3.0f * AT2_PI_O_4 + AT2_TINY;
+                case 3:
+                    return -3.0f * AT2_PI_O_4 - AT2_TINY;
+            }
+        } else {
+            switch (m) {
+                case 0:
+                    return 0.0f;
+                case 1:
+                    return D_800D089C; /* -zero, kept in .rodata */
+                case 2:
+                    return AT2_PI + AT2_TINY;
+                case 3:
+                    return -AT2_PI - AT2_TINY;
+            }
+        }
+    }
+    if (iy == 0x7F800000) {
+        return (hy < 0) ? -AT2_PI_O_2 - AT2_TINY : AT2_PI_O_2 + AT2_TINY;
+    }
+
+    k = (iy - ix) >> 23;
+    if (k > 60) {
+        z = AT2_PI_O_2 + 0.5f * AT2_PI_LO;
+    } else if (hx < 0 && k < -60) {
+        z = 0.0f;
+    } else {
+        z = func_8005A2AC(func_80059BA0(y / x));
+    }
+    switch (m) {
+        case 0:
+            return z;
+        case 1: {
+            s32 zh;
+            GET_FLOAT_WORD(zh, z);
+            SET_FLOAT_WORD(z, zh ^ 0x80000000);
+        }
+            return z;
+        case 2:
+            return AT2_PI - (z - AT2_PI_LO);
+        default:
+            return (z - AT2_PI_LO) - AT2_PI;
+    }
+}
+
+extern f32 D_800D08A0[4];  /* atanhi */
+extern f32 D_800D08B0[4];  /* atanlo */
+extern f32 D_800D08C0[11]; /* aT */
+f32 func_80059BA0(f32 x);
+
+/* fdlibm atanf (s_atanf.c); the coefficient tables are in .rodata. */
+f32 func_8005A2AC(f32 x) {
+    f32 w, s1, s2, z;
+    s32 ix, hx, id;
+
+    GET_FLOAT_WORD(hx, x);
+    ix = hx & 0x7FFFFFFF;
+    if (ix >= 0x50800000) {
+        if (ix > 0x7F800000) {
+            return x + x;
+        }
+        if (hx > 0) {
+            return D_800D08A0[3] + D_800D08B0[3];
+        } else {
+            return -D_800D08A0[3] - D_800D08B0[3];
+        }
+    }
+    if (ix < 0x3EE00000) {
+        if (ix < 0x31000000) {
+            if (1.0e30f + x > 1.0f) {
+                return x;
+            }
+        }
+        id = -1;
+    } else {
+        x = func_80059BA0(x);
+        if (ix < 0x3F980000) {
+            if (ix < 0x3F300000) {
+                id = 0;
+                x = (2.0f * x - 1.0f) / (2.0f + x);
+            } else {
+                id = 1;
+                x = (x - 1.0f) / (x + 1.0f);
+            }
+        } else {
+            if (ix < 0x401C0000) {
+                id = 2;
+                x = (x - 1.5f) / (1.0f + 1.5f * x);
+            } else {
+                id = 3;
+                x = -1.0f / x;
+            }
+        }
+    }
+    z = x * x;
+    w = z * z;
+    s1 = z * (D_800D08C0[0] + w * (D_800D08C0[2] + w * (D_800D08C0[4] + w * (D_800D08C0[6] + w * (D_800D08C0[8] + w * D_800D08C0[10])))));
+    s2 = w * (D_800D08C0[1] + w * (D_800D08C0[3] + w * (D_800D08C0[5] + w * (D_800D08C0[7] + w * D_800D08C0[9]))));
+    if (id < 0) {
+        return x - x * (s1 + s2);
+    } else {
+        z = D_800D08A0[id] - ((x * (s1 + s2) - D_800D08B0[id]) - x);
+        return (hx < 0) ? -z : z;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005A580);
 
