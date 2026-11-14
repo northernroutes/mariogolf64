@@ -1,3 +1,4 @@
+#define F3DEX_GBI_2
 #include "common.h"
 
 s32 func_8004E47C(s32 *);
@@ -77,9 +78,41 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007D4E8);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007DB08);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007DE9C);
+extern Mtx D_800FD8F0[];
+extern Vtx D_800C5338[];
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007DFD0);
+/* Draws a grey quad (vertices D_800C5338) with alpha obj->f28 under matrix
+ * D_800FD8F0[obj->s3C]. */
+void func_8007DE9C(Gfx **gdl, u8 *obj) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gDPSetPrimColor(gfx++, 0, 0, 0xE6, 0xE6, 0xE6, (u32)*(f32 *)(obj + 0x28));
+    gSPMatrix(gfx++, (u8 *)&D_800FD8F0[*(s8 *)(obj + 0x3C)] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPVertex(gfx++, D_800C5338, 4, 0);
+    gDPPipeSync(gfx++);
+    gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
+    gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
+
+extern Vtx D_800C5378[];
+
+/* As func_8007DE9C, with vertices D_800C5378. */
+void func_8007DFD0(Gfx **gdl, u8 *obj) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gDPSetPrimColor(gfx++, 0, 0, 0xE6, 0xE6, 0xE6, (u32)*(f32 *)(obj + 0x28));
+    gSPMatrix(gfx++, (u8 *)&D_800FD8F0[*(s8 *)(obj + 0x3C)] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPVertex(gfx++, D_800C5378, 4, 0);
+    gDPPipeSync(gfx++);
+    gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
+    gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E104);
 
