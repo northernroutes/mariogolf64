@@ -13,7 +13,7 @@ def target_words(seg, func):
     return [int(w, 16) for w in re.findall(r'^\s+/\* [0-9A-F]+ [0-9A-F]+ ([0-9A-F]{8}) \*/', s, re.M)]
 
 def object_words(obj, func):
-    out = subprocess.run(['mips-linux-gnu-objdump', '-dr', f'--disassemble={func}', obj],
+    out = subprocess.run(['mips-linux-gnu-objdump', '-dr', '-z', f'--disassemble={func}', obj],
                          capture_output=True, text=True).stdout
     words = []
     for line in out.splitlines():

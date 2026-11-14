@@ -6,7 +6,27 @@ void func_800298E0(void) {
     osSyncPrintf(&D_800CA184);
 }
 
-INCLUDE_ASM("asm/nonmatchings/4CE0", func_80029900);
+extern char D_800CA1A8[];
+
+/* Normalises the vector (*x, *y, *z); falls back to (0, 1, 0) with a warning. */
+void func_80029900(f32 *x, f32 *y, f32 *z) {
+    f32 vx = *x;
+    f32 vy = *y;
+    f32 vz = *z;
+    f32 len2 = vx * vx + vy * vy + vz * vz;
+
+    if (len2 < 0.0f) {
+        osSyncPrintf(D_800CA1A8);
+        *x = 0.0f;
+        *y = 1.0f;
+        *z = 0.0f;
+    } else {
+        len2 = 1.0f / sqrtf(len2);
+        *x = vx * len2;
+        *y = vy * len2;
+        *z = vz * len2;
+    }
+}
 
 s32 func_80029250(s32 *, s32);
 extern s32 D_800B67D8;

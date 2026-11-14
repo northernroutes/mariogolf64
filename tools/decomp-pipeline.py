@@ -83,7 +83,7 @@ def func_words(obj, func):
     """Instruction words of func as (word, mask) pairs. A relocation only
     masks the field it fills (the low 16 bits for HI16/LO16, 26 for jumps),
     so register and opcode differences in relocated instructions still show."""
-    out = run(["mips-linux-gnu-objdump", "-dr", f"--disassemble={func}", obj]).stdout
+    out = run(["mips-linux-gnu-objdump", "-dr", "-z", f"--disassemble={func}", obj]).stdout
     words = []
     for line in out.splitlines():
         m = re.search(r"R_MIPS_(\w+)", line)
@@ -199,7 +199,7 @@ def fix_stack_buffer(code, ins):
 
 
 def frame_size(obj, func):
-    out = run(["mips-linux-gnu-objdump", "-d", f"--disassemble={func}", obj]).stdout
+    out = run(["mips-linux-gnu-objdump", "-d", "-z", f"--disassemble={func}", obj]).stdout
     m = re.search(r"addiu\s+sp,sp,-(\d+)", out)
     return int(m.group(1)) if m else 0
 

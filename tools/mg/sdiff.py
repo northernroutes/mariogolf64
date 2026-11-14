@@ -36,13 +36,13 @@ def main():
     s = open(f'{ROOT}/asm/nonmatchings/{seg}/{func}.s').read()
     offs = re.findall(r'^\s+/\* ([0-9A-F]+) ([0-9A-F]+) [0-9A-F]{8} \*/', s, re.M)
     rom0 = int(offs[0][0], 16); vram0 = int(offs[0][1], 16); n = len(offs)
-    A = norm(parse(subprocess.run(['mips-linux-gnu-objdump', '-D', '-b', 'binary', '-m', 'mips', '-EB',
+    A = norm(parse(subprocess.run(['mips-linux-gnu-objdump', '-D', '-z', '-b', 'binary', '-m', 'mips', '-EB',
         f'--start-address={rom0}', f'--stop-address={rom0 + 4 * n}', f'{ROOT}/baserom.z64'],
         capture_output=True, text=True).stdout), jbase=vram0 & 0x0FFFFFFF)
     with swapped(seg, func, draft) as (obj, errs):
         if errs:
             print('COMPILE ERROR'); print('\n'.join(errs[:5])); sys.exit(1)
-        B = norm(parse(subprocess.run(['mips-linux-gnu-objdump', '-d', f'--disassemble={func}', obj],
+        B = norm(parse(subprocess.run(['mips-linux-gnu-objdump', '-d', '-z', f'--disassemble={func}', obj],
                                       capture_output=True, text=True).stdout))
     print(f'original {len(A)} vs ours {len(B)}')
     for x in difflib.unified_diff(A, B, lineterm='', n=0):
