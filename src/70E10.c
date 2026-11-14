@@ -245,3 +245,6 @@ Unk800C7464 *func_80099454(u8 n) {
     }
     return &D_800C7464[n];
 }
+
+/* Unreferenced string; the tail of this file's .rodata. */
+INCLUDE_RODATA("asm/nonmatchings/70E10", D_800D1F2C);

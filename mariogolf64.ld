@@ -684,7 +684,7 @@ SECTIONS
         build/src/libmus/lib_memory.o(.rodata);
         build/src/libmus/aud_samples.o(.rodata);
         build/src/libnaudio/n_auxbus.o(.rodata);
-        build/asm/data/AD0E0.rodata.o(.rodata);
+        build/asm/data/AD340.rodata.o(.rodata);
         build/asm/data/AD490.rodata.o(.rodata);
         build/src/libnaudio/n_drvrNew.o(.rodata);
         build/src/libnaudio/n_env.o(.rodata);
