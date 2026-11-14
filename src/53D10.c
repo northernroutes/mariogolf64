@@ -246,8 +246,6 @@ void func_8007955C(s32 *pos) {
     }
 }
 
-extern const f64 D_800D1978; /* pi / 64 */
-extern const f64 D_800D1980; /* pi / 4 */
 extern s32 D_800FC8B8;
 extern s32 D_800B7780;
 extern Mtx D_801B9418[];
@@ -276,7 +274,7 @@ void func_800796F8(s32 *pos) {
             e->pos[2] = pos[2] * 0.0009765625f;
             r = guRandom() % 32;
             speed = r * 20 + 200;
-            angle = (f32)(r * D_800D1978) - D_800D1980;
+            angle = (f32)(r * (3.14159265358979323846 / 64)) - 3.14159265358979323846 / 4;
             e->unk0C = cosf(angle) * speed * 0.0009765625f;
             sn = sinf(angle) * speed;
             e->unk10 = -2.6367188f - (f32)(r * 20) * 0.0009765625f;
@@ -330,8 +328,6 @@ void func_80079940(s32 *pos) {
 }
 
 s32 func_8005483C(s32, s32, f32 *);
-/* -0.15; const so its load is hoisted like a literal-pool constant. */
-extern const f64 D_800D1988;
 
 /* Spawns an effect at the point func_8005483C(arg0, arg1) reports, if it
  * succeeds and a slot is free. */
@@ -351,7 +347,7 @@ void func_80079A08(s32 arg0, s32 arg1) {
                 e->pos[1] = pos[1];
                 e->pos[2] = pos[2];
                 e->unk0C = 0.0f;
-                e->unk10 = n * D_800D1988;
+                e->unk10 = n * -0.15000000000000002; /* 0xBFC3333333333334, one ulp past -0.15 */
                 e->unk14 = 0.0f;
                 e->unk38 = 0;
                 e->alpha = 230.0f;
@@ -369,7 +365,6 @@ void func_80079A08(s32 arg0, s32 arg1) {
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80079ADC);
 
 extern s32 D_800FBE64[3];
-extern const f64 D_800D19E0; /* 0.04 */
 
 /* Spawns three effects at D_800FBE64 (15 units lower on y) with staggered,
  * randomised speeds and sizes. */
@@ -390,7 +385,7 @@ void func_80079EBC(void) {
             e->alpha = 255.0f;
             e->alphaVel = -1.0f;
             e->unk30 = (guRandom() % 30) * 0.1f + 1.0f;
-            e->unk34 = (guRandom() % 10) * 0.001f + D_800D19E0;
+            e->unk34 = (guRandom() % 10) * 0.001f + 0.04;
             n++;
             e->unk3B = 0;
             e->state = 16;
@@ -410,6 +405,8 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007A6C8);
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007B054);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007B994);
+
+INCLUDE_RODATA("asm/nonmatchings/53D10", D_800D1A40);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007C5D8);
 
@@ -569,7 +566,6 @@ typedef struct Vec2i {
     s32 z;
 } Vec2i;
 extern Vec2i D_800FF418;
-extern char D_800D1A78[];
 
 /* Sets D_800FF418 to the point 150 units from (D_801B54EC, D_801B54F4)
  * towards (D_801B54F8, D_801B5500), in XZ. */
@@ -583,7 +579,7 @@ void func_8007E30C(void) {
     if ((s32)len != 0.0f) {
         len = 150.0f / len;
     } else {
-        osSyncPrintf(D_800D1A78);
+        osSyncPrintf("Rain Pos Error");
         len = 0.0f;
     }
     D_800FF418.x = D_800FF418.x * len + D_801B54EC;
@@ -663,7 +659,6 @@ void func_8007E7B8(void) {
     }
 }
 
-extern Vec3fs D_800D1A88;
 extern s32 D_800BA9F8;
 extern s32 D_800BA9F0;
 extern u16 D_800BA9F4;
@@ -682,7 +677,7 @@ void func_8007E438(Particle *);
  * D_800BA9F0/D_800BA9F4, drifts the particles with camera movement, refreshes one
  * particle's ground height per frame, and ticks the emitters and particles. */
 void func_8007E980(void) {
-    Vec3fs drift = D_800D1A88;
+    Vec3fs drift = { 0.0f, 0.0f, 0.0f };
     f32 dir, speed, dx, dz;
     s32 i;
     Particle *p;

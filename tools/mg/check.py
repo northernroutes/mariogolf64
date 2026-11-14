@@ -32,7 +32,10 @@ def main():
             print(f'{func} COMPILE ERROR'); print('\n'.join(errs[:5])); sys.exit(1)
         ours, dis = object_words(obj, func)
         hdr = subprocess.run(['mips-linux-gnu-objdump', '-h', obj], capture_output=True, text=True).stdout
-    for name, size in re.findall(r'^\s*\d+\s+(\.(?:rodata|data|sdata|bss)\S*)\s+([0-9a-f]{8})', hdr, re.M):
+    # Segments whose .rodata lives in the C file (a [rom, .rodata, <seg>] subsegment in
+    # the yaml) are expected to emit rodata; the full build checks it there.
+    migrated = re.search(rf'\.rodata, {re.escape(seg)}\]', open(f'{ROOT}/mariogolf64.yaml').read())
+    for name, size in ([] if migrated else re.findall(r'^\s*\d+\s+(\.(?:rodata|data|sdata|bss)\S*)\s+([0-9a-f]{8})', hdr, re.M)):
         if int(size, 16):
             print(f'warning: {name} is {int(size, 16)} bytes; game objects should have none (constants must be immediates or externs)')
     tgt = target_words(seg, func)
