@@ -35,6 +35,10 @@ CFLAGS="-G 0 -mips3 -mgp32 -mfp32 -mno-abicalls -O2 \
 -I $root/include -I $root/include/libultra -I $root/include/libultra/internal \
 -I $root/include/libkmc -I $root/include/libnusys -I $root/include/libmus -I $root/include/libnaudio \
 -DINCLUDE_ASM_USE_MACRO_INC -D_LANGUAGE_C -D_FINALROM"
+# Segments listed in the Makefile's FAST_MATH_SEGS are built with -ffast-math.
+if grep -E '^FAST_MATH_SEGS' Makefile | grep -qw "$seg"; then
+    CFLAGS="$CFLAGS -ffast-math"
+fi
 
 mkdir -p "$dir"
 

@@ -139,7 +139,23 @@ void func_ovl7_8020370C(s32 i, f32 x, f32 y, f32 z, s32 frames) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203984);
+/* Like func_ovl7_8020370C, but marks point i as the one being driven (0x80, 8)
+ * and clears those bits on the other point. */
+void func_ovl7_80203984(s32 i, f32 x, f32 y, f32 z, s32 frames) {
+    if (!(D_ovl7_8022BE30.flags[i] & 0x80)) {
+        D_ovl7_8022BE30.flags[i] ^= 0x80;
+    }
+    if (D_ovl7_8022BE30.flags[i ^ 1] & 0x80) {
+        D_ovl7_8022BE30.flags[i ^ 1] ^= 0x80;
+    }
+    if (!(D_ovl7_8022BE30.flags[i] & 8)) {
+        D_ovl7_8022BE30.flags[i] ^= 8;
+    }
+    if (D_ovl7_8022BE30.flags[i ^ 1] & 8) {
+        D_ovl7_8022BE30.flags[i ^ 1] ^= 8;
+    }
+    func_ovl7_8020370C(i, x, y, z, frames);
+}
 
 INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203A30);
 
@@ -147,9 +163,21 @@ INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203B60);
 
 INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203C90);
 
-INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203DC4);
+/* Returns 1 when neither camera point has any motion flags set. */
+s32 func_ovl7_80203DC4(void) {
+    if (D_ovl7_8022BE30.flags[0] == 0 && D_ovl7_8022BE30.flags[1] == 0) {
+        return 1;
+    }
+    return 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203DE8);
+/* Returns 1 when neither camera point has any of `mask` set. */
+s32 func_ovl7_80203DE8(s32 mask) {
+    if (!(D_ovl7_8022BE30.flags[0] & mask) && !(D_ovl7_8022BE30.flags[1] & mask)) {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_80203E14);
 
