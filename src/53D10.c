@@ -663,7 +663,35 @@ void func_8007CF10(Gfx **gdl, Effect *e) {
     *gdl = gfx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007D19C);
+extern s32 D_800B7780;
+extern Mtx D_801B9418[];
+extern Vtx D_800C52B8[];
+
+/* Draws a textured quad (16x16 I4 texture from asset D_800E1DA8) under matrix
+ * D_801B9418[D_800B7780] times the fourth Mtx at physical address `mtx`. */
+void func_8007D19C(Gfx **gdl, s32 mtx) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gDPPipeSync(gfx++);
+    gDPSetTextureFilter(gfx++, G_TF_POINT);
+    gDPPipeSync(gfx++);
+    gDPSetRenderMode(gfx++, 0x553078, 0);
+    gDPSetCombineMode(gfx++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
+    gDPSetPrimColor(gfx++, 0, 0, 0xEF, 0xEF, 0xEF, 0xFF);
+    gDPPipeSync(gfx++);
+    gDPSetTextureLUT(gfx++, G_TT_NONE);
+    gDPLoadTextureBlock_4b(gfx++, (D_800E1DA8 + 8) & ~7, G_IM_FMT_I, 16, 16, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 6,
+                           G_TX_NOLOD, G_TX_NOLOD);
+    gDPPipeSync(gfx++);
+    gSPMatrix(gfx++, (u8 *)&D_801B9418[D_800B7780] - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPMatrix(gfx++, mtx + 0x800000C0, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_NOPUSH);
+    gSPVertex(gfx++, D_800C52B8, 4, 0);
+    gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
+    gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007D4E8);
 
