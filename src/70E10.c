@@ -277,7 +277,34 @@ INCLUDE_ASM("asm/nonmatchings/70E10", func_80097218);
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_800974D8);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_800977E0);
+/* Follow camera looking 3 units above the player, eye 7.5 lower. */
+void func_800977E0(s32 player, f32 *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    u8 *obj;
+    f32 dist, height;
+
+    obj = func_80054354();
+    dist = func_80095A10(107520.0f, 30720.0f, D_800C73A0 * 0.025f);
+    func_8005483C(player, 1, pos);
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    pos[1] += 3.0f;
+    cam[3] = pos[0];
+    cam[4] = pos[1];
+    cam[5] = pos[2];
+    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam[1] = pos[1] + -7.5f;
+    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam);
+    func_80095A68(cam, cam + 3, 0.1f, 3);
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        cam[4] -= 4.5f;
+        cam[1] += 4.5f;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80097A08);
 
