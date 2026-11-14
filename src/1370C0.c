@@ -1,4 +1,5 @@
 #include "common.h"
+#include "ovl7_camera.h"
 
 extern s32 D_ovl7_8020AC4C;
 
@@ -148,7 +149,44 @@ void func_ovl7_801FFC10(void) {
 
 INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801FFC40);
 
-INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_802008D8);
+extern s32 D_ovl7_8020AD68;
+extern s32 D_ovl7_8022BF08;
+extern s32 D_ovl7_8022BF0C;
+extern s32 D_ovl7_8022BF10;
+extern f32 D_ovl7_8021706C;
+extern f32 D_ovl7_80217070;
+extern f32 D_ovl7_80217074;
+extern f32 D_ovl7_8020B260;
+
+/* Eases the camera's look-at point towards a target, by camera mode
+ * D_ovl7_8020AD68: 1 and 2 track D_ovl7_8022BF08 (1/1024 units) at 10% / 1%
+ * per frame, 3 tracks D_ovl7_8021706C with a rate ramping up to 10%. */
+void func_ovl7_802008D8(void) {
+    switch (D_ovl7_8020AD68) {
+        case 1:
+            D_ovl7_8022BE30.pos[1][0] += (D_ovl7_8022BF08 * 0.0009765625f - D_ovl7_8022BE30.pos[1][0]) * 0.1f;
+            D_ovl7_8022BE30.pos[1][1] += (D_ovl7_8022BF0C * 0.0009765625f - D_ovl7_8022BE30.pos[1][1]) * 0.1f;
+            D_ovl7_8022BE30.pos[1][2] += (D_ovl7_8022BF10 * 0.0009765625f - D_ovl7_8022BE30.pos[1][2]) * 0.1f;
+            func_ovl7_80203620();
+            break;
+        case 2:
+            D_ovl7_8022BE30.pos[1][0] += (D_ovl7_8022BF08 * 0.0009765625f - D_ovl7_8022BE30.pos[1][0]) * 0.01f;
+            D_ovl7_8022BE30.pos[1][1] += (D_ovl7_8022BF0C * 0.0009765625f - D_ovl7_8022BE30.pos[1][1]) * 0.01f;
+            D_ovl7_8022BE30.pos[1][2] += (D_ovl7_8022BF10 * 0.0009765625f - D_ovl7_8022BE30.pos[1][2]) * 0.01f;
+            func_ovl7_80203620();
+            break;
+        case 3:
+            D_ovl7_8022BE30.pos[1][0] += ((D_ovl7_8021706C + 38.1f) - D_ovl7_8022BE30.pos[1][0]) * D_ovl7_8020B260;
+            D_ovl7_8022BE30.pos[1][1] += ((D_ovl7_80217070 - 4.5f) - D_ovl7_8022BE30.pos[1][1]) * D_ovl7_8020B260;
+            D_ovl7_8022BE30.pos[1][2] += ((D_ovl7_80217074 - 4.795f) - D_ovl7_8022BE30.pos[1][2]) * D_ovl7_8020B260;
+            func_ovl7_80203620();
+            D_ovl7_8020B260 += 0.002f;
+            if (D_ovl7_8020B260 > 0.1f) {
+                D_ovl7_8020B260 = 0.1f;
+            }
+            break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_80200B18);
 
