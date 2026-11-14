@@ -176,7 +176,52 @@ void func_800967F4(s32 player, f32 *cam) {
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80096C04);
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80096F44);
+f32 func_80059FAC(f32, f32);
+void func_80078FA8(s32, s32, f32);
+
+/* Follow camera for a closer mode (cf. func_800967F4). In mode 15, after
+ * frame 44 it spawns an effect to the side of the view every frame,
+ * alternating left and right. */
+void func_80096F44(s32 player, f32 *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    u8 *obj;
+    f32 dist, height, dx, dz, angle;
+
+    obj = func_80054354();
+    dist = func_80095A10(61440.0f, 30720.0f, D_800C73A0 * 0.0125f);
+    func_8005483C(player, 1, pos);
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x2400) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    cam[3] = pos[0];
+    cam[4] = pos[1];
+    cam[5] = pos[2];
+    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam[1] = pos[1];
+    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam);
+    func_80095A68(cam, cam + 3, 0.1f, 3);
+    if (D_800E4C54 == 15 && D_800C73A0 >= 44) {
+        dx = cam[3] - cam[0];
+        dz = cam[5] - cam[2];
+        if ((s32)dx != 0 || (s32)dz != 0) {
+            angle = func_80059FAC(dz, dx);
+        } else {
+            angle = 0.0f;
+        }
+        if (!(D_800C73A0 & 1)) {
+            func_80078FA8(player, 3, angle + 1.5707963267948966);
+        } else {
+            func_80078FA8(player, 4, angle - 1.5707963267948966);
+        }
+    }
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        cam[4] -= 4.5f;
+        cam[1] += 4.5f;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80097218);
 
