@@ -75,7 +75,53 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_80078FA8);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80079358);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007955C);
+void func_80065B98(f32 (*mf)[4], f32 *rot, f32 *pos, f32 *scale);
+void func_80065DD8(f32 (*mf)[4], Mtx *m);
+extern s32 D_800C52B4;
+extern Mtx D_800FD8F0[];
+
+/* Spawns an effect at pos (1/1024 units) with its own matrix slot from the
+ * rotating counter D_800C52B4, and builds that matrix. */
+void func_8007955C(s32 *pos) {
+    f32 p[3];
+    f32 rot[3];
+    f32 scale[3];
+    f32 mf[4][4];
+    s32 i;
+    Effect *e;
+
+    for (i = 0; i != 40; i++) {
+        e = &D_801B74E0[i];
+        if (e->state == -1) {
+            e->pos[0] = pos[0] * 0.0009765625f;
+            e->pos[1] = pos[1] * 0.0009765625f;
+            e->pos[2] = pos[2] * 0.0009765625f;
+            e->state = 12;
+            e->unk3B = 0;
+            e->mtxIndex = D_800C52B4;
+            D_800C52B4 = (D_800C52B4 + 1) % 40;
+            e->unk0C = 0.0f;
+            e->unk10 = 0.0f;
+            e->unk14 = 0.0f;
+            e->alpha = 95.0f;
+            e->alphaVel = -2.0f;
+            e->unk30 = 1.0f;
+            e->unk34 = 0.1f;
+            p[0] = e->pos[0];
+            p[1] = e->pos[1];
+            p[2] = e->pos[2];
+            rot[0] = 0.0f;
+            rot[1] = 0.0f;
+            rot[2] = 0.0f;
+            scale[0] = e->unk30;
+            scale[1] = e->unk30;
+            scale[2] = e->unk30;
+            func_80065B98(mf, rot, p, scale);
+            func_80065DD8(mf, &D_800FD8F0[e->mtxIndex]);
+            return;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_800796F8);
 
