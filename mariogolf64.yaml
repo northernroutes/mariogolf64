@@ -483,6 +483,7 @@ segments:
     symbol_name_format: ovlgap_$VRAM
     subsegments:
       - [0x11BA50, c]
+      - [0x127FD0, textbin] # data words at the end of .text (was mis-split as func_ovlgap_8045DFD0)
 
   # Overlay 4
   - name: overlay_4

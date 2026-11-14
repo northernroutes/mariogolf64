@@ -1327,14 +1327,17 @@ SECTIONS
         FILL(0x00000000);
         overlay_gap_TEXT_START = .;
         build/src/11BA50.o(.text);
+        build/asm/data/127FD0.o(.text);
         overlay_gap_TEXT_END = .;
         overlay_gap_TEXT_SIZE = ABSOLUTE(overlay_gap_TEXT_END - overlay_gap_TEXT_START);
         overlay_gap_DATA_START = .;
         build/src/11BA50.o(.data);
+        build/asm/data/127FD0.o(.data);
         overlay_gap_DATA_END = .;
         overlay_gap_DATA_SIZE = ABSOLUTE(overlay_gap_DATA_END - overlay_gap_DATA_START);
         overlay_gap_RODATA_START = .;
         build/src/11BA50.o(.rodata);
+        build/asm/data/127FD0.o(.rodata);
         overlay_gap_RODATA_END = .;
         overlay_gap_RODATA_SIZE = ABSOLUTE(overlay_gap_RODATA_END - overlay_gap_RODATA_START);
     }
@@ -1344,6 +1347,7 @@ SECTIONS
         FILL(0x00000000);
         overlay_gap_BSS_START = .;
         build/src/11BA50.o(.bss);
+        build/asm/data/127FD0.o(.bss);
         overlay_gap_BSS_END = .;
         overlay_gap_BSS_SIZE = ABSOLUTE(overlay_gap_BSS_END - overlay_gap_BSS_START);
     }

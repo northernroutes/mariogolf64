@@ -72,4 +72,3 @@ INCLUDE_ASM("asm/nonmatchings/11BA50", func_ovlgap_8045DCB0);
 
 INCLUDE_ASM("asm/nonmatchings/11BA50", func_ovlgap_8045DDB0);
 
-INCLUDE_ASM("asm/nonmatchings/11BA50", func_ovlgap_8045DFD0);

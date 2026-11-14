@@ -49,4 +49,10 @@ void func_ovl8_801F4D48(void) {
 
 INCLUDE_ASM("asm/nonmatchings/14EA80", func_ovl8_801F4D74);
 
+/* Main code calls this by its global name, so splat labels it func_801F4F80 and
+ * only emits the file when an INCLUDE_ASM names that symbol; the file itself is
+ * written as func_ovl8_801F4F80.s. The #if 0 line exists only for splat. */
+#if 0
+INCLUDE_ASM("asm/nonmatchings/14EA80", func_801F4F80);
+#endif
 INCLUDE_ASM("asm/nonmatchings/14EA80", func_ovl8_801F4F80);
