@@ -413,7 +413,33 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007B994);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007C5D8);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007CF10);
+s32 func_80065650(f32 x, f32 y, f32 z, s32 *screen);
+extern s32 D_800FC8B8;
+
+/* Draws the effect's shadow: a 2x2 translucent dark dot at its x/z on the
+ * ground height D_800FC8B8, if it projects 3..60 units in front of the camera. */
+void func_8007CF10(Gfx **gdl, Effect *e) {
+    s32 screen[2];
+    s32 unused[4]; /* never touched; keeps the frame layout */
+    Gfx *gfx = *gdl;
+    f32 w;
+
+    w = func_80065650(e->pos[0], D_800FC8B8 * 0.0009765625f, e->pos[2], screen);
+    if (w < -3.0f) {
+        if (w > -60.0f) {
+            gDPPipeSync(gfx++);
+            gDPPipeSync(gfx++);
+            gDPSetRenderMode(gfx++, 0x504240, 0);
+            gDPSetCombineMode(gfx++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
+            gDPSetPrimColor(gfx++, 0, 0, 0, 0, 0, 0x3F);
+            gDPPipeSync(gfx++);
+            gSPScisTextureRectangle(gfx++, (screen[0] - 1) << 2, (screen[1] - 1) << 2, (screen[0] + 1) << 2,
+                                    (screen[1] + 1) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
+            gDPPipeSync(gfx++);
+        }
+    }
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007D19C);
 
