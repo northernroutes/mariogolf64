@@ -24,7 +24,78 @@ void func_ovl7_801F4A6C(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801F4AEC);
+s32 rand(void);
+extern s32 D_ovl7_8020AC64;
+extern s32 D_ovl7_8020AC68;
+extern s32 D_ovl7_8020AC6C;
+extern s32 D_ovl7_8020AC70;
+extern s32 D_ovl7_8020AC74;
+extern s32 D_ovl7_8020AC78;
+extern s32 D_ovl7_8020AC7C;
+extern s32 D_ovl7_8020AC80;
+extern s32 D_ovl7_8020AC84;
+extern s32 D_ovl7_8020AC88;
+extern s32 D_ovl7_8020AC8C;
+
+/* Ambient sounds: while the camera is within 254 units, randomly starts three
+ * kinds of sound timers, then plays each sound (quieter with distance) on the
+ * frame its timer starts. */
+void func_ovl7_801F4AEC(void) {
+    if (D_ovl7_8020AC64 == 1) {
+        if ((u32)(D_ovl7_8022BE30.dist * 0.5f) < 127) {
+            if (D_ovl7_8020AC68 == 0 && (rand() & 100) < 80) {
+                if (D_ovl7_8020AC74 == 2) {
+                    D_ovl7_8020AC74 = 1;
+                    D_ovl7_8020AC68 = D_ovl7_8020AC7C;
+                } else {
+                    D_ovl7_8020AC74 = 2;
+                    D_ovl7_8020AC68 = D_ovl7_8020AC80;
+                }
+            }
+            if (D_ovl7_8020AC6C == 0 && (rand() & 100) < 80) {
+                D_ovl7_8020AC6C = D_ovl7_8020AC84;
+            }
+            if (D_ovl7_8020AC70 == 0 && (rand() & 100) < 80) {
+                switch (rand() & 3) {
+                    case 0:
+                        D_ovl7_8020AC78 = 1;
+                        D_ovl7_8020AC70 = D_ovl7_8020AC88;
+                        break;
+                    case 1:
+                        D_ovl7_8020AC78 = 2;
+                        D_ovl7_8020AC70 = D_ovl7_8020AC8C;
+                        break;
+                }
+            }
+        }
+        if (D_ovl7_8020AC68 != 0) {
+            if (D_ovl7_8020AC74 == 1 && D_ovl7_8020AC68 == D_ovl7_8020AC7C) {
+                func_80050DA0(0x184, 13, 127 - (u32)(D_ovl7_8022BE30.dist * 0.5f), 0, 0x9D);
+            }
+            if (D_ovl7_8020AC74 == 2 && D_ovl7_8020AC68 == D_ovl7_8020AC80) {
+                func_80050DA0(0x185, 13, 127 - (u32)(D_ovl7_8022BE30.dist * 0.5f), 0, 0x9D);
+            }
+            D_ovl7_8020AC68--;
+        }
+        if (D_ovl7_8020AC6C != 0) {
+            if (D_ovl7_8020AC6C == D_ovl7_8020AC84) {
+                func_80050DA0(0x18B, 14, 127 - (u32)(D_ovl7_8022BE30.dist * 0.5f), 0, 0x75);
+            }
+            D_ovl7_8020AC6C--;
+        }
+        if (D_ovl7_8020AC70 != 0) {
+            if (D_ovl7_8020AC78 == 1 && D_ovl7_8020AC70 == D_ovl7_8020AC88) {
+                func_80050DA0(0x1A3, 15, 127 - (u32)(D_ovl7_8022BE30.dist * 0.5f), 0, 0x61);
+            }
+            if (D_ovl7_8020AC78 == 2 && D_ovl7_8020AC70 == D_ovl7_8020AC8C) {
+                func_80050DA0(0x1BA, 15, 127 - (u32)(D_ovl7_8022BE30.dist * 0.5f), 0, 0x61);
+            }
+            if (--D_ovl7_8020AC70 == 0) {
+                D_ovl7_8020AC78 = 0;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/1370C0", func_ovl7_801F5018);
 
