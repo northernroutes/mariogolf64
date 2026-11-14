@@ -215,7 +215,30 @@ void func_8004C6B8(void) {
 
 INCLUDE_ASM("asm/nonmatchings/207E0", func_8004C6C0);
 
-INCLUDE_ASM("asm/nonmatchings/207E0", func_8004C860);
+/* Fills a w*h byte mask with a radial ring falloff centred on (w, h). */
+void func_8004C860(u8 *buf, s32 w, s32 h) {
+    s32 x, y, d, v, i = 0;
+    f32 dist;
+
+    for (y = 0; y != h; y++) {
+        for (x = 0; x != w; x++) {
+            s32 dy = y - h;
+            s32 dx = x - w;
+            dist = sqrtf((f32)(dy * dy + dx * dx));
+            d = dist;
+            if (d < 5) {
+                v = 0;
+            } else if (d < 55) {
+                v = (s32)(dist - 5.0f) * 5 + 10;
+            } else if (d < 62) {
+                v = 255 - (s32)(dist - 55.0f) * 36;
+            } else {
+                v = 0;
+            }
+            buf[i++] = v;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/207E0", func_8004C958);
 
