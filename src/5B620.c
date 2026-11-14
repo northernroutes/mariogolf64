@@ -92,7 +92,7 @@ INCLUDE_ASM("asm/nonmatchings/5B620", func_8008156C);
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80081C90);
 
 s32 func_800326FC(s32, s32, s32, s32);
-u32 *func_80032E60(s8);
+u32 *func_80032E60(s32);
 s32 func_8004C510(s32);
 s32 func_8007515C(s32, s32, s32, s32, s32, s32);
 s32 func_8020FFEC(s32);
@@ -417,7 +417,82 @@ INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1BB8);
 
 INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1BC8);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_80088BDC);
+void func_800734F0();
+void func_800747B0(Gfx **, s16, s16, void *);
+extern s32 D_800C5E6C[2][3]; /* prim and env colour, r/g/b */
+extern s32 D_800C5E84;
+extern s32 D_800C5E88;
+extern s32 D_800C5E8C; /* cursor column */
+extern s32 D_800C5E90; /* cursor row */
+extern s32 D_800C5E94;
+extern u8 D_800D1BB8[];
+extern char D_800D1BC8[];
+extern u16 D_800FBDCE;
+extern u16 D_800FBDD2;
+extern u16 D_800FBDD6;
+
+/* Debug colour editor for the prim/env colours: C buttons move the cursor,
+ * A/B raise/lower the selected component (clamped to 0..255), the D-pad moves
+ * the sample at (D_800C5E84, D_800C5E88), and R toggles D_800C5E94. */
+void func_80088BDC(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+
+    func_800734F0(&gfx, D_800C5E94);
+    gDPSetPrimColor(gfx++, 0, 0, D_800C5E6C[0][0], D_800C5E6C[0][1], D_800C5E6C[0][2], 0xFF);
+    gDPSetEnvColor(gfx++, D_800C5E6C[1][0], D_800C5E6C[1][1], D_800C5E6C[1][2], 0xFF);
+    gDPPipeSync(gfx++);
+    func_800747B0(&gfx, D_800C5E84, D_800C5E88, D_800D1BB8);
+    gDPPipeSync(gfx++);
+    func_8004DA24(D_800D1BC8, D_800C5E8C * 5 + 19, D_800C5E90 + 5);
+    if (D_800FBDD6 & 8) {
+        D_800C5E90 ^= 1;
+    }
+    if (D_800FBDD6 & 4) {
+        D_800C5E90 ^= 1;
+    }
+    if (D_800FBDD6 & 2) {
+        D_800C5E8C = (D_800C5E8C + 2) % 3;
+    }
+    if (D_800FBDD6 & 1) {
+        D_800C5E8C = (D_800C5E8C + 1) % 3;
+    }
+    if (D_800FBDCE & 0x8000) {
+        D_800C5E6C[D_800C5E90][D_800C5E8C] += 4;
+    }
+    if (D_800FBDCE & 0x4000) {
+        D_800C5E6C[D_800C5E90][D_800C5E8C] -= 4;
+    }
+    if (D_800FBDD2 & 0x10) {
+        D_800C5E94 ^= 1;
+    }
+    if (D_800FBDCE & 0x800) {
+        D_800C5E88 -= 4;
+    }
+    if (D_800FBDCE & 0x400) {
+        D_800C5E88 += 4;
+    }
+    if (D_800FBDCE & 0x200) {
+        D_800C5E84 -= 4;
+    }
+    if (D_800FBDCE & 0x100) {
+        D_800C5E84 += 4;
+    }
+    if (D_800C5E6C[D_800C5E90][D_800C5E8C] >= 256) {
+        D_800C5E6C[D_800C5E90][D_800C5E8C] = 255;
+    }
+    if (D_800C5E6C[D_800C5E90][D_800C5E8C] < 0) {
+        D_800C5E6C[D_800C5E90][D_800C5E8C] = 0;
+    }
+    sprintf(D_80105118, "%3d  %3d  %3d", D_800C5E6C[0][0], D_800C5E6C[0][1], D_800C5E6C[0][2]);
+    func_8004DA24(D_80105118, 20, 5);
+    sprintf(D_80105118, "%3d  %3d  %3d", D_800C5E6C[1][0], D_800C5E6C[1][1], D_800C5E6C[1][2]);
+    func_8004DA24(D_80105118, 20, 6);
+    func_8004DA24(">", D_800C5E8C * 5 + 19, D_800C5E90 + 5);
+    gDPPipeSync(gfx++);
+    gDPPipeSync(gfx++);
+    gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80089094);
 
