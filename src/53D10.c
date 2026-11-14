@@ -280,7 +280,38 @@ void func_80079A08(s32 arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80079ADC);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80079EBC);
+extern s32 D_800FBE64[3];
+extern const f64 D_800D19E0; /* 0.04 */
+
+/* Spawns three effects at D_800FBE64 (15 units lower on y) with staggered,
+ * randomised speeds and sizes. */
+void func_80079EBC(void) {
+    s32 n = 0;
+    s32 i;
+    Effect *e;
+
+    for (i = 0; i != 40; i++) {
+        e = &D_801B74E0[i];
+        if (e->state == -1) {
+            e->pos[0] = D_800FBE64[0] * 0.0009765625f;
+            e->pos[1] = (D_800FBE64[1] - 15360.0f) * 0.0009765625f;
+            e->pos[2] = D_800FBE64[2] * 0.0009765625f;
+            e->unk0C = 0.0f;
+            e->unk10 = (n * 0.3f + 0.1f + (guRandom() % 10) * 0.01f) * -1.5f;
+            e->unk14 = 0.0f;
+            e->alpha = 255.0f;
+            e->alphaVel = -1.0f;
+            e->unk30 = (guRandom() % 30) * 0.1f + 1.0f;
+            e->unk34 = (guRandom() % 10) * 0.001f + D_800D19E0;
+            n++;
+            e->unk3B = 0;
+            e->state = 16;
+            if (n == 3) {
+                return;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007A10C);
 
