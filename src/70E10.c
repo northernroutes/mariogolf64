@@ -393,9 +393,74 @@ void func_80097E30(s32 player, f32 *cam) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_8009806C);
+/* As func_80097C18 but farther back; in mode 12 it spawns two effects a
+ * frame between frames 15 and 51. */
+void func_8009806C(s32 player, f32 *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    u8 *obj;
+    f32 dist, height;
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80098310);
+    obj = func_80054354();
+    dist = func_80095A10(76800.0f, 46080.0f, D_800C73A0 * 0.025f);
+    if (D_800E4C54 == 12 && D_800C73A0 >= 15 && D_800C73A0 < 52) {
+        func_80079358(player, D_800C73A0 % 3 + 3);
+        func_80079358(player, D_800C73A0 % 3 + 6);
+    }
+    func_8005483C(player, 1, pos);
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    cam[3] = pos[0];
+    cam[4] = pos[1];
+    cam[5] = pos[2];
+    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam[1] = pos[1] + 1.5f;
+    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam);
+    func_80095A68(cam, cam + 3, 0.1f, 3);
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        cam[4] -= 4.5f;
+        cam[1] += 3.0f;
+    }
+}
+
+/* As func_80097C18, but swings round by pi/64 per frame since D_800E4C58
+ * until it reaches the normal angle (not in the debug view). */
+void func_80098310(s32 player, f32 *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    u8 *obj;
+    f32 dist, height, turn;
+
+    obj = func_80054354();
+    dist = func_80095A10(76800.0f, 30720.0f, D_800C73A0 * 0.025f);
+    turn = (D_800C73A0 - D_800E4C58) * 0.049087387f;
+    if (turn > 0.0f) {
+        turn = 0.0f;
+    }
+    func_8005483C(player, 1, pos);
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    cam[3] = pos[0];
+    cam[4] = pos[1];
+    cam[5] = pos[2];
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        turn = 0.0f;
+    }
+    cam[0] = pos[0] + cosf(turn - *(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam[1] = pos[1] + 1.5f;
+    cam[2] = pos[2] + sinf(turn - *(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam);
+    func_80095A68(cam, cam + 3, 0.3f, 3);
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        cam[4] -= 4.5f;
+        cam[1] += 4.5f;
+    }
+}
 
 void func_800660A0(void);
 void func_8003E628(void);
