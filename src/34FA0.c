@@ -48,7 +48,87 @@ s32 func_8005D23C(void);
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_80059BA0);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_80059BC0);
+/* func_80059BC0 is fdlibm's __ieee754_acosf (e_acosf.c); the constants are
+ * immediates in the original, hence the macros. */
+#define AC_PI 3.1415925026e+00f
+#define AC_PIO2_HI 1.5707962513e+00f
+#define AC_PIO2_LO 7.5497894159e-08f
+#define AC_PS0 1.6666667163e-01f
+#define AC_PS1 -3.2556581497e-01f
+#define AC_PS2 2.0121252537e-01f
+#define AC_PS3 -4.0055535734e-02f
+#define AC_PS4 7.9153501429e-04f
+#define AC_PS5 3.4793309169e-05f
+#define AC_QS1 -2.4033949375e+00f
+#define AC_QS2 2.0209457874e+00f
+#define AC_QS3 -6.8828397989e-01f
+#define AC_QS4 7.7038154006e-02f
+
+typedef union {
+    f32 value;
+    s32 word;
+} ieee_float_shape_type;
+
+#define GET_FLOAT_WORD(i, d)           \
+    do {                               \
+        ieee_float_shape_type gf_u;    \
+        gf_u.value = (d);              \
+        (i) = gf_u.word;               \
+    } while (0)
+
+#define SET_FLOAT_WORD(d, i)           \
+    do {                               \
+        ieee_float_shape_type sf_u;    \
+        sf_u.word = (i);               \
+        (d) = sf_u.value;              \
+    } while (0)
+
+f32 func_80059BC0(f32 x) {
+    f32 z, p, q, r, w, s, c, df;
+    s32 hx, ix, idf;
+
+    GET_FLOAT_WORD(hx, x);
+    ix = hx & 0x7FFFFFFF;
+    if (ix == 0x3F800000) {
+        if (hx > 0) {
+            return 0.0f;
+        } else {
+            return AC_PI + 2.0f * AC_PIO2_LO;
+        }
+    } else if (ix > 0x3F800000) {
+        return (x - x) / (x - x);
+    }
+    if (ix < 0x3F000000) {
+        if (ix <= 0x23000000) {
+            return AC_PIO2_HI + AC_PIO2_LO;
+        }
+        z = x * x;
+        p = z * (AC_PS0 + z * (AC_PS1 + z * (AC_PS2 + z * (AC_PS3 + z * (AC_PS4 + z * AC_PS5)))));
+        q = 1.0f + z * (AC_QS1 + z * (AC_QS2 + z * (AC_QS3 + z * AC_QS4)));
+        r = p / q;
+        return AC_PIO2_HI - (x - (AC_PIO2_LO - x * r));
+    } else if (hx < 0) {
+        z = (1.0f + x) * 0.5f;
+        p = z * (AC_PS0 + z * (AC_PS1 + z * (AC_PS2 + z * (AC_PS3 + z * (AC_PS4 + z * AC_PS5)))));
+        q = 1.0f + z * (AC_QS1 + z * (AC_QS2 + z * (AC_QS3 + z * AC_QS4)));
+        s = sqrtf(z);
+        r = p / q;
+        w = r * s - AC_PIO2_LO;
+        return AC_PI - 2.0f * (s + w);
+    } else {
+        z = (1.0f - x) * 0.5f;
+        s = sqrtf(z);
+        df = s;
+        GET_FLOAT_WORD(idf, df);
+        SET_FLOAT_WORD(df, idf & 0xFFFFF000);
+        c = (z - df * df) / (s + df);
+        p = z * (AC_PS0 + z * (AC_PS1 + z * (AC_PS2 + z * (AC_PS3 + z * (AC_PS4 + z * AC_PS5)))));
+        q = 1.0f + z * (AC_QS1 + z * (AC_QS2 + z * (AC_QS3 + z * AC_QS4)));
+        r = p / q;
+        w = r * s + c;
+        return 2.0f * (df + w);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_80059FAC);
 
