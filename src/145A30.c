@@ -1,15 +1,12 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/145A30", func_ovl7_802033B0);
-
-void func_ovl7_80203620(void);
 /* Camera look-at state; splat also labels each field separately. */
 typedef struct CameraView {
     /* 0x00 */ f32 pos[2][3]; /* [0] = eye, [1] = at */
     /* 0x18 */ f32 yaw;
     /* 0x1C */ f32 pitch;
     /* 0x20 */ f32 dist;
-    /* 0x24 */ u8 pad24[0x4];
+    /* 0x24 */ f32 fov;
     /* 0x28 */ f32 target[2][3];
     /* 0x40 */ f32 vel[2][3];
     /* 0x58 */ u8 pad58[0xC];
@@ -33,7 +30,51 @@ typedef struct CameraView {
 } CameraView;
 extern CameraView D_ovl7_8022BE30;
 
+void func_ovl7_80203620(void);
 f32 func_80059FAC(f32, f32);
+
+extern f32 D_ovl7_8020AE3C;
+
+/* Puts the camera at its start position and resets motion state (cf. func_ovl7_80203E14). */
+void func_ovl7_802033B0(void) {
+    s32 i;
+
+    D_ovl7_8022BE30.pos[0][0] = 0.0f;
+    D_ovl7_8022BE30.pos[1][0] = 0.0f;
+    D_ovl7_8022BE30.pos[1][1] = 0.0f;
+    D_ovl7_8022BE30.pos[1][2] = 0.0f;
+    D_ovl7_8022BE30.pos[0][1] = -100.0f;
+    D_ovl7_8022BE30.pos[0][2] = 100.0f;
+    D_ovl7_8022BE30.fov = 45.0f;
+    for (i = 0; i != 2; i++) {
+        D_ovl7_8022BE30.target[i][0] = 0.0f;
+        D_ovl7_8022BE30.target[i][1] = 0.0f;
+        D_ovl7_8022BE30.target[i][2] = 0.0f;
+        D_ovl7_8022BE30.vel[i][0] = 0.0f;
+        D_ovl7_8022BE30.vel[i][1] = 0.0f;
+        D_ovl7_8022BE30.vel[i][2] = 0.0f;
+        D_ovl7_8022BE30.vel[i][0] = 0.0f;
+        D_ovl7_8022BE30.vel[i][1] = 0.0f;
+        D_ovl7_8022BE30.vel[i][2] = 0.0f;
+        D_ovl7_8022BE30.speed[i] = 30.0f;
+        D_ovl7_8022BE30.accel[i] = 3.0f;
+        D_ovl7_8022BE30.brake[i] = 0.0f;
+        D_ovl7_8022BE30.axis[i] = 0;
+        D_ovl7_8022BE30.flags[i] = 0;
+    }
+    D_ovl7_8022BE30.pitchBrake = 0.0f;
+    D_ovl7_8022BE30.yawBrake = 0.0f;
+    D_ovl7_8022BE30.distBrake = 0.0f;
+    D_ovl7_8022BE30.yawSpeed = 0.104719758f;
+    D_ovl7_8022BE30.yawAccel = 0.0349065848f;
+    D_ovl7_8022BE30.pitchSpeed = 0.052359879f;
+    D_ovl7_8022BE30.pitchAccel = 0.0174532924f;
+    D_ovl7_8022BE30.distSpeed = 10.0f;
+    D_ovl7_8022BE30.distAccel = 1.0f;
+    func_ovl7_80203620();
+    D_ovl7_8020AE3C = 1.0f;
+}
+
 
 void func_ovl7_8020356C(f32 eyeX, f32 eyeY, f32 eyeZ, f32 atX, f32 atY, f32 atZ) {
     D_ovl7_8022BE30.pos[0][0] = eyeX;
