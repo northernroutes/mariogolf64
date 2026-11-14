@@ -34,6 +34,7 @@ def norm(rows, jbase=None):
 def main():
     seg, func, draft = sys.argv[1:4]
     s = open(f'{ROOT}/asm/nonmatchings/{seg}/{func}.s').read()
+    s = s[s.rfind('.section .text'):] if '.section .text' in s else s  # skip migrated .rodata
     offs = re.findall(r'^\s+/\* ([0-9A-F]+) ([0-9A-F]+) [0-9A-F]{8} \*/', s, re.M)
     rom0 = int(offs[0][0], 16); vram0 = int(offs[0][1], 16); n = len(offs)
     A = norm(parse(subprocess.run(['mips-linux-gnu-objdump', '-D', '-z', '-b', 'binary', '-m', 'mips', '-EB',

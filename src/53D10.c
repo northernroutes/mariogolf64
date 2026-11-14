@@ -92,7 +92,80 @@ s32 func_800789C8(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80078BDC);
+s32 *func_80032E60(s32);
+void func_80216B10(void);
+extern s32 D_800C52B0;
+extern s32 D_800FC8B8;
+s32 func_80043A04(s32, s32);
+extern s32 D_800FBE64[3];
+extern s32 D_800FBE70;
+
+/* Reloads the effect assets, frees all effects, records the ground height at
+ * D_800FBE64 and picks the weather mode D_800C52B0 (and its asset) from the
+ * player or course state. */
+void func_80078BDC(u8 *player) {
+    s32 info[8];
+    s32 i;
+    Effect *e;
+
+    func_8005062C(0x6B5, info);
+    func_800506D4(D_800E1DB4, info);
+    func_8005062C(0x6B8, info);
+    func_800506D4(D_800E1DB8, info);
+    func_8005062C(0x6B0, info);
+    func_800506D4(D_800E1DA0, info);
+    func_8005062C(0x6B2, info);
+    func_800506D4(D_800E1DA8, info);
+    func_8005062C(0x6C0, info);
+    func_800506D4(D_800E1DAC, info);
+    for (i = 0; i != 40; i++) {
+        e = &D_801B74E0[i];
+        e->state = -1;
+    }
+    D_800FC8B8 = (f32)func_80043A04(D_800FBE64[0], D_800FBE64[2]);
+    if (((s8 *)player)[0xA3] == 23) {
+        D_800C52B0 = 1;
+        func_8005062C(0x6B6, info);
+        func_800506D4(D_800E1DBC, info);
+    } else {
+        switch (*func_80032E60(D_800FBE70)) {
+            case 0:
+            case 1:
+            case 2:
+            case 15:
+            case 17:
+                D_800C52B0 = 2;
+                func_8005062C(0x6B6, info);
+                func_800506D4(D_800E1DBC, info);
+                break;
+            case 3:
+            case 4:
+            case 5:
+            case 19:
+                D_800C52B0 = 4;
+                func_8005062C(0x6B8, info);
+                func_800506D4(D_800E1DBC, info);
+                break;
+            case 6:
+            case 18:
+                D_800C52B0 = 3;
+                func_8005062C(0x6B5, info);
+                func_800506D4(D_800E1DBC, info);
+                break;
+            case 7:
+            case 8:
+            case 9:
+                D_800C52B0 = 6;
+                func_8005062C(0x6B5, info);
+                func_800506D4(D_800E1DBC, info);
+                break;
+            default:
+                D_800C52B0 = 0;
+                break;
+        }
+    }
+    func_80216B10();
+}
 
 /* Frees every effect slot. */
 void func_80078D94(void) {

@@ -10,6 +10,7 @@ from swap import ROOT, swapped
 
 def target_words(seg, func):
     s = open(f'{ROOT}/asm/nonmatchings/{seg}/{func}.s').read()
+    s = s[s.rfind('.section .text'):] if '.section .text' in s else s  # skip migrated .rodata
     return [int(w, 16) for w in re.findall(r'^\s+/\* [0-9A-F]+ [0-9A-F]+ ([0-9A-F]{8}) \*/', s, re.M)]
 
 def object_words(obj, func):

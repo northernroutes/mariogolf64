@@ -43,7 +43,9 @@ def run(cmd, **kw):
 
 def asm_instructions(seg, func):
     with open(f"asm/nonmatchings/{seg}/{func}.s") as f:
-        return [m.group(1) for line in f if (m := INS_RE.match(line))]
+        s = f.read()
+    s = s[s.rfind(".section .text"):] if ".section .text" in s else s  # skip migrated .rodata
+    return [m.group(1) for line in s.splitlines() if (m := INS_RE.match(line))]
 
 
 def is_nested(ins):
