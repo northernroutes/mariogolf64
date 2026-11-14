@@ -85,28 +85,42 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E104);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E19C);
 
+typedef struct Vec3fs {
+    f32 x, y, z;
+} Vec3fs;
+
+extern Vec3fs D_80104F44; /* wind velocity */
+extern f32 D_801049FC;    /* wind x per unit */
+extern f32 D_800FE380;    /* wind z per unit */
+
 /* Weather particle pool (D_801EFFA8, 0x900 bytes = 48 entries). */
 typedef struct Particle {
     /* 0x00 */ f32 pos[3];
     /* 0x0C */ f32 tail[3];
     /* 0x18 */ f32 ground;
-    /* 0x1C */ u8 pad1C[0xE];
+    /* 0x1C */ f32 unk1C;
+    /* 0x20 */ u8 pad20[0xA];
     /* 0x2A */ u16 flags;
     /* 0x2C */ s8 timer;
-    /* 0x2D */ u8 pad2D[3];
+    /* 0x2D */ u8 unk2D;
+    /* 0x2E */ u8 pad2E[2];
 } Particle;
 
 /* Particle emitters (D_801B8BB8, 0x380 bytes = 32 entries). */
 typedef struct Emitter {
-    /* 0x00 */ u8 pad0[0x16];
+    /* 0x00 */ f32 pos[3];
+    /* 0x0C */ f32 unk0C;
+    /* 0x10 */ u8 pad10[6];
     /* 0x16 */ s8 timer;
-    /* 0x17 */ u8 pad17[5];
+    /* 0x17 */ u8 unk17;
+    /* 0x18 */ u8 unk18;
+    /* 0x19 */ u8 pad19[3];
 } Emitter;
 
 s32 func_8004E2DC(s32);
 s32 func_8005062C(s32, s32 *);
 s32 func_800506D4(s32, s32 *);
-s32 func_8007E7B8();
+void func_8007E7B8(void);
 extern s32 D_800C5448;
 extern s32 D_800FF4CC;
 extern Emitter *D_801B8BB8;
@@ -176,21 +190,56 @@ void func_8007E30C(void) {
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E438);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E664);
+s32 rand(void);
+s32 func_80043A04(s32, s32);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E7B8);
+/* Respawns an emitter at a random point within +/-375 units (x/z) of
+ * D_800FF418, on the ground. */
+void func_8007E664(Emitter *e) {
+    e->pos[0] = (f32)((rand() % 500 - 250) * 0x600) * 0.0009765625f + D_800FF418.x;
+    e->pos[2] = (f32)((rand() % 500 - 250) * 0x600) * 0.0009765625f + D_800FF418.z;
+    e->pos[1] = func_80043A04(e->pos[0] * 1024.0f, e->pos[2] * 1024.0f) * 0.0009765625f;
+    e->unk18 = 0;
+}
 
-typedef struct Vec3fs {
-    f32 x, y, z;
-} Vec3fs;
+void func_8007E438(Particle *);
+void func_8007E664(Emitter *);
+extern s32 D_800BA9F0;
+extern u16 D_800BA9F4;
+extern s32 D_80104AC0;
+
+/* Initialises the weather: wind from D_800BA9F0/D_800BA9F4, then spawns all 48
+ * particles and 32 emitters (emitter timers staggered by i % 9). */
+void func_8007E7B8(void) {
+    f32 dir, speed;
+    s32 i;
+
+    D_80104AC0 = 0;
+    dir = D_800BA9F4 * 9.58738e-05f;
+    speed = (D_800BA9F0 / 65536) * 0.1f;
+    D_801049FC = cosf(dir) * speed;
+    D_800FE380 = sinf(dir) * speed;
+    D_80104F44.y = 60.0f;
+    D_80104F44.x = D_801049FC * 60.0f;
+    D_80104F44.z = D_800FE380 * 60.0f;
+    func_8007E30C();
+    for (i = 0; i != 48; i++) {
+        func_8007E438(&D_801EFFA8[i]);
+        D_801EFFA8[i].flags = 0;
+    }
+    for (i = 0; i != 32; i++) {
+        func_8007E664(&D_801B8BB8[i]);
+        D_801B8BB8[i].unk0C = 1.0f;
+        D_801B8BB8[i].timer = i % 9 - 1;
+        D_801B8BB8[i].unk17 = 0;
+    }
+}
+
 extern Vec3fs D_800D1A88;
-extern Vec3fs D_80104F44; /* wind */
 extern s32 D_800BA9F8;
 extern s32 D_800BA9F0;
 extern u16 D_800BA9F4;
 extern f32 D_80106190;
-extern f32 D_801049FC;
-extern f32 D_800FE380;
 extern f32 D_801B54F0;
 extern Vec3fs D_800C544C; /* previous eye */
 extern s32 D_80104AC0;
