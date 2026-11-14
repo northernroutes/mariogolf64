@@ -2,6 +2,12 @@
 #define F3DEX_GBI_2
 #include "common.h"
 
+/* A camera's eye and look-at points (D_801B54EC is the main camera). */
+typedef struct CamPos {
+    f32 eye[3];
+    f32 at[3];
+} CamPos;
+
 f32 func_80095A10(f32 arg0, f32 arg1, f32 arg2) {
     f32 var_ft0;
 
@@ -106,10 +112,10 @@ s32 func_800299F4(s32);
 extern s32 D_800BB020;
 extern s32 D_801B60A0;
 
-/* Places the camera (cam[0..2] = eye, cam[3..5] = at) behind the player,
+/* Places the camera behind the player,
  * looking at their ground-clamped position. In mode 12 it also points light 2
  * of the scene's Lights3 along a direction taken from func_8005483C. */
-void func_800967F4(s32 player, f32 *cam) {
+void func_800967F4(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     f32 a[3];
@@ -157,26 +163,26 @@ void func_800967F4(s32 player, f32 *cam) {
     if (D_800E4C54 == 12) {
         pos[1] -= 4.5f;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + -1.5f;
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + -1.5f;
     if (D_800E4C54 == 14) {
-        cam[1] = pos[1] + -7.5f;
+        cam->eye[1] = pos[1] + -7.5f;
     }
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
 /* Follow camera aimed at the player's second point (func_8005483C(.., 2, ..)),
  * 15 units lower; distances and height depend on mode D_800E4C54. */
-void func_80096C04(s32 player, f32 *cam) {
+void func_80096C04(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -202,27 +208,27 @@ void func_80096C04(s32 player, f32 *cam) {
     if (height < pos[1]) {
         pos[1] = height;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
     switch (D_800E4C54) {
         case 12:
-            cam[1] = pos[1];
+            cam->eye[1] = pos[1];
             break;
         case 13:
-            cam[1] = pos[1] + -9.0f;
+            cam->eye[1] = pos[1] + -9.0f;
             break;
         default:
-            cam[1] = pos[1] + -4.5f;
+            cam->eye[1] = pos[1] + -4.5f;
             break;
     }
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
@@ -232,7 +238,7 @@ void func_80078FA8(s32, s32, f32);
 /* Follow camera for a closer mode (cf. func_800967F4). In mode 15, after
  * frame 44 it spawns an effect to the side of the view every frame,
  * alternating left and right. */
-void func_80096F44(s32 player, f32 *cam) {
+void func_80096F44(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -245,17 +251,17 @@ void func_80096F44(s32 player, f32 *cam) {
     if (height < pos[1]) {
         pos[1] = height;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1];
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1];
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (D_800E4C54 == 15 && D_800C73A0 >= 44) {
-        dx = cam[3] - cam[0];
-        dz = cam[5] - cam[2];
+        dx = cam->at[0] - cam->eye[0];
+        dz = cam->at[2] - cam->eye[2];
         if ((s32)dx != 0 || (s32)dz != 0) {
             angle = func_80059FAC(dz, dx);
         } else {
@@ -268,17 +274,56 @@ void func_80096F44(s32 player, f32 *cam) {
         }
     }
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80097218);
+/* Follow camera that, outside mode 15, sits 15 units below the target; in
+ * mode 12 it spawns an effect every third frame. */
+void func_80097218(s32 player, CamPos *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    u8 *obj;
+    f32 dist, height;
+
+    obj = func_80054354();
+    dist = func_80095A10(107520.0f, 30720.0f, D_800C73A0 * 0.025f);
+    if (D_800E4C54 == 12 && D_800C73A0 % 3 == 0) {
+        func_80079358(player, 3);
+    }
+    func_8005483C(player, 1, pos);
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    if (D_800E4C54 == 15) {
+        cam->eye[1] = pos[1];
+    } else {
+        cam->eye[1] = pos[1] + -15.0f;
+    }
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        if (D_800E4C54 == 15) {
+            cam->at[1] -= 4.5f;
+            cam->eye[1] += 3.0f;
+        } else {
+            cam->at[1] -= 7.5f;
+            cam->eye[1] += 7.5f;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_800974D8);
 
 /* Follow camera looking 3 units above the player, eye 7.5 lower. */
-void func_800977E0(s32 player, f32 *cam) {
+void func_800977E0(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -292,22 +337,22 @@ void func_800977E0(s32 player, f32 *cam) {
         pos[1] = height;
     }
     pos[1] += 3.0f;
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + -7.5f;
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + -7.5f;
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
 /* As func_80097C18 with a slower look-at ease (0.08). */
-void func_80097A08(s32 player, f32 *cam) {
+void func_80097A08(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -320,22 +365,22 @@ void func_80097A08(s32 player, f32 *cam) {
     if (height < pos[1]) {
         pos[1] = height;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + 1.5f;
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.08f, 3);
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + 1.5f;
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.08f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
 /* Default follow camera (cf. func_800967F4). */
-void func_80097C18(s32 player, f32 *cam) {
+void func_80097C18(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -348,22 +393,22 @@ void func_80097C18(s32 player, f32 *cam) {
     if (height < pos[1]) {
         pos[1] = height;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + 1.5f;
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + 1.5f;
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 3.0f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 3.0f;
     }
 }
 
 /* As func_80097C18, looking 4.5 units higher outside mode 15. */
-void func_80097E30(s32 player, f32 *cam) {
+void func_80097E30(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -379,23 +424,23 @@ void func_80097E30(s32 player, f32 *cam) {
     if (D_800E4C54 != 15) {
         pos[1] += 4.5f;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + 1.5f;
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + 1.5f;
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
 /* As func_80097C18 but farther back; in mode 12 it spawns two effects a
  * frame between frames 15 and 51. */
-void func_8009806C(s32 player, f32 *cam) {
+void func_8009806C(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -412,23 +457,23 @@ void func_8009806C(s32 player, f32 *cam) {
     if (height < pos[1]) {
         pos[1] = height;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
-    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + 1.5f;
-    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.1f, 3);
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
+    cam->eye[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + 1.5f;
+    cam->eye[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.1f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 3.0f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 3.0f;
     }
 }
 
 /* As func_80097C18, but swings round by pi/64 per frame since D_800E4C58
  * until it reaches the normal angle (not in the debug view). */
-void func_80098310(s32 player, f32 *cam) {
+void func_80098310(s32 player, CamPos *cam) {
     f32 pos[3];
     f32 unused[4][4]; /* never touched; keeps the frame layout */
     u8 *obj;
@@ -445,20 +490,20 @@ void func_80098310(s32 player, f32 *cam) {
     if (height < pos[1]) {
         pos[1] = height;
     }
-    cam[3] = pos[0];
-    cam[4] = pos[1];
-    cam[5] = pos[2];
+    cam->at[0] = pos[0];
+    cam->at[1] = pos[1];
+    cam->at[2] = pos[2];
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
         turn = 0.0f;
     }
-    cam[0] = pos[0] + cosf(turn - *(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    cam[1] = pos[1] + 1.5f;
-    cam[2] = pos[2] + sinf(turn - *(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
-    func_8009676C(cam);
-    func_80095A68(cam, cam + 3, 0.3f, 3);
+    cam->eye[0] = pos[0] + cosf(turn - *(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam->eye[1] = pos[1] + 1.5f;
+    cam->eye[2] = pos[2] + sinf(turn - *(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam->eye);
+    func_80095A68(cam->eye, cam->at, 0.3f, 3);
     if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
-        cam[4] -= 4.5f;
-        cam[1] += 4.5f;
+        cam->at[1] -= 4.5f;
+        cam->eye[1] += 4.5f;
     }
 }
 
@@ -467,18 +512,18 @@ void func_8003E628(void);
 void func_8004DA24(char *, s32, s32);
 void func_80095DE0(void);
 int sprintf(char *, const char *, ...);
-void func_80097E30(s32, f32 *);
-void func_80096C04(s32, f32 *);
-void func_80097218(s32, f32 *);
-void func_800974D8(s32, f32 *);
-void func_80097A08(s32, f32 *);
-void func_80098310(s32, f32 *);
-void func_8009806C(s32, f32 *);
-void func_800977E0(s32, f32 *);
-void func_80096F44(s32, f32 *);
-void func_80097C18(s32, f32 *);
+void func_80097E30(s32, CamPos *);
+void func_80096C04(s32, CamPos *);
+void func_80097218(s32, CamPos *);
+void func_800974D8(s32, CamPos *);
+void func_80097A08(s32, CamPos *);
+void func_80098310(s32, CamPos *);
+void func_8009806C(s32, CamPos *);
+void func_800977E0(s32, CamPos *);
+void func_80096F44(s32, CamPos *);
+void func_80097C18(s32, CamPos *);
 
-extern f32 D_801B54EC[6]; /* camera eye[3], at[3] */
+extern CamPos D_801B54EC;
 
 /* Per-frame camera update: counts frames, then runs the camera function for
  * the current object's mode (obj[2] % 18) on the camera D_801B54EC. Implicit
@@ -486,7 +531,7 @@ extern f32 D_801B54EC[6]; /* camera eye[3], at[3] */
 s32 func_800985B4(s32 player) {
     char buf[128];
     s32 *obj;
-    f32 *cam;
+    CamPos *cam;
 
     obj = func_80054354();
     D_800C73A0++;
@@ -498,7 +543,7 @@ s32 func_800985B4(s32 player) {
     }
     func_80095DE0();
     if (obj != NULL) {
-        cam = D_801B54EC;
+        cam = &D_801B54EC;
         switch (obj[2] % 18) {
             case 5:
                 func_80097E30(player, cam);
