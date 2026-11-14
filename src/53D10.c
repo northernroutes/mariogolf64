@@ -435,7 +435,114 @@ void func_80079A08(s32 arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80079ADC);
+s32 func_80040EF8(s32, s32, s32);
+extern s32 D_80104AE0[3];
+
+/* Spawns effects at D_80104AE0 depending on *func_80032E60(player[0xA3]):
+ * three rising effects (two variants), or one effect with its own matrix (10). */
+void func_80079ADC(u8 *player) {
+    f32 p[3];
+    f32 rot[3];
+    f32 scale[3];
+    f32 mf[4][4];
+    s32 i;
+    s32 n;
+    s32 h;
+    Effect *e;
+
+    h = func_80040EF8(*(s32 *)(player + 0x18), *(s32 *)(player + 0x20), ((s8 *)player)[0xA3]);
+    n = 1;
+    switch (*func_80032E60(((s8 *)player)[0xA3])) {
+        case 0:
+        case 1:
+        case 2:
+        case 17:
+            for (i = 0; i != 40; i++) {
+                e = &D_801B74E0[i];
+                if (e->state == -1) {
+                    e->pos[0] = D_80104AE0[0] * 0.0009765625f;
+                    e->pos[1] = D_80104AE0[1] * 0.0009765625f;
+                    e->pos[2] = D_80104AE0[2] * 0.0009765625f;
+                    e->unk0C = 0.0f;
+                    e->unk10 = (f32)(n * -0x600) * (0.2f / 1024);
+                    e->unk14 = 0.0f;
+                    e->unk38 = h;
+                    e->alpha = 230.0f;
+                    e->alphaVel = -2.0f;
+                    e->unk30 = 1.0f;
+                    e->unk34 = 0.04f;
+                    e->state = 0;
+                    e->unk3B = 0;
+                    if (++n == 4) {
+                        break;
+                    }
+                }
+            }
+            break;
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 18:
+            for (i = 0; i != 40; i++) {
+                e = &D_801B74E0[i];
+                if (e->state == -1) {
+                    e->pos[0] = D_80104AE0[0] * 0.0009765625f;
+                    e->pos[1] = D_80104AE0[1] * 0.0009765625f;
+                    e->pos[2] = D_80104AE0[2] * 0.0009765625f;
+                    e->unk0C = 0.0f;
+                    e->unk10 = (f32)(n * -0x600) * (0.7f / 1024);
+                    e->unk14 = 0.0f;
+                    e->unk38 = h;
+                    e->alpha = 230.0f;
+                    e->alphaVel = -2.0f;
+                    e->unk30 = 2.0f;
+                    e->unk34 = 0.1f;
+                    e->state = 0;
+                    e->unk3B = 0;
+                    if (++n == 4) {
+                        break;
+                    }
+                }
+            }
+            break;
+        case 10:
+            for (i = 0; i != 40; i++) {
+                e = &D_801B74E0[i];
+                if (e->state == -1) {
+                    e->pos[0] = D_80104AE0[0] * 0.0009765625f;
+                    e->pos[1] = D_80104AE0[1] * 0.0009765625f;
+                    e->pos[2] = D_80104AE0[2] * 0.0009765625f;
+                    e->state = 12;
+                    e->unk3B = 0;
+                    e->mtxIndex = D_800C52B4;
+                    D_800C52B4 = (D_800C52B4 + 1) % 40;
+                    e->unk0C = 0.0f;
+                    e->unk10 = 0.0f;
+                    e->unk14 = 0.0f;
+                    e->alpha = 95.0f;
+                    e->alphaVel = -2.0f;
+                    e->unk30 = 1.0f;
+                    e->unk34 = 0.1f;
+                    p[0] = e->pos[0];
+                    p[1] = e->pos[1];
+                    p[2] = e->pos[2];
+                    rot[0] = 0.0f;
+                    rot[1] = 0.0f;
+                    rot[2] = 0.0f;
+                    scale[0] = e->unk30;
+                    scale[1] = e->unk30;
+                    scale[2] = e->unk30;
+                    func_80065B98(mf, rot, p, scale);
+                    func_80065DD8(mf, &D_800FD8F0[e->mtxIndex]);
+                    break;
+                }
+            }
+            break;
+        case 19:
+            break;
+    }
+}
 
 extern s32 D_800FBE64[3];
 
