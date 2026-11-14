@@ -695,7 +695,33 @@ void func_8007D19C(Gfx **gdl, s32 mtx) {
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007D4E8);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007DB08);
+extern Mtx D_80106108;
+extern Vtx D_800C52F8[];
+
+/* Draws a textured quad (32x32 CI4 image with a 16-colour palette, both from
+ * asset D_800E1DAC) under matrix D_80106108. */
+void func_8007DB08(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+
+    gDPPipeSync(gfx++);
+    gDPPipeSync(gfx++);
+    gDPSetRenderMode(gfx++, 0x0F0A7008, 0);
+    gDPSetCombineMode(gfx++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+    gDPPipeSync(gfx++);
+    gDPSetTextureLUT(gfx++, G_TT_RGBA16);
+    gDPLoadTLUT_pal16(gfx++, 0, (D_800E1DAC + 8) & ~7);
+    gDPPipeSync(gfx++);
+    gDPSetTextureFilter(gfx++, G_TF_BILERP);
+    gDPLoadTextureBlock_4b(gfx++, (D_800E1DAC + 0x828) & ~7, G_IM_FMT_CI, 32, 32, 0, G_TX_CLAMP, G_TX_CLAMP, 6, 6,
+                           G_TX_NOLOD, G_TX_NOLOD);
+    gSPMatrix(gfx++, (u8 *)&D_80106108 - 0x80000000, G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+    gSPVertex(gfx++, D_800C52F8, 4, 0);
+    gDPPipeSync(gfx++);
+    gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
+    gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 extern Mtx D_800FD8F0[];
 extern Vtx D_800C5338[];
