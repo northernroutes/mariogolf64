@@ -70,7 +70,60 @@ void func_80078D94(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80078DC0);
+s32 func_8005483C(s32, s32, f32 *);
+s32 func_80043A04(s32, s32);
+void func_80065B98(f32 (*mf)[4], f32 *rot, f32 *pos, f32 *scale);
+void func_80065DD8(f32 (*mf)[4], Mtx *m);
+extern s32 D_800FC8B8;
+extern s32 D_800C52B4;
+extern Mtx D_800FD8F0[];
+
+/* Spawns an effect 1.5 units below the point func_8005483C(arg0, arg1) reports
+ * (recording the ground height there in D_800FC8B8) and builds its matrix. */
+void func_80078DC0(s32 arg0, s32 arg1) {
+    f32 p[3];
+    f32 rot[3];
+    f32 scale[3];
+    f32 mf[4][4];
+    f32 pos[3];
+    s32 i;
+    Effect *e;
+
+    if (func_8005483C(arg0, arg1, pos) == 0) {
+        D_800FC8B8 = (f32)func_80043A04(pos[0] * 1024.0f, pos[2] * 1024.0f);
+        for (i = 0; i != 40; i++) {
+            e = &D_801B74E0[i];
+            if (e->state == -1) {
+                e->pos[0] = pos[0];
+                e->pos[1] = pos[1] - 1.5f;
+                e->pos[2] = pos[2];
+                e->state = 19;
+                e->unk3B = 0;
+                e->unk0C = 0.0f;
+                e->unk10 = 0.0f;
+                e->unk14 = 0.0f;
+                e->alpha = 127.0f;
+                e->alphaVel = -8.0f;
+                e->unk30 = 0.2f;
+                e->unk34 = 0.8f;
+                e->mtxIndex = D_800C52B4;
+                D_800C52B4 = (D_800C52B4 + 1) % 40;
+                p[0] = e->pos[0];
+                p[1] = e->pos[1];
+                p[2] = e->pos[2];
+                rot[0] = 0.0f;
+                rot[1] = 0.0f;
+                rot[2] = 0.0f;
+                scale[0] = e->unk30;
+                scale[1] = e->unk30;
+                scale[2] = e->unk30;
+                func_80065B98(mf, rot, p, scale);
+                func_80065DD8(mf, &D_800FD8F0[e->mtxIndex]);
+                return;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80078FA8);
 
