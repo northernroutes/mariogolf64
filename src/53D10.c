@@ -85,14 +85,32 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E104);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E19C);
 
+/* Weather particle pool (D_801EFFA8, 0x900 bytes = 48 entries). */
+typedef struct Particle {
+    /* 0x00 */ f32 pos[3];
+    /* 0x0C */ f32 tail[3];
+    /* 0x18 */ f32 ground;
+    /* 0x1C */ u8 pad1C[0xE];
+    /* 0x2A */ u16 flags;
+    /* 0x2C */ s8 timer;
+    /* 0x2D */ u8 pad2D[3];
+} Particle;
+
+/* Particle emitters (D_801B8BB8, 0x380 bytes = 32 entries). */
+typedef struct Emitter {
+    /* 0x00 */ u8 pad0[0x16];
+    /* 0x16 */ s8 timer;
+    /* 0x17 */ u8 pad17[5];
+} Emitter;
+
 s32 func_8004E2DC(s32);
 s32 func_8005062C(s32, s32 *);
 s32 func_800506D4(s32, s32 *);
 s32 func_8007E7B8();
 extern s32 D_800C5448;
 extern s32 D_800FF4CC;
-extern s32 D_801B8BB8;
-extern s32 D_801EFFA8;
+extern Emitter *D_801B8BB8;
+extern Particle *D_801EFFA8;
 
 void func_8007E234(s32 arg0) {
     s32 sp10[8];
@@ -102,8 +120,8 @@ void func_8007E234(s32 arg0) {
         temp_v0 = func_8004E2DC(func_8005062C(0x6BC, sp10));
         D_800FF4CC = temp_v0;
         func_800506D4(temp_v0, sp10);
-        D_801EFFA8 = func_8004E2DC(0x900);
-        D_801B8BB8 = func_8004E2DC(0x380);
+        D_801EFFA8 = (Particle *)func_8004E2DC(0x900);
+        D_801B8BB8 = (Emitter *)func_8004E2DC(0x380);
         func_8007E7B8();
     }
     D_800C5448 = arg0;
@@ -113,14 +131,14 @@ s32 func_8004E47C(s32 *);
 s32 func_80050F68(s32);
 extern s32 D_800C5448;
 extern s32 D_800FF4CC;
-extern s32 D_801B8BB8;
-extern s32 D_801EFFA8;
+extern Emitter *D_801B8BB8;
+extern Particle *D_801EFFA8;
 
 void func_8007E2B0(void) {
     if (D_800C5448 == 2) {
         func_8004E47C(&D_800FF4CC);
-        func_8004E47C(&D_801EFFA8);
-        func_8004E47C(&D_801B8BB8);
+        func_8004E47C((s32 *)&D_801EFFA8);
+        func_8004E47C((s32 *)&D_801B8BB8);
     }
     func_80050F68(9);
     D_800C5448 = -1;
@@ -162,7 +180,105 @@ INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E664);
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E7B8);
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E980);
+typedef struct Vec3fs {
+    f32 x, y, z;
+} Vec3fs;
+extern Vec3fs D_800D1A88;
+extern Vec3fs D_80104F44; /* wind */
+extern s32 D_800BA9F8;
+extern s32 D_800BA9F0;
+extern u16 D_800BA9F4;
+extern f32 D_80106190;
+extern f32 D_801049FC;
+extern f32 D_800FE380;
+extern f32 D_801B54F0;
+extern Vec3fs D_800C544C; /* previous eye */
+extern s32 D_80104AC0;
+extern s32 D_800C5400;
+extern s32 D_800C5404;
+void func_80051024(s32, s32);
+s32 func_80043A04(s32, s32);
+void func_8007E664(Emitter *);
+void func_8007E438(Particle *);
+
+/* Per-frame weather update: eases D_80106190 down to 80, derives the wind from
+ * D_800BA9F0/D_800BA9F4, drifts the particles with camera movement, refreshes one
+ * particle's ground height per frame, and ticks the emitters and particles. */
+void func_8007E980(void) {
+    Vec3fs drift = D_800D1A88;
+    f32 dir, speed, dx, dz;
+    s32 i;
+    Particle *p;
+
+    if (D_800BA9F8 == 1 && D_800C5448 == 2) {
+        if (D_80106190 > 80.0f) {
+            D_80106190 -= 0.5f;
+        }
+        func_80051024(9, D_80106190);
+        dir = D_800BA9F4 * 9.58738e-05f;
+        speed = (D_800BA9F0 / 65536) * 0.1f;
+        D_801049FC = cosf(dir) * speed;
+        D_800FE380 = sinf(dir) * speed;
+        D_80104F44.y = 60.0f;
+        D_80104F44.x = D_801049FC * 60.0f;
+        D_80104F44.z = D_800FE380 * 60.0f;
+        func_8007E30C();
+        dx = D_801B54EC - D_800C544C.x;
+        dz = D_801B54F4 - D_800C544C.z;
+        if (sqrtf(dx * dx + dz * dz) > 15.0f) {
+            drift.x += dx;
+            drift.z += dz;
+        } else if (D_800C544C.y < D_801B54F0) {
+            drift.y = D_801B54F0 - D_800C544C.y;
+        }
+        D_800C544C.x = D_801B54EC;
+        D_800C544C.y = D_801B54F0;
+        D_800C544C.z = D_801B54F4;
+        D_801EFFA8[D_80104AC0].ground =
+            func_80043A04(D_801EFFA8[D_80104AC0].pos[0] * 1024.0f, D_801EFFA8[D_80104AC0].pos[2] * 1024.0f) * 0.0009765625f;
+        for (i = 0; i != D_800C5404; i++) {
+            Emitter *e = &D_801B8BB8[i];
+
+            if (++e->timer == 8) {
+                func_8007E664(&D_801B8BB8[i]);
+                e->timer = 0;
+            }
+        }
+        for (i = 0; i != D_800C5400; i++) {
+            p = &D_801EFFA8[i];
+            if (p->pos[1] < p->ground) {
+                p->pos[0] += D_80104F44.x;
+                p->pos[1] += D_80104F44.y;
+                p->pos[2] += D_80104F44.z;
+            }
+            if (p->pos[1] > p->ground) {
+                p->flags |= 0x10;
+            }
+            if (p->timer == -1) {
+                if (p->pos[1] < p->ground) {
+                    p->pos[0] += drift.x;
+                    p->pos[1] += drift.y;
+                    p->pos[2] += drift.z;
+                }
+                p->tail[0] += D_80104F44.x + drift.x;
+                p->tail[1] += D_80104F44.y + drift.y;
+                p->tail[2] += D_80104F44.z + drift.z;
+                if (p->tail[1] > p->ground) {
+                    p->timer = 0;
+                    p->tail[0] = p->pos[0] + (p->ground - p->pos[1]) * D_801049FC;
+                    p->tail[1] = p->pos[1] + (p->ground - p->pos[1]);
+                    p->tail[2] = p->pos[2] + (p->ground - p->pos[1]) * D_800FE380;
+                }
+            } else {
+                p->timer++;
+            }
+            if (p->timer == 8) {
+                func_8007E438(p);
+            }
+        }
+        D_80104AC0 = (D_80104AC0 + 1) % D_800C5400;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007EF0C);
 
