@@ -189,7 +189,86 @@ INCLUDE_ASM("asm/nonmatchings/5B620", func_800842C0);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80084468);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_80084EBC);
+extern f32 D_801B54EC; /* eye x */
+extern f32 D_801B54F0; /* eye y */
+extern f32 D_801B54F4; /* eye z */
+extern f32 D_801B54F8; /* at x */
+extern f32 D_801B54FC; /* at y */
+extern f32 D_801B5500; /* at z */
+extern f32 D_801B7F68[];
+extern f64 D_800D1B30; /* M_PI */
+extern f64 D_800D1B38; /* 0.3f */
+extern f64 D_800D1B40; /* 1 / (2 * M_PI) */
+extern f64 D_800D1B48; /* 180.0 */
+extern f64 D_800D1B50; /* M_PI / 2 */
+extern f64 D_800D1B58; /* 3 * M_PI / 2 */
+extern f64 D_800D1B60; /* M_PI / 2 */
+extern f64 D_800D1B68; /* 3 * M_PI / 2 */
+extern s32 D_800C54E0;
+extern Mtx D_800E1ED0[];
+extern Lights1 D_800C5AB8;
+/* D_800FC861 and D_8012CFE4 are declared as arrays: the scheduler must treat
+ * them as possibly aliasing the Gfx stores, as in the original. */
+extern s8 D_800FC861[];
+extern s32 D_8012CFE4[];
+extern s32 D_800B67F0;
+extern Gfx D_80222400[];
+f64 atan2(f64, f64);
+void func_80065A1C(f32 (*)[4], f32 *, f32 *);
+void func_80067B00(f32 (*)[4], Mtx *);
+void func_80084468(Gfx **gfxp, f32 x, f32 y);
+
+/* Draws a lit model at (x, y, -300), pitched to face the camera and turned by
+ * D_801B7F68 (0..1 of a full turn). func_80084468 is drawn before it when the
+ * angle is outside (pi/2, 3pi/2) and after it when inside. */
+void func_80084EBC(Gfx **gfxp, f32 x, f32 y) {
+    f32 d[3];
+    f32 rot[3];
+    f32 pos[3];
+    f32 unused[4]; /* never touched; keeps the frame layout */
+    f32 mf[4][4];
+    f32 tmp[4][4];
+    Gfx *gfx = *gfxp;
+    f32 horiz;
+
+    d[0] = D_801B54F8 - D_801B54EC;
+    d[2] = D_801B5500 - D_801B54F4;
+    horiz = sqrtf(d[0] * d[0] + d[2] * d[2]);
+    d[1] = D_801B54FC - D_801B54F0;
+    rot[0] = atan2(d[1], horiz) + D_800D1B30 + D_800D1B38;
+    rot[1] = 0.0f;
+    rot[2] = 0.0f;
+    pos[0] = x;
+    pos[1] = y;
+    pos[2] = -300.0f;
+    func_80065A1C(mf, rot, pos);
+    guRotateRPYF(tmp, 0.0f, D_800D1B48 - D_801B7F68[0] * 360.0f * D_800D1B40, 0.0f);
+    guMtxCatF(tmp, mf, mf);
+    guScaleF(tmp, -0.07f, -0.07f, -0.07f);
+    guMtxCatF(tmp, mf, mf);
+    func_80067B00(mf, &D_800E1ED0[D_800C54E0]);
+    if (!(D_800D1B50 < D_801B7F68[0] && D_801B7F68[0] < D_800D1B58)) {
+        func_80084468(&gfx, x, y);
+    }
+    gDPPipeSync(gfx++);
+    gDPSetRenderMode(gfx++, 0x552048, 0);
+    gDPPipeSync(gfx++);
+    gDPSetTextureLUT(gfx++, G_TT_NONE);
+    gSPTexture(gfx++, 0x8000, 0x8000, 0, G_TX_RENDERTILE, G_ON);
+    gDPPipeSync(gfx++);
+    gDPSetTexturePersp(gfx++, G_TP_PERSP);
+    gDPPipeSync(gfx++);
+    gSPMatrix(gfx++, (u8 *)&D_800E1ED0[D_800C54E0] - 0x80000000, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
+    gSPSetLights1(gfx++, D_800C5AB8);
+    if (D_800FC861[0]) {
+        D_8012CFE4[0] = D_800B67F0;
+        gSPDisplayList(gfx++, D_80222400);
+    }
+    if (D_800D1B60 < D_801B7F68[0] && D_801B7F68[0] < D_800D1B68) {
+        func_80084468(&gfx, x, y);
+    }
+    *gfxp = gfx;
+}
 
 extern u16 D_800FBDD2;
 extern s32 D_800C5AD0;

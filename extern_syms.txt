@@ -90,3 +90,6 @@ guMtxF2L = 0x80067B00;
 guMtxL2F = 0x80067C0C;
 guMtxIdentF = 0x80067CB4;
 vec3f_normalize = 0x80029900;
+
+/* Data inside a splat data label (Lights1 at D_800C5AB0 + 8) */
+D_800C5AB8 = 0x800C5AB8;
