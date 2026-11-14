@@ -274,7 +274,28 @@ void func_80087BAC(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_80087BE4);
+/* Scales a stick vector down to length 56 and stores it as quarter steps.
+ * (As decompiled, the length is only taken when both components are zero.) */
+void func_80087BE4(s32 x, s32 y) {
+    f32 scale;
+    f32 len;
+
+    if ((x == 0) & (y == 0)) {
+        len = sqrtf((f32)(x * x + y * y));
+    } else {
+        len = 0.0f;
+    }
+    if (len > 56.0f) {
+        scale = 56.0f / len;
+        x = (f32)x * scale;
+        y = (f32)y * scale;
+    }
+    if (x < 0) {
+        x += 3;
+    }
+    *D_800E2190 = x >> 2;
+    *D_800E21A8 = -y / 4;
+}
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80087CB0);
 

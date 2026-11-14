@@ -60,9 +60,18 @@ def is_nested(ins):
     return False
 
 
+def fast_math_segs():
+    """Segments the Makefile builds with -ffast-math (FAST_MATH_SEGS)."""
+    m = re.search(r"^FAST_MATH_SEGS\s*:=\s*(.*)$", open(os.path.join(ROOT, "Makefile")).read(), re.M)
+    return set(m.group(1).split()) if m else set()
+
+
+EXTRA_CFLAGS = []
+
+
 def compile_c(path, obj):
     s = obj + ".s"
-    r = run([f"{CC}/gcc", "-S", *CFLAGS, "-o", s, path])
+    r = run([f"{CC}/gcc", "-S", *CFLAGS, *EXTRA_CFLAGS, "-o", s, path])
     if r.returncode:
         return r.stderr.strip()
     r = run([f"{CC}/as", "-EB", "-mips2", "-G", "0", "-I", "include", "-o", obj, s])
@@ -216,6 +225,8 @@ def main():
     ap.add_argument("--only", nargs="*")
     a = ap.parse_args()
     seg = a.seg
+    if seg in fast_math_segs():
+        EXTRA_CFLAGS.append("-ffast-math")
     src_path = f"src/{seg}.c"
     src = open(src_path).read()
     outdir = os.path.join("permuter/pipeline", seg)
