@@ -1053,4 +1053,61 @@ void func_8007FE44(s32 arg0) {
     func_800506D4(D_800E1DB8, sp10);
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007FEAC);
+void func_8006A4A0(Gfx **, s32, void *);
+void func_8006A2C0(Gfx **, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_8006A5E4(Gfx **, void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void func_80076138(Gfx **, s32, s32, char *);
+s32 func_80050BF0(s32, s32, s32);
+int sprintf(char *, const char *, ...);
+extern Gfx D_800C3FC0[];
+extern s32 D_800C0E60;
+extern char D_80105118[];
+
+/* Draws the counter popup while D_800C545C is set: it slides in, loops a
+ * 6-frame 24x24 icon from asset D_800E1DB4 and prints "*" and the count
+ * D_800C5458, which goes up (with a sound) on frame 15; it closes after 60. */
+void func_8007FEAC(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 frame;
+    s32 y;
+    s32 imgOffset; /* image data follows the 16-colour TLUT in these assets */
+
+    if (D_800C545C != 0) {
+        gSPDisplayList(gfx++, D_800C3FC0);
+        gDPPipeSync(gfx++);
+        gDPSetTextureLUT(gfx++, G_TT_RGBA16);
+        gDPPipeSync(gfx++);
+        gDPSetTextureFilter(gfx++, G_TF_POINT);
+        frame = (D_800C5460 / 2) % 6;
+        if (D_800C5460 < 40) {
+            y = D_800C5460 * 4 - 24;
+            if (y > 0) {
+                y = 0;
+            }
+        } else {
+            y = (40 - D_800C5460) * 4;
+            if (y < -100) {
+                y = -100;
+            }
+        }
+        func_8006A4A0(&gfx, 0, (void *)(D_800E1DB4 + 8));
+        imgOffset = 0x28;
+        gDPLoadTextureTile_4b(gfx++, (u32)(D_800E1DB4 + (frame * 0x120 + imgOffset)) & ~7, G_IM_FMT_CI, 24, 24, 0, 0, 23,
+                              23, 0, 0, 0, 0, 0, 0, 0);
+        func_8006A2C0(&gfx, 216 << 2, (y + 20) << 2, 240 << 2, (y + 44) << 2, 0, 0, 0, 0x400, 0x400);
+        func_8006A4A0(&gfx, 0, (void *)(D_800E1DB8 + 8));
+        func_8006A5E4(&gfx, (void *)(D_800E1DB8 + imgOffset), G_IM_FMT_CI, 16, 256, 0, 0, 0, 0, 0, 0, 0);
+        func_80076138(&gfx, 240, y + 24, "*");
+        sprintf(D_80105118, "%d", D_800C5458);
+        func_80076138(&gfx, 258, y + 24, D_80105118);
+        if (++D_800C5460 == 15) {
+            D_800C5458++;
+            func_80050BF0(0x6B, D_800C0E60, 100);
+        }
+        if (D_800C5460 == 60) {
+            D_800C5460 = 0;
+            D_800C545C = 0;
+        }
+        *gdl = gfx;
+    }
+}
