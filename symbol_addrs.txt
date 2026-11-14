@@ -588,3 +588,7 @@ g_mus_frame_samples_max = 0x800E72C8; // type:u32 size:0x4
 g_mus_extra_samples = 0x800E72CC; // type:u32 size:0x4
 g_mus_control_flag = 0x80132368; // type:u32 size:0x4
 __libmus_alglobals = 0x801B56A0; // size:0x50
+
+// 5B620 rodata: spimdisasm prints these words as denormal floats, which KMC as
+// rounds wrongly; keep them integers.
+D_800D1B10 = 0x800D1B10; // type:s32

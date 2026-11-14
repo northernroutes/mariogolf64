@@ -98,7 +98,6 @@ s32 func_8007515C(s32, s32, s32, s32, s32, s32);
 s32 func_8020FFEC(s32);
 extern s32 D_800C5A10;
 extern s32 D_800C5A14;
-extern s8 D_800D1AD0;
 extern s8 D_80104B6B;
 extern s32 D_801B7F70;
 extern s32 D_801B7F78;
@@ -129,7 +128,7 @@ void func_80081D4C(s32 arg0) {
             func_800326FC(0xA0, 0x80, 0x80, 0x80);
             func_8004C510(0x3C);
             func_8020FFEC(0);
-            osSyncPrintf(&D_800D1AD0);
+            osSyncPrintf("MOVIE KINOP \n");
             return;
         case 21:
         case 10:
@@ -153,6 +152,8 @@ void func_80081D4C(s32 arg0) {
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80081EF8);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_800824E4);
+
+INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1B10);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80082534);
 
@@ -196,14 +197,6 @@ extern f32 D_801B54F8; /* at x */
 extern f32 D_801B54FC; /* at y */
 extern f32 D_801B5500; /* at z */
 extern f32 D_801B7F68[];
-extern f64 D_800D1B30; /* M_PI */
-extern f64 D_800D1B38; /* 0.3f */
-extern f64 D_800D1B40; /* 1 / (2 * M_PI) */
-extern f64 D_800D1B48; /* 180.0 */
-extern f64 D_800D1B50; /* M_PI / 2 */
-extern f64 D_800D1B58; /* 3 * M_PI / 2 */
-extern f64 D_800D1B60; /* M_PI / 2 */
-extern f64 D_800D1B68; /* 3 * M_PI / 2 */
 extern s32 D_800C54E0;
 extern Mtx D_800E1ED0[];
 extern Lights1 D_800C5AB8;
@@ -235,19 +228,19 @@ void func_80084EBC(Gfx **gfxp, f32 x, f32 y) {
     d[2] = D_801B5500 - D_801B54F4;
     horiz = sqrtf(d[0] * d[0] + d[2] * d[2]);
     d[1] = D_801B54FC - D_801B54F0;
-    rot[0] = atan2(d[1], horiz) + D_800D1B30 + D_800D1B38;
+    rot[0] = atan2(d[1], horiz) + 3.141592653589793 + 0.3f;
     rot[1] = 0.0f;
     rot[2] = 0.0f;
     pos[0] = x;
     pos[1] = y;
     pos[2] = -300.0f;
     func_80065A1C(mf, rot, pos);
-    guRotateRPYF(tmp, 0.0f, D_800D1B48 - D_801B7F68[0] * 360.0f * D_800D1B40, 0.0f);
+    guRotateRPYF(tmp, 0.0f, 180.0 - D_801B7F68[0] * 360.0f * 0.15915494309189535, 0.0f);
     guMtxCatF(tmp, mf, mf);
     guScaleF(tmp, -0.07f, -0.07f, -0.07f);
     guMtxCatF(tmp, mf, mf);
     func_80067B00(mf, &D_800E1ED0[D_800C54E0]);
-    if (!(D_800D1B50 < D_801B7F68[0] && D_801B7F68[0] < D_800D1B58)) {
+    if (!(1.5707963267948966 < D_801B7F68[0] && D_801B7F68[0] < 4.71238898038469)) {
         func_80084468(&gfx, x, y);
     }
     gDPPipeSync(gfx++);
@@ -264,7 +257,7 @@ void func_80084EBC(Gfx **gfxp, f32 x, f32 y) {
         D_8012CFE4[0] = D_800B67F0;
         gSPDisplayList(gfx++, D_80222400);
     }
-    if (D_800D1B60 < D_801B7F68[0] && D_801B7F68[0] < D_800D1B68) {
+    if (1.5707963267948966 < D_801B7F68[0] && D_801B7F68[0] < 4.71238898038469) {
         func_80084468(&gfx, x, y);
     }
     *gfxp = gfx;
@@ -273,7 +266,6 @@ void func_80084EBC(Gfx **gfxp, f32 x, f32 y) {
 extern u16 D_800FBDD2;
 extern s32 D_800C5AD0;
 extern char D_80105118[];
-extern char D_800D1B70[];
 s32 func_800299F4(u32 n);
 void func_8004DA24(char *, s32, s32);
 
@@ -285,7 +277,7 @@ void func_800852A8(void) {
         if (D_800FBDD2 & 4) {
             D_800C5AD0++;
         }
-        sprintf(D_80105118, D_800D1B70, D_800C5AD0);
+        sprintf(D_80105118, "%3d", D_800C5AD0);
         func_8004DA24(D_80105118, 0x14, 6);
     }
 }
@@ -421,9 +413,19 @@ void func_80088A90(Gfx **gdl, s32 x, s32 y, u8 *str) {
     *gdl = gfx;
 }
 
+INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1BB8);
+
+INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1BC8);
+
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80088BDC);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80089094);
+
+INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1C84);
+
+INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1C98);
+
+INCLUDE_RODATA("asm/nonmatchings/5B620", jtbl_800D1CA0);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_8008C520);
 
