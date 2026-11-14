@@ -151,7 +151,42 @@ void func_80079940(s32 *pos) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_80079A08);
+s32 func_8005483C(s32, s32, f32 *);
+/* -0.15; const so its load is hoisted like a literal-pool constant. */
+extern const f64 D_800D1988;
+
+/* Spawns an effect at the point func_8005483C(arg0, arg1) reports, if it
+ * succeeds and a slot is free. */
+void func_80079A08(s32 arg0, s32 arg1) {
+    f32 unused[28]; /* never touched; keeps the frame layout */
+    f32 pos[3];
+    s32 i;
+    u16 n;
+    Effect *e;
+
+    if (func_8005483C(arg0, arg1, pos) == 0) {
+        n = 1;
+        for (i = 0; i != 40; i++) {
+            e = &D_801B74E0[i];
+            if (e->state == -1) {
+                e->pos[0] = pos[0];
+                e->pos[1] = pos[1];
+                e->pos[2] = pos[2];
+                e->unk0C = 0.0f;
+                e->unk10 = n * D_800D1988;
+                e->unk14 = 0.0f;
+                e->unk38 = 0;
+                e->alpha = 230.0f;
+                e->alphaVel = -2.0f;
+                e->unk30 = 2.0f;
+                e->unk34 = 0.02f;
+                e->state = 14;
+                e->unk3B = 0;
+                return;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80079ADC);
 
