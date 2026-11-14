@@ -191,9 +191,9 @@ void func_8007E30C(void) {
 s32 rand(void);
 extern f32 D_801B54F0;
 
-/* Respawns a particle at a random point around D_800FF418, 105..300 units above
- * the camera and shifted upwind so it lands near there; its tail is a 90-unit
- * streak along the wind. */
+/* Respawns a particle at a random x/z around D_800FF418, 105..404 units back
+ * along its fall (y) from the camera height, shifted against the wind by the
+ * same number of frames; its tail is a 90-unit streak along the wind. */
 void func_8007E438(Particle *p) {
     f32 t;
     f32 len;
