@@ -126,7 +126,35 @@ void func_8007E2B0(void) {
     D_800C5448 = -1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E30C);
+extern f32 D_801B54EC;
+extern f32 D_801B54F4;
+extern f32 D_801B54F8;
+extern f32 D_801B5500;
+typedef struct Vec2i {
+    s32 x;
+    s32 z;
+} Vec2i;
+extern Vec2i D_800FF418;
+extern char D_800D1A78[];
+
+/* Sets D_800FF418 to the point 150 units from (D_801B54EC, D_801B54F4)
+ * towards (D_801B54F8, D_801B5500), in XZ. */
+void func_8007E30C(void) {
+    s32 dx = D_801B54F8 - D_801B54EC;
+    s32 dz = D_801B5500 - D_801B54F4;
+    f32 len = sqrtf(dx * dx + dz * dz);
+
+    D_800FF418.x = dx;
+    D_800FF418.z = dz;
+    if ((s32)len != 0.0f) {
+        len = 150.0f / len;
+    } else {
+        osSyncPrintf(D_800D1A78);
+        len = 0.0f;
+    }
+    D_800FF418.x = D_800FF418.x * len + D_801B54EC;
+    D_800FF418.z = D_800FF418.z * len + D_801B54F4;
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_8007E438);
 
