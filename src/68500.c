@@ -65,7 +65,53 @@ INCLUDE_ASM("asm/nonmatchings/68500", func_8008FF20);
 
 INCLUDE_ASM("asm/nonmatchings/68500", func_80091110);
 
-INCLUDE_ASM("asm/nonmatchings/68500", func_8009226C);
+extern s32 D_800C72F8;
+extern s32 D_800C72FC;
+extern s32 D_800C7300;
+extern s32 D_800C5EE8;
+
+/* Sets mode D_800C5EE8 and its per-mode value D_800C5EE4; -1 turns it off. */
+void func_8009226C(s32 mode) {
+    if (mode == -1) {
+        D_800C72F8 = 0;
+        D_800C5EE4 = 0;
+        return;
+    }
+    if (mode != 4 && mode != 5) {
+        D_800C7300 = 0;
+    }
+    switch (mode) {
+        case 0:
+            D_800C5EE4 = 0x160;
+            break;
+        case 1:
+        case 9:
+            D_800C5EE4 = 0xFF;
+            break;
+        case 2:
+            D_800C5EE4 = 0xFF;
+            break;
+        case 8:
+            D_800C5EE4 = 0xA0;
+            break;
+        case 10:
+            D_800C5EE4 = 0x48;
+            break;
+        case 3:
+            D_800C5EE4 = 0xFF;
+            break;
+        case 5:
+            D_800C5EE4 = 0x40;
+            break;
+        case 6:
+        case 7:
+            D_800C5EE4 = 0x20;
+            break;
+    }
+    D_800C5EE8 = mode;
+    D_800C72F8 = 1;
+    D_800C72FC = 0;
+}
 
 void func_80092324(void) {
 }
