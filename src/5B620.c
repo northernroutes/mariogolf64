@@ -520,7 +520,64 @@ void func_8008C658(void) {
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_8008C6B0);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_8008CD30);
+s32 func_80051FCC(void);
+void func_800734F0();
+void func_8007624C(Gfx **, s32, s32, char *, s32, s32, s32);
+s32 func_80242418(void);
+void func_80242424(Gfx **);
+void func_80242D40(Gfx **);
+extern char D_800C1420[][200];
+extern s32 D_800C2AD8[];
+extern s32 D_800C2B00[];
+extern char D_800D1C84[]; /* time format, shared with another function */
+extern s8 D_800FC86D;
+extern s8 D_800FC872;
+extern s8 D_801061CE;
+extern s32 D_801B6094[];
+extern s32 D_801B6098;
+extern s32 D_801B60B0;
+extern s8 D_801B60B9;
+
+/* Draws the HUD caption for game mode D_801B608C: the timer (mm:ss.cc from
+ * frame count D_801B60B0) in mode 7, otherwise the course name and "Hole n". */
+void func_8008CD30(Gfx **gdl) {
+    Gfx *gfx = *gdl;
+    s32 centi, min, s, cs;
+
+    if (D_801061CE == 1) {
+        if (D_801B608C == 11) {
+            if (D_800FC872 != 0 && func_80242418() != 0) {
+                func_80242424(&gfx);
+            }
+        } else if (D_801B608C == 9) {
+        } else if (D_801B608C == 3) {
+            if (D_800FC86D != 0) {
+                func_80242D40(&gfx);
+            }
+        } else if (D_801B608C == 7 && D_801B60B9 == 0) {
+            centi = D_801B60B0 * 3.3333335f;
+            cs = centi % 100;
+            s = (D_801B60B0 / 30) % 60;
+            min = (D_801B60B0 / 30) / 60;
+            func_800734F0(&gfx, 0, D_801B60B0 / 30, centi);
+            sprintf(D_80105118, D_800D1C84, min, s, cs);
+            func_8007624C(&gfx, 0xA8, 0xB0, D_80105118, 0xFFFF0000, 0x30FF0000, 0x80);
+        } else {
+            func_800734F0(&gfx, 0);
+            gDPSetPrimColor(gfx++, 0, 0, 0xFF, 0x00, 0x00, 0xFF);
+            gDPSetEnvColor(gfx++, 0xFF, 0xFF, 0x00, 0xFF);
+            sprintf(D_80105118, "%s", D_800C1420[func_80051FCC()]);
+            sprintf(D_80105118, "%s", D_800C1420[func_80051FCC()]);
+            func_8007624C(&gfx, 0xA0, 0x20, D_80105118, D_800C2AD8[D_801B6094[0]], D_800C2B00[D_801B6094[0]], 0x10);
+            sprintf(D_80105118, "Hole %d", D_801B6098 + 1);
+            func_8007624C(&gfx, 0xA0, 0x30, D_80105118, D_800C2AD8[D_801B6094[0]], D_800C2B00[D_801B6094[0]], 0x10);
+            gDPPipeSync(gfx++);
+            gDPPipeSync(gfx++);
+            gDPSetCycleType(gfx++, G_CYC_1CYCLE);
+        }
+    }
+    *gdl = gfx;
+}
 
 extern s32 D_800C54E0;
 
