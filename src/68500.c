@@ -1,3 +1,4 @@
+#define F3DEX_GBI_2
 #include "common.h"
 
 extern s32 D_800C5EE4;
@@ -146,7 +147,46 @@ INCLUDE_ASM("asm/nonmatchings/68500", func_80095150);
 
 INCLUDE_ASM("asm/nonmatchings/68500", func_8009548C);
 
-INCLUDE_ASM("asm/nonmatchings/68500", func_800957F0);
+extern Gfx *D_801B93DC;
+extern s32 D_800C5EE8;
+extern u16 *D_800FED10;
+extern u16 *nuGfxCfb_ptr;
+void func_80095150(void);
+void func_8009232C(Gfx **);
+void func_800947A8(void);
+void func_80094228(void);
+void func_8009548C(void);
+void func_80092F18(Gfx **);
+
+/* Per-frame draw for mode D_800C5EE8: sets up, then calls the mode's drawer;
+ * remembers the frame buffer it drew to. */
+void func_800957F0(void) {
+    func_80095150();
+    gDPPipeSync(D_801B93DC++);
+    gDPSetColorDither(D_801B93DC++, G_CD_DISABLE);
+    switch (D_800C5EE8) {
+        case 1:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            func_8009232C(&D_801B93DC);
+            break;
+        case 2:
+            func_800947A8();
+            break;
+        case 3:
+            func_80094228();
+            break;
+        case 5:
+            func_8009548C();
+            break;
+        case 10:
+            func_80092F18(&D_801B93DC);
+            break;
+    }
+    D_800FED10 = nuGfxCfb_ptr;
+}
 
 extern Gfx *D_801B93DC;
 typedef struct Unk801B7F30 {
