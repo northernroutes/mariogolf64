@@ -174,7 +174,57 @@ void func_800967F4(s32 player, f32 *cam) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80096C04);
+/* Follow camera aimed at the player's second point (func_8005483C(.., 2, ..)),
+ * 15 units lower; distances and height depend on mode D_800E4C54. */
+void func_80096C04(s32 player, f32 *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    u8 *obj;
+    f32 dist, height;
+
+    obj = func_80054354();
+    if (D_800E4C54 == 12) {
+        dist = func_80095A10(107520.0f, 46080.0f, D_800C73A0 * 0.025f);
+    } else if (D_800E4C54 == 13) {
+        dist = func_80095A10(107520.0f, 23040.0f, D_800C73A0 * 0.025f);
+    } else {
+        dist = func_80095A10(92160.0f, 38400.0f, D_800C73A0 * 0.025f);
+    }
+    if (D_800E4C54 == 12 && D_800C73A0 >= 20) {
+        func_80079358(player, 3);
+    }
+    func_8005483C(player, 2, pos);
+    pos[1] -= 15.0f;
+    if (D_800E4C54 == 13) {
+        pos[1] += 1.5f;
+    }
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    cam[3] = pos[0];
+    cam[4] = pos[1];
+    cam[5] = pos[2];
+    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    switch (D_800E4C54) {
+        case 12:
+            cam[1] = pos[1];
+            break;
+        case 13:
+            cam[1] = pos[1] + -9.0f;
+            break;
+        default:
+            cam[1] = pos[1] + -4.5f;
+            break;
+    }
+    func_8009676C(cam);
+    func_80095A68(cam, cam + 3, 0.1f, 3);
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        cam[4] -= 4.5f;
+        cam[1] += 4.5f;
+    }
+}
 
 f32 func_80059FAC(f32, f32);
 void func_80078FA8(s32, s32, f32);
