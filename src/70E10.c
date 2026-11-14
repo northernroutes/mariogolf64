@@ -97,7 +97,82 @@ void func_8009676C(f32 *pos) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_800967F4);
+void *func_80054354(void);
+void func_8005483C(s32, s32, f32 *);
+void func_80079358(s32, s32);
+void func_800563A8(s32, s32);
+void func_80095A68(f32 *, f32 *, f32, s32);
+s32 func_800299F4(s32);
+extern s32 D_800BB020;
+extern s32 D_801B60A0;
+
+/* Places the camera (cam[0..2] = eye, cam[3..5] = at) behind the player,
+ * looking at their ground-clamped position. In mode 12 it also points light 2
+ * of the scene's Lights3 along a direction taken from func_8005483C. */
+void func_800967F4(s32 player, f32 *cam) {
+    f32 pos[3];
+    f32 unused[4][4]; /* never touched; keeps the frame layout */
+    f32 a[3];
+    f32 b[3];
+    u8 *obj;
+    f32 dist, len, scale, height;
+
+    obj = func_80054354();
+    if (D_800E4C54 == 14) {
+        dist = func_80095A10(107520.0f, 30720.0f, D_800C73A0 * 0.025f);
+    } else {
+        dist = func_80095A10(107520.0f, 38400.0f, D_800C73A0 * 0.025f);
+    }
+    if (D_800E4C54 == 12 && D_800C73A0 >= 10) {
+        func_80079358(player, 3);
+        func_8005483C(0, 3, a);
+        func_8005483C(0, 1, b);
+        a[0] -= b[0];
+        a[1] -= b[1];
+        a[2] -= b[2];
+        len = sqrtf(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+        if (len > 1.0f) {
+            scale = 127.0f / len;
+            D_800E4C5C = 1;
+            a[0] *= scale;
+            a[1] *= scale;
+            a[2] *= scale;
+            func_800563A8(player, 2);
+            D_800C73B0[2].l.col[0] = 0xFF;
+            D_800C73B0[2].l.col[1] = 0xFF;
+            D_800C73B0[2].l.col[2] = 0x7F;
+            D_800C73B0[2].l.colc[0] = 0xFF;
+            D_800C73B0[2].l.colc[1] = 0xFF;
+            D_800C73B0[2].l.colc[2] = 0x7F;
+            D_800C73B0[2].l.dir[0] = a[0];
+            D_800C73B0[2].l.dir[1] = a[1];
+            D_800C73B0[2].l.dir[2] = a[2];
+        }
+    }
+    func_8005483C(player, 1, pos);
+    height = (f32)(func_80043A04((s32)(pos[0] * 1024.0f), (s32)(pos[2] * 1024.0f)) - 0x1E00) * 0.0009765625f;
+    if (height < pos[1]) {
+        pos[1] = height;
+    }
+    if (D_800E4C54 == 12) {
+        pos[1] -= 4.5f;
+    }
+    cam[3] = pos[0];
+    cam[4] = pos[1];
+    cam[5] = pos[2];
+    cam[0] = pos[0] + cosf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    cam[1] = pos[1] + -1.5f;
+    if (D_800E4C54 == 14) {
+        cam[1] = pos[1] + -7.5f;
+    }
+    cam[2] = pos[2] + sinf(-*(f32 *)(obj + 0x48) - 1.5707964f) * dist * 0.0009765625f;
+    func_8009676C(cam);
+    func_80095A68(cam, cam + 3, 0.1f, 3);
+    if (func_800299F4(0x7F) || (D_800BB020 != 30 && D_801B60A0 == 1)) {
+        cam[4] -= 4.5f;
+        cam[1] += 4.5f;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/70E10", func_80096C04);
 
