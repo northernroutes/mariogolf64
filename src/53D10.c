@@ -55,7 +55,42 @@ void func_80078910(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/53D10", func_800789C8);
+void func_80078910(void);
+
+s32 func_8004E2DC(s32);
+s32 func_8005062C(s32, s32 *);
+s32 func_800506D4(s32, s32 *);
+
+/* Allocates a buffer for asset `id` and loads it. */
+#define LOAD_ASSET(dst, id)                              \
+    do {                                                 \
+        s32 buf_ = func_8004E2DC(func_8005062C(id, info)); \
+        dst = buf_;                                      \
+        func_800506D4(buf_, info);                       \
+    } while (0)
+
+/* Loads the course's effect assets once. The original returns int with no
+ * return statement (an implicit-int definition), which affects delay slots. */
+s32 func_800789C8(void) {
+    s32 info[8];
+
+    func_80078910();
+    if (D_800C53B8 == 0) {
+        D_800C53B8 = 1;
+        LOAD_ASSET(D_800E1DBC, 0x6B5);
+        LOAD_ASSET(D_800E1DB4, 0x6B5);
+        LOAD_ASSET(D_800E1DB8, 0x6B8);
+        LOAD_ASSET(D_800E1DA0, 0x6B0);
+        LOAD_ASSET(D_800E1DA4, 0x8EC);
+        LOAD_ASSET(D_800E1DA8, 0x6B2);
+        LOAD_ASSET(D_800E1DAC, 0x6C0);
+        LOAD_ASSET(D_800E1DB0, 0x6C1);
+        LOAD_ASSET(D_800E1DC0, 0x71D);
+        LOAD_ASSET(D_800E1DC4, 0x6C2);
+        LOAD_ASSET(D_800E1DC8, 0x69E);
+        LOAD_ASSET(D_800E1DCC, 0x93B);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/53D10", func_80078BDC);
 
