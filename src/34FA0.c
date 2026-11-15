@@ -22,6 +22,54 @@ typedef struct Unk801323A0 {
     /* 0x2F */ u8 unk2F;
 } Unk801323A0;
 
+/* Game state saved into a record: copied from D_801B55F0 on save and restored
+ * into D_801B6088 on load. */
+typedef struct SaveRecordInfo {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ s32 mode;
+    /* 0x08 */ s32 numPlayers;
+    /* 0x0C */ u32 unkC;
+    /* 0x10 */ u32 unk10;
+    /* 0x14 */ u8 pad14[0x26];
+    /* 0x3A */ s8 unk3A;
+    /* 0x3B */ u8 pad3B[2];
+    /* 0x3D */ s8 saveCount;
+    /* 0x3E */ u8 pad3E[6];
+} SaveRecordInfo; /* size = 0x44 */
+
+typedef struct SaveBlob34 {
+    s32 w[13];
+} SaveBlob34; /* D_800BA9D8's state */
+
+typedef struct SaveBlob1C {
+    s32 w[7];
+} SaveBlob1C; /* D_800FF4D0's state */
+
+typedef struct SaveRecord {
+    /* 0x00 */ s32 used;
+    /* 0x04 */ u8 pad4[4];
+    /* 0x08 */ SaveBlob34 course;
+    /* 0x3C */ SaveRecordInfo info;
+    /* 0x80 */ SaveBlob1C extra;
+    /* 0x9C */ u8 pad9C[4];
+} SaveRecord; /* size = 0xA0 */
+
+typedef struct SavePlayer {
+    /* 0x00 */ u8 pad0[0xC];
+    /* 0x0C */ u32 unkC;
+    /* 0x10 */ u8 pad10[0xD];
+    /* 0x1D */ u8 unk1D;
+    /* 0x1E */ u8 pad1E[0x5D];
+    /* 0x7B */ u8 unk7B;
+    /* 0x7C */ u8 pad7C[0x3C];
+} SavePlayer; /* size = 0xB8 */
+
+typedef struct SaveData {
+    /* 0x0000 */ u8 pad0[0x1FF8];
+    /* 0x1FF8 */ SaveRecord rec[3];
+    /* 0x21D8 */ SavePlayer players[3][4];
+} SaveData;
+
 extern Unk8012F720 D_8012F720;
 extern Unk801323A0 D_801323A0;
 extern s32 D_800C2B28[6];
@@ -380,7 +428,88 @@ INCLUDE_RODATA("asm/nonmatchings/34FA0", jtbl_800D0980);
 INCLUDE_RODATA("asm/nonmatchings/34FA0", jtbl_800D09B0);
 
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005BC10);
+extern char D_800D0944[]; /* strings shared with func_8005B7BC */
+extern char D_800D0958[];
+extern char D_800D0970[];
+extern s32 D_801B6090;
+extern SavePlayer D_8012D0C8[];
+extern SavePlayer D_801B71D0[];
+extern SaveRecordInfo D_801B55F0;
+extern SaveRecordInfo D_801B6088;
+extern SaveBlob34 D_800BA9D8;
+extern SaveBlob1C D_800FF4D0;
+extern s8 D_801B60B8;
+void func_80029A30(s32);
+
+/* Saves the current game into record `slot` (players, course state, globals),
+ * or loads it back when `load` is set. Returns -1 on bad data. */
+s32 func_8005BC10(s32 slot, s32 load) {
+    SavePlayer *pl = ((SaveData *)&D_8012F720)->players[slot];
+    SaveRecord *r = &((SaveData *)&D_8012F720)->rec[slot];
+    s32 count = 4;
+    s32 i;
+    s32 bad;
+
+    if (!load) {
+        bad = 0;
+        if (count < D_801B6090) {
+            goto err;
+        }
+        count = D_801B6090;
+        r->used = 0;
+        for (i = 0; i < count; i++) {
+            pl[i] = D_8012D0C8[i];
+            switch (pl[i].unkC) {
+                case 0:
+                case 2:
+                case 3:
+                case 21:
+                    pl[i].unkC = 0;
+                    break;
+                case 17:
+                case 20:
+                    break;
+                default:
+                    osSyncPrintf(D_800D0958);
+                    bad = 1;
+                    break;
+            }
+        }
+        r->info = D_801B55F0;
+        if (r->info.saveCount < 99) {
+            r->info.saveCount++;
+        }
+        r->course = D_800BA9D8;
+        r->extra = D_800FF4D0;
+        if (bad) {
+            return -1;
+        }
+        r->used = 1;
+    } else {
+        if (r->used == 1) {
+            if (count < r->info.numPlayers) {
+            err:
+                osSyncPrintf(D_800D0944);
+                return -1;
+            }
+            count = r->info.numPlayers;
+            for (i = 0; i < count; i++) {
+                D_801B71D0[i] = pl[i];
+            }
+            D_801B6088 = r->info;
+            D_801B6088.unk0 = 1;
+            func_80029A30(30);
+            D_800BA9D8 = r->course;
+            D_800FF4D0 = r->extra;
+        }
+        D_801B60B8 = 2;
+        osSyncPrintf(D_800D0970);
+    }
+    if (!load) {
+        func_8005DF54(func_8005AF50(), 1);
+    }
+    return 0;
+}
 
 void func_8005C018(u32 arg0) {
     u32 *p = &D_8012F724;
@@ -480,53 +609,6 @@ INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CA48);
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CEE0);
 
-/* Game state saved into a record: copied from D_801B55F0 on save and restored
- * into D_801B6088 on load. */
-typedef struct SaveRecordInfo {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ s32 mode;
-    /* 0x08 */ s32 numPlayers;
-    /* 0x0C */ u32 unkC;
-    /* 0x10 */ u32 unk10;
-    /* 0x14 */ u8 pad14[0x26];
-    /* 0x3A */ s8 unk3A;
-    /* 0x3B */ u8 pad3B[2];
-    /* 0x3D */ s8 saveCount;
-    /* 0x3E */ u8 pad3E[6];
-} SaveRecordInfo; /* size = 0x44 */
-
-typedef struct SaveBlob34 {
-    s32 w[13];
-} SaveBlob34; /* D_800BA9D8's state */
-
-typedef struct SaveBlob1C {
-    s32 w[7];
-} SaveBlob1C; /* D_800FF4D0's state */
-
-typedef struct SaveRecord {
-    /* 0x00 */ s32 used;
-    /* 0x04 */ u8 pad4[4];
-    /* 0x08 */ SaveBlob34 course;
-    /* 0x3C */ SaveRecordInfo info;
-    /* 0x80 */ SaveBlob1C extra;
-    /* 0x9C */ u8 pad9C[4];
-} SaveRecord; /* size = 0xA0 */
-
-typedef struct SavePlayer {
-    /* 0x00 */ u8 pad0[0xC];
-    /* 0x0C */ u32 unkC;
-    /* 0x10 */ u8 pad10[0xD];
-    /* 0x1D */ u8 unk1D;
-    /* 0x1E */ u8 pad1E[0x5D];
-    /* 0x7B */ u8 unk7B;
-    /* 0x7C */ u8 pad7C[0x3C];
-} SavePlayer; /* size = 0xB8 */
-
-typedef struct SaveData {
-    /* 0x0000 */ u8 pad0[0x1FF8];
-    /* 0x1FF8 */ SaveRecord rec[3];
-    /* 0x21D8 */ SavePlayer players[3][4];
-} SaveData;
 
 /* Clears any saved record whose mode, counts or player bytes are out of range. */
 void func_8005CF78(void) {
