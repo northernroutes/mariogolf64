@@ -7,6 +7,7 @@
 #define INCLUDE_ASM(FOLDER, NAME) \
     __asm__( \
         ".section .text\n" \
+        "    .align 2\n" \
         "    .set noat\n" \
         "    .set noreorder\n" \
         "    .include \"" FOLDER "/" #NAME ".s\"\n" \
@@ -19,7 +20,8 @@
     __asm__( \
         ".section .rodata\n" \
         "    .include \"" FOLDER "/" #NAME ".s\"\n" \
-        ".section .text" \
+        ".section .text\n" \
+        "    .align 2" \
     )
 #endif
 

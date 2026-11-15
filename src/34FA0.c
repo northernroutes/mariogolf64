@@ -480,25 +480,42 @@ INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CA48);
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CEE0);
 
+/* Game state saved into a record: copied from D_801B55F0 on save and restored
+ * into D_801B6088 on load. */
 typedef struct SaveRecordInfo {
     /* 0x00 */ s32 unk0;
     /* 0x04 */ s32 mode;
     /* 0x08 */ s32 numPlayers;
     /* 0x0C */ u32 unkC;
     /* 0x10 */ u32 unk10;
-} SaveRecordInfo;
+    /* 0x14 */ u8 pad14[0x26];
+    /* 0x3A */ s8 unk3A;
+    /* 0x3B */ u8 pad3B[2];
+    /* 0x3D */ s8 saveCount;
+    /* 0x3E */ u8 pad3E[6];
+} SaveRecordInfo; /* size = 0x44 */
+
+typedef struct SaveBlob34 {
+    s32 w[13];
+} SaveBlob34; /* D_800BA9D8's state */
+
+typedef struct SaveBlob1C {
+    s32 w[7];
+} SaveBlob1C; /* D_800FF4D0's state */
 
 typedef struct SaveRecord {
     /* 0x00 */ s32 used;
-    /* 0x04 */ u8 pad4[0x38];
+    /* 0x04 */ u8 pad4[4];
+    /* 0x08 */ SaveBlob34 course;
     /* 0x3C */ SaveRecordInfo info;
-    /* 0x50 */ u8 pad50[0x26];
-    /* 0x76 */ s8 unk76;
-    /* 0x77 */ u8 pad77[0x29];
+    /* 0x80 */ SaveBlob1C extra;
+    /* 0x9C */ u8 pad9C[4];
 } SaveRecord; /* size = 0xA0 */
 
 typedef struct SavePlayer {
-    /* 0x00 */ u8 pad0[0x1D];
+    /* 0x00 */ u8 pad0[0xC];
+    /* 0x0C */ u32 unkC;
+    /* 0x10 */ u8 pad10[0xD];
     /* 0x1D */ u8 unk1D;
     /* 0x1E */ u8 pad1E[0x5D];
     /* 0x7B */ u8 unk7B;
@@ -527,7 +544,7 @@ void func_8005CF78(void) {
         if (sd->rec[i].used != 0) {
             r = &sd->rec[i];
             info = &r->info;
-            if (r->unk76 == 0) {
+            if (r->info.unk3A == 0) {
                 switch (info->mode) {
                     case 1:
                     case 3:

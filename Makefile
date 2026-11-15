@@ -158,6 +158,7 @@ setup:
 
 extract:
 	./venv/bin/python3 -m splat split $(BASENAME).yaml
+	./venv/bin/python3 tools/fix_asm_align.py
 
 help:
 	@echo 'Targets:'
