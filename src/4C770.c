@@ -154,6 +154,22 @@ s32 func_80071C9C(s32 arg0) {
     return p->unkC >= D_800E1C48[p->unk14 + 1].unk2;
 }
 
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D1588);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D158C);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D1590);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D1598);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D15A0);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D15A8);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D15AC);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D15B0);
+
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80071CE4);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80072A08);
@@ -161,6 +177,8 @@ INCLUDE_ASM("asm/nonmatchings/4C770", func_80072A08);
 INCLUDE_ASM("asm/nonmatchings/4C770", func_800734F0);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_800738BC);
+
+INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D16C0);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_8007399C);
 

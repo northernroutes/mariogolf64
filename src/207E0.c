@@ -42,8 +42,6 @@ extern s32 D_800BE660;
 extern s32 D_800BE698;
 extern s32 D_800BE69C;
 extern s32 D_800C5AAC;
-extern s8 D_800CC790;
-extern s8 D_800CC7A0;
 extern s32 D_800FBE74;
 extern s32 D_80132CF0;
 extern f32 D_801B5530;
@@ -68,9 +66,9 @@ void func_80045C00(void) {
     func_80216B74(0);
     D_800BE62C = -1;
     if (D_80132CF0 == D_80250AEC) {
-        osSyncPrintf(&D_800CC790);
+        osSyncPrintf("\nCheckWater1\n");
         if (D_80250B61 != 0) {
-            osSyncPrintf(&D_800CC7A0);
+            osSyncPrintf("\nCheckWater2\n");
             func_80205AE4(D_800FBE74, 0xB);
         }
     }
@@ -177,7 +175,6 @@ INCLUDE_ASM("asm/nonmatchings/207E0", func_8004887C);
 
 f32 func_80059FAC(f32, f32);
 extern f32 D_800BE654;
-extern f64 D_800CC860;
 extern f32 D_800DAF24;
 extern f32 D_800DAF2C;
 
@@ -188,7 +185,7 @@ void func_80048CF8(void) {
     temp_fa0 = D_800DAF30 - D_800DAF24;
     temp_fa1 = D_800DAF38 - D_800DAF2C;
     if (((s32) temp_fa0 != 0) || ((s32) temp_fa1 != 0)) {
-        D_800BE654 = (f32) (D_800CC860 - (f64) func_80059FAC(temp_fa0, temp_fa1));
+        D_800BE654 = (f32) (3.141592653589793 - (f64) func_80059FAC(temp_fa0, temp_fa1));
     }
 }
 

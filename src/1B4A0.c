@@ -251,7 +251,6 @@ typedef struct CollTri {
     /* 0x0A */ s16 y[3];
     /* 0x10 */ s16 z[3];
 } CollTri;
-extern char D_800CABB8[];
 extern s8 D_800B67C0;
 void func_8004DA24(char *, s32, s32);
 
@@ -276,7 +275,7 @@ s32 func_80043620(CollTri *tri, f32 *plane) {
     d = -(nx * tri->x[0] + ny * tri->y[0] + nz * tri->z[0]);
     if (len == 0.0f) {
         if (D_800B67C0) {
-            func_8004DA24(D_800CABB8, 3, 15);
+            func_8004DA24("NormalFError", 3, 15);
         }
         plane[0] = 0.0f;
         plane[2] = 0.0f;
