@@ -11,7 +11,9 @@ typedef struct Unk8012F720 {
     /* 0x2B */ s8 unk2B;
     /* 0x2C */ u8 pad2C[0xA58];
     /* 0xA84 */ s8 unkA84[6][18];
-    /* 0xAF0 */ u8 padAF0[0x830];
+    /* 0xAF0 */ u8 padAF0[0x2D0];
+    /* 0xDC0 */ s32 unkDC0[6][3];
+    /* 0xE08 */ u8 padE08[0x518];
     /* 0x1320 */ s8 unk1320[6][6];
 } Unk8012F720;
 
@@ -371,7 +373,22 @@ Unk801323A0 *func_8005AF74(void) {
     return &D_801323A0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005AF80);
+/* Resets the save data to defaults (magic word set, all unkDC0 slots -1) and
+ * writes it out. */
+void func_8005AF80(void) {
+    Unk8012F720 *p = func_8005AF50();
+    s8 i;
+    s8 j;
+
+    memset(p, 0, 0x2A78);
+    *(s32 *)p = 0x12345678;
+    for (i = 0; i != 6; i++) {
+        for (j = 0; j != 3; j++) {
+            p->unkDC0[i][j] = -1;
+        }
+    }
+    func_8005DF54(p, 1);
+}
 
 void func_8005B03C(void) {
     Unk8012F720 *p = func_8005AF50();
@@ -1080,7 +1097,25 @@ void func_8005DE88(Unk8012F720 *p, s32 toSave, s32 loaded) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005DF54);
+s32 func_800299F4(s32);
+s32 func_8005DFE8(Unk8012F720 *, u8);
+s32 func_8005E180(Unk8012F720 *, u8);
+
+/* Loads the save (`save` == 0) or writes it back. Uses SRAM unless
+ * func_800299F4(0x53) says otherwise. */
+void func_8005DF54(Unk8012F720 *data, u8 save) {
+    u8 sram = func_800299F4(0x53) == 0;
+    u8 sram2 = sram;
+    s32 result;
+
+    if (save == 0) {
+        result = func_8005DFE8(data, sram);
+        func_8005DE88(data, 0, result);
+    } else {
+        func_8005DE88(data, 1, result);
+        func_8005E180(data, sram2);
+    }
+}
 
 typedef struct SaveSlotAddr {
     s32 file;
