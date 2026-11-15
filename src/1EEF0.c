@@ -90,7 +90,57 @@ void func_800449A8(void) {
     func_80043BB0(func_8004491C(), D_800FBE54);
 }
 
-INCLUDE_ASM("asm/nonmatchings/1EEF0", func_800449D4);
+extern s8 D_801B60C2;
+
+/* Flag bit for the kind of object *kindp (-1 if none). Mode 0 only accepts
+ * kind 11; a debug flag forces 1. */
+s32 func_800449D4(s32 mode, s32 *kindp) {
+    s32 kind = *kindp;
+    s32 r;
+
+    if (func_800299F4(0x98)) {
+        return -1;
+    }
+    if (D_801B60C2) {
+        return 1;
+    }
+    if (mode == 0) {
+        return (kind == 11) ? 1 : -1;
+    }
+    switch (kind) {
+        case 3:
+        case 16:
+        case 18:
+        case 19:
+        case 23:
+            r = 2;
+            break;
+        case 11:
+            r = 1;
+            break;
+        case 4:
+        case 6:
+        case 7:
+        case 8:
+            r = 4;
+            break;
+        case 15:
+            r = 8;
+            break;
+        case 0:
+        case 1:
+        case 2:
+            r = 16;
+            break;
+        case 17:
+            r = 32;
+            break;
+        default:
+            r = -1;
+            break;
+    }
+    return r;
+}
 
 void func_80044A8C(s32 arg0) {
     func_800449D4(arg0, func_80032E60(D_800FBE70));
