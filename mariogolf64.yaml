@@ -398,6 +398,7 @@ segments:
       - [0xA5CE0, rodata]
       - [0xA5D30, .rodata, 1B4A0]
       - [0xA5FC8, rodata] # 8 bytes of padding after 1B4A0's .rodata
+      - [0xA5FD0, .rodata, 1EEF0]
       - [0xA7B70, .rodata, 207E0]
       - [0xA7E90, rodata]
       - [0xAC760, rodata]

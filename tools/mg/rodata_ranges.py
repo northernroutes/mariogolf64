@@ -59,8 +59,10 @@ def main():
         mixed = [o for o in owner[lo:hi + 1] if seg not in o[3].split(',')]
         nxt = owner[hi + 1] if hi + 1 < len(owner) else None
         prev = owner[lo - 1] if lo > 0 else None
-        print(f'{seg}: rom 0x{owner[lo][0]:X}-0x{nxt[0]:X} (vram 0x{owner[lo][1]:X}-0x{nxt[1]:X})'
-              f'  prev={prev[2]}[{prev[3]}] next={nxt[2]}[{nxt[3]}]')
+        fmt = lambda o: f'{o[2]}[{o[3]}]' if o else '(start)'
+        end = f'0x{nxt[0]:X}' if nxt else '(end of blobs)'
+        print(f'{seg}: rom 0x{owner[lo][0]:X}-{end} (vram 0x{owner[lo][1]:X})'
+              f'  prev={fmt(prev)} next={fmt(nxt)}')
         for o in mixed:
             print(f'    inside but not {seg}: {o[2]} [{o[3]}]')
 

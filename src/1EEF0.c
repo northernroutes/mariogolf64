@@ -1,5 +1,7 @@
 #include "common.h"
 
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CABD0);
+
 /* Placeholder types; real types unknown. Rename once identified. */
 
 /* 0x18-byte entries of D_800CABD0 (see func_80043AF0). */
@@ -96,6 +98,32 @@ void func_80044A8C(s32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/1EEF0", func_80044AC8);
 
+/* Constants of func_80044AC8 that splat leaves unmigrated. */
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC5A0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC5B0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC5C0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC5D0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC5E0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC5F0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC600);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC610);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC620);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC630);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC640);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC650);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC660);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC670);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC680);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC690);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC6A0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC6B0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC6C0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC6D0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC6E0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC6F0);
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", jtbl_800CC700);
+
+
 void func_80044C7C(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     s32 n = func_80044AC8(arg0, arg1, arg3);
 
@@ -113,3 +141,6 @@ INCLUDE_ASM("asm/nonmatchings/1EEF0", func_80044CCC);
 INCLUDE_ASM("asm/nonmatchings/1EEF0", func_80044FDC);
 
 INCLUDE_ASM("asm/nonmatchings/1EEF0", func_800451E4);
+
+/* Unreferenced string; the tail of this file's .rodata. */
+INCLUDE_RODATA("asm/nonmatchings/1EEF0", D_800CC760);
