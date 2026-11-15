@@ -107,7 +107,27 @@ void func_80081550(void) {
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_8008156C);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_80081C90);
+typedef struct Unk800C54F2 {
+    s16 a;
+    u8 pad2[0xE];
+} Unk800C54F2; /* size = 0x10 */
+extern Unk800C54F2 D_800C54F2[][28];
+extern s32 D_800BA9F0;
+extern s32 D_800C54E0;
+
+void func_80081C90(void) {
+    s32 d = D_800BA9F0 / 8192;
+    s32 i;
+
+    for (i = 0; i != 14; i++) {
+        D_800C54F2[D_800C54E0][i].a += d;
+    }
+    if (D_800C54F2[D_800C54E0][0].a > 0x4000) {
+        for (i = 0; i != 14; i++) {
+            D_800C54F2[D_800C54E0][i].a -= 0x2000;
+        }
+    }
+}
 
 s32 func_800326FC(s32, s32, s32, s32);
 u32 *func_80032E60(s32);
