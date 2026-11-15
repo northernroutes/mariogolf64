@@ -419,18 +419,6 @@ void func_8005B28C(s32 i, Unk80131510 *src) {
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B314);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B7BC);
-
-INCLUDE_RODATA("asm/nonmatchings/34FA0", D_800D0944);
-INCLUDE_RODATA("asm/nonmatchings/34FA0", D_800D0958);
-INCLUDE_RODATA("asm/nonmatchings/34FA0", D_800D0970);
-INCLUDE_RODATA("asm/nonmatchings/34FA0", jtbl_800D0980);
-INCLUDE_RODATA("asm/nonmatchings/34FA0", jtbl_800D09B0);
-
-
-extern char D_800D0944[]; /* strings shared with func_8005B7BC */
-extern char D_800D0958[];
-extern char D_800D0970[];
 extern s32 D_801B6090;
 extern SavePlayer D_8012D0C8[];
 extern SavePlayer D_801B71D0[];
@@ -439,7 +427,106 @@ extern SaveRecordInfo D_801B6088;
 extern SaveBlob34 D_800BA9D8;
 extern SaveBlob1C D_800FF4D0;
 extern s8 D_801B60B8;
+extern s32 D_801B608C;
+extern SavePlayer D_8012FB60[];
+extern SavePlayer D_8012FAA8[];
+extern SavePlayer D_8012F938[];
 void func_80029A30(s32);
+
+typedef struct SaveBlob68 {
+    s32 w[26];
+} SaveBlob68; /* per-player block of D_800FEDD8 */
+extern SaveBlob68 D_800FEDD8[];
+
+/* Saves (or with `load`, restores) the in-progress round for the current game
+ * mode: the player states, their D_800FEDD8 blocks and the course state. */
+s32 func_8005B7BC(s32 load) {
+    SavePlayer *pl;
+    SaveBlob68 *ex;
+    SaveRecord *r;
+    s32 count = 0;
+    s32 i;
+    s32 bad;
+
+    switch (D_801B608C) {
+        case 0:
+        case 6:
+        case 10:
+            pl = D_8012FB60;
+            ex = (SaveBlob68 *)((u8 *)pl + 0x3B0);
+            r = (SaveRecord *)((u8 *)pl - 0x2C8);
+            count = 4;
+            break;
+        case 5:
+            pl = D_8012FAA8;
+            ex = (SaveBlob68 *)((u8 *)pl + 0x400);
+            r = (SaveRecord *)((u8 *)pl - 0x2B0);
+            osSyncPrintf("Record/Play -Tour-/\n");
+            count = 1;
+            break;
+        case 4:
+            pl = D_8012F938;
+            ex = (SaveBlob68 *)((u8 *)pl + 0x508);
+            r = (SaveRecord *)((u8 *)pl - 0x1E0);
+            count = 2;
+            break;
+    }
+    if (!load) {
+        bad = 0;
+        if (count < D_801B6090) {
+            osSyncPrintf("Too Many Players\n");
+            return -1;
+        }
+        count = D_801B6090;
+        r->used = 0;
+        for (i = 0; i < count; i++) {
+            pl[i] = D_801B71D0[i];
+            switch (pl[i].unkC) {
+                case 0:
+                case 2:
+                case 3:
+                case 21:
+                    pl[i].unkC = 0;
+                    break;
+                case 17:
+                case 20:
+                    break;
+                default:
+                    osSyncPrintf("Illegal PlayerState\n");
+                    bad = 1;
+                    break;
+            }
+            ex[i] = D_800FEDD8[i];
+        }
+        r->info = D_801B6088;
+        r->course = D_800BA9D8;
+        if (bad) {
+            goto fail;
+        }
+        r->used = 1;
+    } else {
+        if (r->used == 1) {
+            if (count < r->info.numPlayers) {
+                osSyncPrintf("Too Many Players\n");
+            fail:
+                return -1;
+            }
+            count = r->info.numPlayers;
+            for (i = 0; i < count; i++) {
+                D_801B71D0[i] = pl[i];
+                D_800FEDD8[i] = ex[i];
+            }
+            D_801B6088 = r->info;
+            D_801B6088.unk0 = 1;
+            func_80029A30(30);
+            D_800BA9D8 = r->course;
+        }
+        D_801B60B8 = 2;
+        osSyncPrintf("Go Continue\n");
+    }
+    return 0;
+}
+
 
 /* Saves the current game into record `slot` (players, course state, globals),
  * or loads it back when `load` is set. Returns -1 on bad data. */
@@ -470,7 +557,7 @@ s32 func_8005BC10(s32 slot, s32 load) {
                 case 20:
                     break;
                 default:
-                    osSyncPrintf(D_800D0958);
+                    osSyncPrintf("Illegal PlayerState\n");
                     bad = 1;
                     break;
             }
@@ -489,7 +576,7 @@ s32 func_8005BC10(s32 slot, s32 load) {
         if (r->used == 1) {
             if (count < r->info.numPlayers) {
             err:
-                osSyncPrintf(D_800D0944);
+                osSyncPrintf("Too Many Players\n");
                 return -1;
             }
             count = r->info.numPlayers;
@@ -503,7 +590,7 @@ s32 func_8005BC10(s32 slot, s32 load) {
             D_800FF4D0 = r->extra;
         }
         D_801B60B8 = 2;
-        osSyncPrintf(D_800D0970);
+        osSyncPrintf("Go Continue\n");
     }
     if (!load) {
         func_8005DF54(func_8005AF50(), 1);
