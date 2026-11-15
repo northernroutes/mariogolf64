@@ -1035,10 +1035,94 @@ void func_8005DE60(void) {
     func_8005DF54(func_8005AF50(), 1);
 }
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005DE88);
+extern u8 D_801323E5;
+extern u8 D_800C1FFC;
+
+/* After a load (`toSave` == 0) packs the saved option flags p->unk28/29/2B into
+ * the live D_801323E5 bitmask (cleared if the load failed, `loaded` <= 0);
+ * before a save copies the live bits back into the save data. */
+void func_8005DE88(Unk8012F720 *p, s32 toSave, s32 loaded) {
+    s8 *f = &p->unk28;
+
+    u8 *m;
+
+    if (toSave == 0) {
+        m = &D_801323E5;
+        *m = 0;
+        if (loaded > 0) {
+            if (p->unk28) {
+                *m = 1;
+            }
+            if (p->unk29) {
+                *m |= 2;
+                D_800C1FFC = *m;
+            }
+            if (p->unk2B) {
+                *m |= 4;
+            }
+        }
+    } else {
+        if (D_801323E5 & 1) {
+            f[0] = 1;
+        } else {
+            f[0] = 0;
+        }
+        if (D_801323E5 & 2) {
+            f[1] = 1;
+        } else {
+            f[1] = 0;
+        }
+        if (D_801323E5 & 4) {
+            f[3] = 1;
+        } else {
+            f[3] = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005DF54);
 
+typedef struct SaveSlotAddr {
+    s32 file;
+    s32 crcFile;
+    s32 sram;
+    s32 crcSram;
+} SaveSlotAddr; /* where each of the two save copies lives */
+extern SaveSlotAddr D_800C2BE0[];
+s32 func_80028110(s32, s32);
+s32 func_80028204(s32, s32 *);
+u16 func_8006A1EC(void *, s32);
+void nuPiReadWriteSram(u32, void *, u32, s32);
+s32 rand(void);
+
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005DFE8);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005E180);
+extern u8 D_801B5588[];
+
+/* Writes the save data and its checksum to both copies (SRAM, or the files
+ * when `toSram` is 0). */
+s32 func_8005E180(Unk8012F720 *save, u8 toSram) {
+    u8 buf[0xC0];
+    u16 *crc = (u16 *)(((u32)buf + 0xF) & ~0xF);
+    s32 i;
+    s32 j;
+    u16 sum;
+
+    for (i = 0; i < 32; i++) {
+        save->pad0[8 + i] = ~D_801B5588[i];
+    }
+    sum = func_8006A1EC(save, 0x2A78);
+    for (j = 0; j < 2; j++) {
+        crc[0] = rand();
+        crc[1] = crc[0] ^ sum;
+        if (!toSram) {
+            if (func_80028110(D_800C2BE0[j].file, 0x2A78) == 0) {
+                func_80028110(D_800C2BE0[j].crcFile, 4);
+            }
+        } else {
+            nuPiReadWriteSram(D_800C2BE0[j].sram, save, 0x2A78, 1);
+            nuPiReadWriteSram(D_800C2BE0[j].crcSram, crc, 4, 1);
+        }
+    }
+    return 1;
+}
