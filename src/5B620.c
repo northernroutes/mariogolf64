@@ -6,7 +6,25 @@ INCLUDE_ASM("asm/nonmatchings/5B620", func_80080220);
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_800802E0);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_80080564);
+s32 func_8005062C(u16 id, void *buf);
+void func_800506D4(s32 handle, void *buf);
+s32 func_800504E8(s32 id, void *obj);
+s32 func_80050598(void *obj);
+s32 func_800505A0(s32 handle, s32 arg1, void *obj);
+extern u16 D_800C547C[];
+extern s16 D_800C54A0[];
+extern s32 D_801B55E0[];
+extern s32 D_801321C8[];
+
+void func_80080564(s32 i, s32 k, s32 off) {
+    s32 buf[8];
+    s32 obj[4];
+
+    func_8005062C(D_800C547C[k] + 9, buf);
+    func_800506D4(D_801B55E0[i], buf);
+    func_800504E8(D_800C54A0[k] + off, obj);
+    func_800505A0(D_801321C8[i], func_80050598(obj), obj);
+}
 
 extern s32 D_801B608C;
 extern s32 D_800C59E0;
