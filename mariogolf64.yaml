@@ -401,6 +401,8 @@ segments:
       - [0xA5FD0, .rodata, 1EEF0]
       - [0xA7B70, .rodata, 207E0]
       - [0xA7E90, rodata]
+      - [0xABC50, .rodata, 34FA0]
+      - [0xABEC0, rodata]
       - [0xAC760, rodata]
       - [0xAC770, rodata]
       - [0xAC988, .rodata, 4C770]

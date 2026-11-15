@@ -77,19 +77,20 @@ f32 func_80059BA0(f32 x) {
 
 /* func_80059BC0 is fdlibm's __ieee754_acosf (e_acosf.c); the constants are
  * immediates in the original, hence the macros. */
-#define AC_PI 3.1415925026e+00f
-#define AC_PIO2_HI 1.5707962513e+00f
-#define AC_PIO2_LO 7.5497894159e-08f
-#define AC_PS0 1.6666667163e-01f
-#define AC_PS1 -3.2556581497e-01f
-#define AC_PS2 2.0121252537e-01f
-#define AC_PS3 -4.0055535734e-02f
-#define AC_PS4 7.9153501429e-04f
-#define AC_PS5 3.4793309169e-05f
-#define AC_QS1 -2.4033949375e+00f
-#define AC_QS2 2.0209457874e+00f
-#define AC_QS3 -6.8828397989e-01f
-#define AC_QS4 7.7038154006e-02f
+static const f32 AC_ONE = 1.0f;
+static const f32 AC_PI = 3.1415925026e+00f;
+static const f32 AC_PIO2_HI = 1.5707962513e+00f;
+static const f32 AC_PIO2_LO = 7.5497894159e-08f;
+static const f32 AC_PS0 = 1.6666667163e-01f;
+static const f32 AC_PS1 = -3.2556581497e-01f;
+static const f32 AC_PS2 = 2.0121252537e-01f;
+static const f32 AC_PS3 = -4.0055535734e-02f;
+static const f32 AC_PS4 = 7.9153501429e-04f;
+static const f32 AC_PS5 = 3.4793309169e-05f;
+static const f32 AC_QS1 = -2.4033949375e+00f;
+static const f32 AC_QS2 = 2.0209457874e+00f;
+static const f32 AC_QS3 = -6.8828397989e-01f;
+static const f32 AC_QS4 = 7.7038154006e-02f;
 
 f32 func_80059BC0(f32 x) {
     f32 z, p, q, r, w, s, c, df;
@@ -138,17 +139,23 @@ f32 func_80059BC0(f32 x) {
     }
 }
 
-#define AT2_TINY 1.0e-30f
-#define AT2_PI_O_4 7.8539818525e-01f
-#define AT2_PI_O_2 1.5707963705e+00f
-#define AT2_PI 3.1415925026e+00f
-#define AT2_PI_LO 1.5099578832e-07f
+static const f32 AT2_TINY = 1.0e-30f;
+static const f32 AT2_ZERO = 0.0f;
+static const f32 AT2_PI_O_4 = 7.8539818525e-01f;
+static const f32 AT2_PI_O_2 = 1.5707963705e+00f;
+static const f32 AT2_PI_LO = 1.5099578832e-07f;
+#define AT2_PI 3.1415925026e+00f /* not a static in this version */
+/* fdlibm returns -zero here; the compiler as built for this project folds that to
+ * +0.0, so the original's -0.0 constant is spelled out. */
+static const union {
+    u32 i;
+    f32 f;
+} AT2_NEG_ZERO = { 0x80000000 };
 f32 func_80059BA0(f32 x);
 f32 func_8005A2AC(f32 x);
 
 /* fdlibm __ieee754_atan2f(y, x) (e_atan2f.c), the older version with
  * pi = 0x40490fda and pi_lo = 0x34222168. */
-extern f32 D_800D089C;
 
 f32 func_80059FAC(f32 y, f32 x) {
     f32 z;
@@ -197,7 +204,7 @@ f32 func_80059FAC(f32 y, f32 x) {
                 case 0:
                     return 0.0f;
                 case 1:
-                    return D_800D089C; /* -zero, kept in .rodata */
+                    return AT2_NEG_ZERO.f;
                 case 2:
                     return AT2_PI + AT2_TINY;
                 case 3:
@@ -233,9 +240,18 @@ f32 func_80059FAC(f32 y, f32 x) {
     }
 }
 
-extern f32 D_800D08A0[4];  /* atanhi */
-extern f32 D_800D08B0[4];  /* atanlo */
-extern f32 D_800D08C0[11]; /* aT */
+static const f32 atanhi[] = {
+    4.6364760399e-01f, 7.8539812565e-01f, 9.8279368877e-01f, 1.5707962513e+00f,
+};
+static const f32 atanlo[] = {
+    5.0121582440e-09f, 3.7748947079e-08f, 3.4473217170e-08f, 7.5497894159e-08f,
+};
+static const f32 aT[] = {
+    3.3333334327e-01f, -2.0000000298e-01f, 1.4285714924e-01f, -1.1111110449e-01f,
+    9.0908870101e-02f, -7.6918758452e-02f, 6.6610731184e-02f, -5.8335702866e-02f,
+    4.9768779427e-02f, -3.6531571299e-02f, 1.6285819933e-02f,
+};
+static const f32 huge = 1.0e30f;
 f32 func_80059BA0(f32 x);
 
 /* fdlibm atanf (s_atanf.c); the coefficient tables are in .rodata. */
@@ -250,14 +266,14 @@ f32 func_8005A2AC(f32 x) {
             return x + x;
         }
         if (hx > 0) {
-            return D_800D08A0[3] + D_800D08B0[3];
+            return atanhi[3] + atanlo[3];
         } else {
-            return -D_800D08A0[3] - D_800D08B0[3];
+            return -atanhi[3] - atanlo[3];
         }
     }
     if (ix < 0x3EE00000) {
         if (ix < 0x31000000) {
-            if (1.0e30f + x > 1.0f) {
+            if (huge + x > 1.0f) {
                 return x;
             }
         }
@@ -284,12 +300,12 @@ f32 func_8005A2AC(f32 x) {
     }
     z = x * x;
     w = z * z;
-    s1 = z * (D_800D08C0[0] + w * (D_800D08C0[2] + w * (D_800D08C0[4] + w * (D_800D08C0[6] + w * (D_800D08C0[8] + w * D_800D08C0[10])))));
-    s2 = w * (D_800D08C0[1] + w * (D_800D08C0[3] + w * (D_800D08C0[5] + w * (D_800D08C0[7] + w * D_800D08C0[9]))));
+    s1 = z * (aT[0] + w * (aT[2] + w * (aT[4] + w * (aT[6] + w * (aT[8] + w * aT[10])))));
+    s2 = w * (aT[1] + w * (aT[3] + w * (aT[5] + w * (aT[7] + w * aT[9]))));
     if (id < 0) {
         return x - x * (s1 + s2);
     } else {
-        z = D_800D08A0[id] - ((x * (s1 + s2) - D_800D08B0[id]) - x);
+        z = atanhi[id] - ((x * (s1 + s2) - atanlo[id]) - x);
         return (hx < 0) ? -z : z;
     }
 }
@@ -356,6 +372,13 @@ void func_8005B28C(s32 i, Unk80131510 *src) {
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B314);
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B7BC);
+
+INCLUDE_RODATA("asm/nonmatchings/34FA0", D_800D0944);
+INCLUDE_RODATA("asm/nonmatchings/34FA0", D_800D0958);
+INCLUDE_RODATA("asm/nonmatchings/34FA0", D_800D0970);
+INCLUDE_RODATA("asm/nonmatchings/34FA0", jtbl_800D0980);
+INCLUDE_RODATA("asm/nonmatchings/34FA0", jtbl_800D09B0);
+
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005BC10);
 
