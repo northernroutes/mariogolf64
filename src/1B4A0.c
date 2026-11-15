@@ -353,7 +353,30 @@ s32 func_80042E40(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80042E78);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800432E4);
+typedef struct Unk800432E4 {
+    u8 pad0[4];
+    s16 a[3];
+    s16 b[3];
+    s16 c[3];
+} Unk800432E4;
+
+/* Returns 1 if the three s16[3] vectors of `x` and `y` differ. */
+s32 func_800432E4(Unk800432E4 *x, Unk800432E4 *y) {
+    s32 i;
+
+    for (i = 0; i < 3; i++) {
+        if (x->a[i] != y->a[i]) {
+            return 1;
+        }
+        if (x->b[i] != y->b[i]) {
+            return 1;
+        }
+        if (x->c[i] != y->c[i]) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_8004333C);
 

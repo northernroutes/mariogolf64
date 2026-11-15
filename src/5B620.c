@@ -151,7 +151,28 @@ void func_80081D4C(s32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/5B620", func_80081EF8);
 
-INCLUDE_ASM("asm/nonmatchings/5B620", func_800824E4);
+/* Packs an RGBA8 colour: white for `n` == 0, fading toward red (n > 0) or
+ * blue (n < 0) by |n|, with alpha `a`. */
+u32 func_800824E4(s32 n, s32 a) {
+    s32 r;
+    s32 g;
+    s32 b;
+
+    if (n == 0) {
+        b = 0xFF;
+        g = 0xFF;
+        r = 0xFF;
+    } else if (n > 0) {
+        r = 0xFF;
+        b = 0xFF - n;
+        g = b;
+    } else {
+        b = 0xFF;
+        g = n + 0xFF;
+        r = g;
+    }
+    return (r << 24) | (g << 16) | (b << 8) | (a & 0xFF);
+}
 
 INCLUDE_RODATA("asm/nonmatchings/5B620", D_800D1B10);
 
