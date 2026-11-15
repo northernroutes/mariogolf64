@@ -362,7 +362,82 @@ f32 func_8005A2AC(f32 x) {
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005A580);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005ACF8);
+void func_8004E47C(s32 *);
+extern s8 D_800C1FF0;
+extern s32 D_801F4A20;
+extern s32 D_8012D3AC;
+extern s32 D_8012F4B0[7];
+extern s32 D_801049A0[7];
+extern s32 D_801052C4[2];
+extern s32 D_800FF420[2];
+extern s32 D_801B60D0;
+extern s32 D_8012D420[2];
+extern s32 D_801B5CD0[2];
+extern s32 D_801052BC[2];
+extern s32 D_800FBDFC[2];
+extern s32 D_800FF4C4[2];
+extern s32 D_800FBE38[3];
+extern s32 D_801B93E0[5];
+extern s32 D_8010526C[2];
+extern s32 D_800FF180[2];
+extern s32 D_80106100;
+extern s32 D_800FC898;
+extern s32 D_8012D430[18];
+extern s32 D_80105B78[18];
+extern s32 D_800FBE30[2];
+extern s32 D_800FC6A0;
+extern s32 D_801B69EC;
+
+/* Frees every heap block the game keeps a handle to (func_8004E47C frees *p). */
+void func_8005ACF8(void) {
+    s32 i;
+
+    D_800C1FF0 = -1;
+    func_8004E47C(&D_801F4A20);
+    func_8004E47C(&D_8012D3AC);
+    for (i = 0; i != 7; i++) {
+        func_8004E47C(&D_801049A0[i]);
+        func_8004E47C(&D_8012F4B0[i]);
+    }
+    func_8004E47C(&D_801052C4[0]);
+    func_8004E47C(&D_801052C4[1]);
+    func_8004E47C(&D_800FF420[0]);
+    func_8004E47C(&D_800FF420[1]);
+    func_8004E47C(&D_801B60D0);
+    func_8004E47C(&D_8012D420[0]);
+    func_8004E47C(&D_801B5CD0[0]);
+    func_8004E47C(&D_8012D420[1]);
+    func_8004E47C(&D_801B5CD0[1]);
+    func_8004E47C(&D_801052BC[0]);
+    func_8004E47C(&D_801052BC[1]);
+    func_8004E47C(&D_800FBDFC[0]);
+    func_8004E47C(&D_800FBDFC[1]);
+    for (i = 0; i != 2; i++) {
+        func_8004E47C(&D_800FF4C4[i]);
+    }
+    for (i = 0; i != 3; i++) {
+        func_8004E47C(&D_800FBE38[i]);
+    }
+    for (i = 0; i != 5; i++) {
+        func_8004E47C(&D_801B93E0[i]);
+    }
+    func_8004E47C(&D_8010526C[0]);
+    func_8004E47C(&D_8010526C[1]);
+    func_8004E47C(&D_800FF180[0]);
+    func_8004E47C(&D_800FF180[1]);
+    func_8004E47C(&D_80106100);
+    func_8004E47C(&D_800FC898);
+    for (i = 0; i != 18; i++) {
+        func_8004E47C(&D_8012D430[i]);
+    }
+    for (i = 0; i != 18; i++) {
+        func_8004E47C(&D_80105B78[i]);
+    }
+    func_8004E47C(&D_800FBE30[0]);
+    func_8004E47C(&D_800FBE30[1]);
+    func_8004E47C(&D_800FC6A0);
+    func_8004E47C(&D_801B69EC);
+}
 
 Unk8012F720 *func_8005AF50(void) {
     func_8005AF74();
