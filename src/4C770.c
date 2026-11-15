@@ -178,9 +178,93 @@ INCLUDE_ASM("asm/nonmatchings/4C770", func_800734F0);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_800738BC);
 
-INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D16C0);
+extern char D_800D1588[];
+extern char D_800D158C[];
+extern s32 D_80104FD0;
+extern u8 D_800C4390[];
+extern char D_80105118[];
+int sprintf(char *, const char *, ...);
+u32 func_800738BC(s32, s32, s32);
+s32 func_80073BF0(u8 *);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_8007399C);
+/* Measures message `msg` at glyph size `size`: the widest of up to three lines
+ * goes to *width and the extra height of the line breaks to *height. Code
+ * 0x8019 is a line break, 0x800F a name, 0x8014-0x8017 a player's number. */
+void func_8007399C(s32 msg, s32 size, s32 *width, s32 *height, s32 player) {
+    s32 w[3] = { 0, 0, 0 };
+    s32 n;
+    Unk800E1C48 *e;
+    s32 h, i, max;
+    s32 count, start, code;
+
+    n = 0;
+    h = 0;
+    count = D_800E1C48[msg + 1].unk2;
+    start = D_800E1C48[msg + 1].unk0;
+    for (i = 0; i != count; i++) {
+        code = ((u16 *)D_800E1C48)[D_80104FD0 + start + i];
+        if (code < 0x100) {
+            if (code != 0xDE && code != 0xDF) {
+                if (size == 12) {
+                    w[n] += D_800C4390[code];
+                } else {
+                    w[n] += size;
+                }
+            }
+        } else if (code > 0x7FFF) {
+            switch (code) {
+                case 0x8019:
+                    n++;
+                    h = h + (6 + size);
+                    break;
+                case 0x800F:
+                    sprintf(D_80105118, D_800D1588, D_801321B0);
+                    w[n] += func_800738BC((s32)D_80105118, size, 2);
+                    break;
+                case 0x8014:
+                case 0x8015:
+                case 0x8016:
+                case 0x8017:
+                    sprintf(D_80105118, D_800D158C, D_8012F510[player].unk1C[code - 0x8014]);
+                    w[n] += func_80073BF0((u8 *)D_80105118) * size;
+                    break;
+                case 0x8000:
+                case 0x8001:
+                case 0x8002:
+                case 0x8003:
+                case 0x8004:
+                case 0x8005:
+                case 0x8006:
+                case 0x8007:
+                case 0x8008:
+                case 0x8009:
+                case 0x800A:
+                case 0x800C:
+                case 0x800D:
+                case 0x800E:
+                    w[n] += 12;
+                    break;
+                case 0x800B:
+                case 0x8010:
+                case 0x8011:
+                case 0x8012:
+                case 0x8013:
+                case 0x8018:
+                    break;
+            }
+        }
+    }
+    max = w[0];
+    if (max < w[1]) {
+        max = w[1];
+    }
+    *width = max;
+    if (max < w[2]) {
+        max = w[2];
+    }
+    *width = max;
+    *height = h;
+}
 
 s32 func_80073BF0(u8 *str) {
     s32 len = 0;
