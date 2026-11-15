@@ -29,11 +29,11 @@ extern Unk800BB258 D_800BE588;
 extern s32 D_800FBE54;
 extern s32 D_800FBE70;
 
-s32 func_80032E60(s32 arg0);
+s32 *func_80032E60(s32 arg0);
 s32 func_80043B14(Unk800BB258 *arg0, s32 arg1);
 s32 func_80043BB0(Unk800BB258 *arg0, s32 arg1);
 Unk800BB258 *func_8004491C(void);
-void func_800449D4(s32 arg0, s32 arg1);
+s32 func_800449D4(s32 mode, s32 *kindp);
 s32 func_80044AC8(s32 arg0, s32 arg1, s32 arg2);
 
 Unk800CABD0 *func_80043AF0(s32 arg0) {
