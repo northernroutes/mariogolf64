@@ -174,19 +174,15 @@ INCLUDE_ASM("asm/nonmatchings/2BFF0", func_80051C08);
 
 INCLUDE_ASM("asm/nonmatchings/2BFF0", func_80051D8C);
 
-extern char D_800CCC14[]; /* "alSynNew\n" */
-
 /* Stubbed in this build: the game drives the n_ synthesizer (libnaudio), so the
  * libultra entry point only logs that it was called. */
 void alSynNew(ALSynth *s, ALSynConfig *config) {
-    osSyncPrintf(D_800CCC14);
+    osSyncPrintf("alSynNew\n");
 }
-
-extern char D_800CCC20[]; /* "alSynDelete\n" */
 
 /* Stubbed like alSynNew: only logs that it was called. */
 void alSynDelete(ALSynth *s) {
-    osSyncPrintf(D_800CCC20);
+    osSyncPrintf("alSynDelete\n");
 }
 
 /* Empty stub: ALParam (struct ALParam_s) lives in libultra's internal synthInternals.h. */

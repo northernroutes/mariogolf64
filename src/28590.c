@@ -173,6 +173,10 @@ s32 func_8004DE60(s32 arg0) {
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004DE7C);
 
+INCLUDE_RODATA("asm/nonmatchings/28590", D_800CCA90);
+INCLUDE_RODATA("asm/nonmatchings/28590", D_800CCAAC);
+INCLUDE_RODATA("asm/nonmatchings/28590", D_800CCAD0);
+
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004E058);
 
 INCLUDE_ASM("asm/nonmatchings/28590", func_8004E184);

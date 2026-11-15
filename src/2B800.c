@@ -33,8 +33,6 @@ void func_800504E8(s32 arg0, Unk2B800 *arg1, s32 arg2) {
     func_80050428(arg0, arg1, arg2);
 }
 
-extern char D_800CCB70[];
-extern char D_800CCB7C[];
 
 /* Claims a free D_800DE8A0 slot; arg1 is unused and arg2 is passed through. */
 Unk2B800 *func_80050504(s32 arg0, s32 arg1, s32 arg2) {
@@ -47,8 +45,8 @@ Unk2B800 *func_80050504(s32 arg0, s32 arg1, s32 arg2) {
             return p;
         }
     }
-    osSyncPrintf(D_800CCB70, arg0);
-    osSyncPrintf(D_800CCB7C, arg0);
+    osSyncPrintf("ropen %d\n", arg0);
+    osSyncPrintf("%d\224\324\202\314\203t\203@\203C\203\213\203I\201[\203v\203\223\216\270\224s\201B\n", arg0);
     return NULL;
 }
 
@@ -62,14 +60,13 @@ s32 func_80050598(Unk2B800 *arg0) {
     return arg0->unk4;
 }
 
-extern char D_800CCB9C[];
 extern s32 D_8012D3A8;
 
 /* Reads the next `size` bytes of the stream described by src (cursor unk0, end unkC). */
 void func_800505A0(void *dst, u32 size, Unk2B800 *src) {
     if (src->unk0 + size > (u32)src->unkC) {
         size = src->unkC - src->unk0;
-        osSyncPrintf(D_800CCB9C, D_8012D3A8);
+        osSyncPrintf("size error %d \n", D_8012D3A8);
     }
     nuPiReadRom(src->unk0, dst, (size + 1) & ~1);
     src->unk0 += size;
