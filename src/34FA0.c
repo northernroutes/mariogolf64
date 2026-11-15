@@ -611,7 +611,63 @@ void func_8005DAD4(void) {
     D_800C2BD4 = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005DAFC);
+extern s32 D_801B608C;
+extern s8 D_800FF4C0;
+extern s8 D_80105268;
+extern s8 D_801B5634;
+extern s32 D_80105B68;
+extern s8 D_800C2BD5;
+
+/* Sets per-game-mode flags (D_800FF4C0, D_80105268, D_801B5634) from
+ * D_801B608C and resets some shared state. */
+void func_8005DAFC(void) {
+    switch (D_801B608C) {
+        case 5:
+            D_800FF4C0 = 2;
+            D_80105268 = 0;
+            D_801B5634 = 0;
+            break;
+        case 0:
+            D_800FF4C0 = 1;
+            D_80105268 = 1;
+            if (D_80105B68 == 4) {
+                D_801B5634 = 2;
+            } else {
+                D_801B5634 = 1;
+            }
+            D_800C2BD5 = 1;
+            break;
+        case 2:
+            D_800FF4C0 = 1;
+            D_80105268 = 1;
+            D_801B5634 = 3;
+            break;
+        case 10:
+            D_800FF4C0 = 1;
+            D_80105268 = 1;
+            D_801B5634 = 4;
+            break;
+        case 3:
+        case 4:
+        case 6:
+        case 7:
+        case 9:
+            D_800FF4C0 = 1;
+            D_80105268 = 2;
+            D_801B5634 = 0;
+            break;
+        case 11:
+            D_800FF4C0 = 1;
+            D_80105268 = 1;
+            D_801B5634 = 5;
+            break;
+    }
+    D_801052E8 = 1;
+    D_801B9410 = 1;
+    D_800FE334 = 0;
+    D_800C2BD4 = 0;
+    D_801EFFA0 = 6;
+}
 
 s32 func_8005D9A0();
 extern s8 D_800C1FF4;
