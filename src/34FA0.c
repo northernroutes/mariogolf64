@@ -480,7 +480,99 @@ INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CA48);
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CEE0);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005CF78);
+typedef struct SaveRecordInfo {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ s32 mode;
+    /* 0x08 */ s32 numPlayers;
+    /* 0x0C */ u32 unkC;
+    /* 0x10 */ u32 unk10;
+} SaveRecordInfo;
+
+typedef struct SaveRecord {
+    /* 0x00 */ s32 used;
+    /* 0x04 */ u8 pad4[0x38];
+    /* 0x3C */ SaveRecordInfo info;
+    /* 0x50 */ u8 pad50[0x26];
+    /* 0x76 */ s8 unk76;
+    /* 0x77 */ u8 pad77[0x29];
+} SaveRecord; /* size = 0xA0 */
+
+typedef struct SavePlayer {
+    /* 0x00 */ u8 pad0[0x1D];
+    /* 0x1D */ u8 unk1D;
+    /* 0x1E */ u8 pad1E[0x5D];
+    /* 0x7B */ u8 unk7B;
+    /* 0x7C */ u8 pad7C[0x3C];
+} SavePlayer; /* size = 0xB8 */
+
+typedef struct SaveData {
+    /* 0x0000 */ u8 pad0[0x1FF8];
+    /* 0x1FF8 */ SaveRecord rec[3];
+    /* 0x21D8 */ SavePlayer players[3][4];
+} SaveData;
+
+/* Clears any saved record whose mode, counts or player bytes are out of range. */
+void func_8005CF78(void) {
+    s32 bad[3];
+    SaveData *sd = (SaveData *)func_8005AF50();
+    s32 i, j;
+    SaveRecord *r;
+    SaveRecordInfo *info;
+    SavePlayer *pl;
+
+    for (i = 0; i != 3; i++) {
+        bad[i] = 0;
+    }
+    for (i = 0; i != 3; i++) {
+        if (sd->rec[i].used != 0) {
+            r = &sd->rec[i];
+            info = &r->info;
+            if (r->unk76 == 0) {
+                switch (info->mode) {
+                    case 1:
+                    case 3:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    default:
+                        bad[i] = 1;
+                        break;
+                    case 0:
+                    case 2:
+                    case 4:
+                    case 5:
+                    case 10:
+                    case 11:
+                        break;
+                }
+            }
+            if ((u32)(info->numPlayers - 1) >= 4) {
+                bad[i] = 1;
+            }
+            if (info->unkC >= 12) {
+                bad[i] = 1;
+            }
+            if (info->unk10 >= 18) {
+                bad[i] = 1;
+            }
+            for (j = 0; j != info->numPlayers; j++) {
+                pl = &sd->players[i][j];
+                if (pl->unk1D >= 18) {
+                    bad[i] = 1;
+                }
+                if (pl->unk7B >= 4) {
+                    bad[i] = 1;
+                }
+            }
+        }
+    }
+    for (i = 0; i != 3; i++) {
+        if (bad[i] == 1) {
+            sd->rec[i].used = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005D0D8);
 
