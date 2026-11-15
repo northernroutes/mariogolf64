@@ -403,7 +403,7 @@ segments:
       - [0xAC760, rodata]
       - [0xAC770, rodata]
       - [0xAC988, .rodata, 4C770]
-      - [0xACC50, rodata]
+      - [0xACC48, rodata] # 8 bytes of padding after 4C770's .rodata
       - [0xACD00, rodata]
       - [0xACD10, .rodata, 53D10]
       - [0xACEA0, .rodata, 5B620]

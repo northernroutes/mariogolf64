@@ -331,7 +331,26 @@ INCLUDE_ASM("asm/nonmatchings/4C770", func_8007580C);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80075E48);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_800760CC);
+/* Glyph offset for a font character: digits map to (c - '/') * 16, and a
+ * few punctuation marks have their own cells. */
+s32 func_800760CC(s32 c) {
+    switch ((u8)c) {
+        case ':':
+            return 0xB0;
+        case '*':
+            return 0;
+        case '+':
+            return 0xC0;
+        case '-':
+            return 0xD0;
+        case '#':
+            return 0xE0;
+        case '!':
+            return 0xF0;
+        default:
+            return ((u8)c - '/') << 4;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80076138);
 

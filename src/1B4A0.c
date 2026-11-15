@@ -47,9 +47,84 @@ s32 func_8004018C(s32 color) {
     return bestIdx;
 }
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040234);
+/* RGBA5551 colour of palette entry for index n (remapped; default entry 0). */
+s32 func_80040234(s32 n) {
+    s32 i = 0;
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_800402F4);
+    switch (n) {
+        case 0:
+            i = 0;
+            break;
+        case 6:
+            i = 1;
+            break;
+        case 2:
+            i = 2;
+            break;
+        case 1:
+            i = 3;
+            break;
+        case 3:
+            i = 4;
+            break;
+        case 7:
+            i = 5;
+            break;
+        case 4:
+            i = 6;
+            break;
+        case 8:
+            i = 8;
+            break;
+        case 9:
+            i = 9;
+            break;
+        case 5:
+            i = 10;
+            break;
+    }
+    return (D_800BB040[i].r << 11) | (D_800BB040[i].g << 6) | (D_800BB040[i].b << 1) | D_800BB040[i].unk3;
+}
+
+/* Maps a colour's nearest palette entry (func_8004018C) to another index. */
+s32 func_800402F4(s32 color) {
+    s32 r;
+
+    switch (func_8004018C(color)) {
+        case 1:
+            r = 6;
+            break;
+        case 2:
+            r = 2;
+            break;
+        case 3:
+            r = 1;
+            break;
+        case 4:
+            r = 3;
+            break;
+        case 6:
+            r = 4;
+            break;
+        case 0:
+        case 7:
+            r = 0;
+            break;
+        case 8:
+            r = 8;
+            break;
+        case 9:
+            r = 9;
+            break;
+        case 10:
+            r = 5;
+            break;
+        default:
+            r = 7;
+            break;
+    }
+    return r;
+}
 
 /* Placeholder types for func_80040380; real types unknown. */
 typedef struct Unk80040380 {
