@@ -282,7 +282,45 @@ INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041E8C);
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80041EC0);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80042228);
+/* Label for a course-editor debug menu item. */
+char *func_80042228(s32 item) {
+    switch (item) {
+        case 8:
+            return "FLAGS ";
+        case 0:
+            return "ABOUT ";
+        case 2:
+            return " VIEW ";
+        case 7:
+            return " PLAY ";
+        case 1:
+            return "HEIGHT";
+        case 3:
+            return " TREE ";
+        case 5:
+            return " PIN  ";
+        case 9:
+            return "DIVINF";
+        case 15:
+            return "TRIANG";
+        case 14:
+            return "MENU";
+        case 10:
+            return "XZ-DIV";
+        case 11:
+            return " FILE ";
+        case 12:
+            return "STROKE";
+        case 13:
+            return "S-SHOT";
+        case 16:
+            return "RING  ";
+        case 28:
+            return "WALL  ";
+        default:
+            return "      ";
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80042318);
 
