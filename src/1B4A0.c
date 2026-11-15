@@ -176,7 +176,7 @@ s32 func_80040E20(s32 arg0, s32 arg1) {
     return func_800407E8(arg0, arg1, 0);
 }
 
-s32 func_80032E60(s32);
+s32 *func_80032E60(s32);
 s32 func_80040E20();
 
 void func_80040E3C(s32 arg0, s32 arg1) {
