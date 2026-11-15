@@ -424,7 +424,40 @@ typedef struct Unk80131510 {
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B0B4);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005B150);
+/* Fills order[] with the indices of vals[0..n) sorted by value, largest first
+ * (stable insertion sort on a stack copy). */
+void func_8005B150(s32 *vals, s32 *order, s32 n) {
+    s32 *tmp = __builtin_alloca(n * sizeof(s32));
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 v;
+    s32 o;
+
+    for (i = 0; i < n; i++) {
+        order[i] = i;
+    }
+    for (i = 0; i < n; i++) {
+        tmp[i] = vals[i];
+    }
+    for (i = 0; i < n; i++) {
+        v = tmp[i];
+        o = order[i];
+        for (j = i - 1; j >= 0; j--) {
+            if (tmp[j] >= v) {
+                break;
+            }
+        }
+        if (j < i - 1) {
+            for (k = i; k > j + 1; k--) {
+                tmp[k] = tmp[k - 1];
+                order[k] = order[k - 1];
+            }
+            tmp[k] = v;
+            order[k] = o;
+        }
+    }
+}
 
 
 extern Unk80131510 D_80131510[];
@@ -897,7 +930,63 @@ void func_8005D334(void) {
 
 INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005D3B8);
 
-INCLUDE_ASM("asm/nonmatchings/34FA0", func_8005D9A0);
+extern s32 D_800C2BD0;
+extern s32 D_80105B68;
+extern s8 D_800FF4C0;
+extern s8 D_80105268;
+extern s32 D_801B7070;
+extern s32 D_8012F480;
+extern s32 D_8012F484;
+extern s32 D_8012F488;
+extern s32 D_8012F48C;
+extern u8 D_801B70F0;
+extern u8 D_801B70F1;
+extern u8 D_801B70F2;
+extern u8 D_801B70F3;
+extern s16 D_800FBD40;
+extern s16 D_801B71CC;
+extern s16 D_800FBE2C;
+extern u8 D_800FBDB9;
+extern s16 D_800FE33C;
+extern s8 D_800FBE08[4];
+extern u8 D_801323B8;
+extern s32 D_801B60AC;
+extern u8 D_801323D0;
+
+/* Resets the game-progress globals to their power-on defaults. */
+void func_8005D9A0(void) {
+    s8 i;
+
+    D_800C2BD0 = 6;
+    D_800FE334 = 0;
+    D_801EFFA0 = 0;
+    D_80105B68 = 0;
+    D_801B7070 = 0;
+    D_8012F480 = -1;
+    D_8012F484 = -1;
+    D_8012F488 = -1;
+    D_8012F48C = -1;
+    D_801B70F0 = 0;
+    D_801B70F1 = 0;
+    D_801B70F2 = 0;
+    D_801B70F3 = 0;
+    memset(&D_801323A0, 0, 0x49);
+    D_800FBD40 = 0;
+    D_801B71CC = 0;
+    D_800FBE2C = 0;
+    D_800FBDB9 = 0;
+    D_800FE33C = 0;
+    D_800FF4C0 = 0;
+    D_80105268 = 0;
+    for (i = 0; i != 4; i++) {
+        D_800FBE08[i] = 0;
+    }
+    D_801323B8 = 3;
+    D_801B60AC = 0;
+    D_801323D0 = 6;
+    D_801052E8 = 0;
+    D_800C2BD4 = 0;
+}
 
 void func_8005DAD4(void) {
     D_800FE334 = 0;
@@ -964,7 +1053,7 @@ void func_8005DAFC(void) {
     D_801EFFA0 = 6;
 }
 
-s32 func_8005D9A0();
+void func_8005D9A0(void);
 extern s8 D_800C1FF4;
 extern s8 D_800C1FF5;
 extern s8 D_800C1FF6;
