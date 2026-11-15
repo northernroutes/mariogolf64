@@ -1,6 +1,92 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/2D290", func_80051E90);
+/* Per-(a, b) value lookup with 200 as the default (30 for a = 6/7). */
+s32 func_80051E90(s32 a, s32 b) {
+    switch (a) {
+        case 0:
+            if (b == 10) {
+                return 400;
+            }
+            if (b == 16) {
+                return 400;
+            }
+            break;
+        case 1:
+            if (b == 1) {
+                return 400;
+            }
+            if (b == 5) {
+                return 600;
+            }
+            if (b == 7) {
+                return 150;
+            }
+            if (b == 16) {
+                return 300;
+            }
+            break;
+        case 2:
+            if (b == 2) {
+                return 300;
+            }
+            if (b == 12) {
+                return 600;
+            }
+            if (b == 16) {
+                return 550;
+            }
+            break;
+        case 3:
+            if (b == 2) {
+                return 300;
+            }
+            if (b == 4) {
+                return 1000;
+            }
+            if (b == 9) {
+                return 700;
+            }
+            if (b == 10) {
+                return 400;
+            }
+            if (b == 11) {
+                return 450;
+            }
+            if (b == 12) {
+                return 400;
+            }
+            if (b == 13) {
+                return 600;
+            }
+            if (b == 16) {
+                return 900;
+            }
+            break;
+        case 4:
+            if (b == 10) {
+                return 400;
+            }
+            if (b == 15) {
+                return 300;
+            }
+            break;
+        case 5:
+            if (b == 15) {
+                return 400;
+            }
+            if (b == 16) {
+                return 700;
+            }
+            if (b == 17) {
+                return 400;
+            }
+            break;
+        case 6:
+        case 7:
+            return 30;
+    }
+    return 200;
+}
 
 INCLUDE_ASM("asm/nonmatchings/2D290", func_80051FCC);
 
