@@ -27,7 +27,23 @@ void func_80050400(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/2B800", func_80050428);
+extern u8 D_E473F0[]; /* ROM: table of {offset, size} pairs, offsets relative to the table */
+extern s32 D_8012D3A8;
+
+/* Points stream `s` at entry `id` of the ROM table D_E473F0. */
+void func_80050428(s32 id, Unk2B800 *s, s32 arg2) {
+    u8 offBuf[0x40];
+    u8 sizeBuf[0x40];
+    u32 *off = (u32 *)(((u32)offBuf + 0xF) & ~0xF);
+    u32 *size = (u32 *)(((u32)sizeBuf + 0xF) & ~0xF);
+
+    nuPiReadRom((u32)&D_E473F0[id * 8], size, 4);
+    nuPiReadRom((u32)&D_E473F0[4] + id * 8, off, 4);
+    s->unk0 = s->unk8 = *off + (u32)D_E473F0;
+    s->unkC = s->unk8 + *size;
+    s->unk4 = *size;
+    D_8012D3A8 = id;
+}
 
 void func_800504E8(s32 arg0, Unk2B800 *arg1, s32 arg2) {
     func_80050428(arg0, arg1, arg2);
@@ -72,7 +88,24 @@ void func_800505A0(void *dst, u32 size, Unk2B800 *src) {
     src->unk0 += size;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2B800", func_8005062C);
+s32 func_800299F4(s32);
+
+/* Opens stream `id` into p[1] and reads its 4-byte header: the top byte is
+ * the format (p->unk8), the low 24 bits stay in the header word. */
+void func_8005062C(u16 id, Unk2B800 *p) {
+    u8 buf[0x80];
+    u32 *hdr = (u32 *)(((u32)buf + 0xF) & ~0xF);
+
+    if (func_800299F4(0x49) != 0) {
+        osSyncPrintf("OP:%d\n", id);
+    }
+    /* Called with two arguments in the original; the third (a2) is garbage. */
+    ((void (*)(s32, Unk2B800 *))func_800504E8)(id, p + 1);
+    p->unkC = func_80050598(p + 1);
+    func_800505A0(hdr, 4, p + 1);
+    p->unk8 = *(u8 *)hdr;
+    *hdr &= 0xFFFFFF;
+}
 
 void func_800506D4(s32 arg0, Unk2B800 *arg1, s32 arg2) {
     if (arg1->unk8 == 1) {
