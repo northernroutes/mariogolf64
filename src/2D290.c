@@ -88,11 +88,36 @@ s32 func_80051E90(s32 a, s32 b) {
     return 200;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2D290", func_80051FCC);
+extern s32 D_801B608C;
+extern s32 D_801B6094;
+extern s32 D_801B6098;
+extern s8 D_801B60C2;
+extern u8 D_800C1B28[][6][2];
+
+s32 func_80051FCC(void) {
+    if (D_801B608C == 9) {
+        return D_800C1B28[D_801B6094][D_801B6098][0];
+    }
+    if (D_801B60C2 != 0) {
+        return (((D_801B6094 - 6) / 3) & 1) | 6;
+    }
+    if (D_801B6094 >= 12) {
+        return 8;
+    }
+    return D_801B6094;
+}
 
 INCLUDE_ASM("asm/nonmatchings/2D290", func_80052070);
 
-INCLUDE_ASM("asm/nonmatchings/2D290", func_800520DC);
+extern s32 D_801B6094;
+extern s32 D_801B6098;
+
+s32 func_800520DC(void) {
+    if (D_801B6094 >= 12) {
+        return 0;
+    }
+    return D_801B6098;
+}
 
 extern s8 D_800B67C0;
 extern s8 D_801B60C2;
