@@ -93,3 +93,6 @@ vec3f_normalize = 0x80029900;
 
 /* Data inside a splat data label (Lights1 at D_800C5AB0 + 8) */
 D_800C5AB8 = 0x800C5AB8;
+
+/* ROM bank boundary: the end of the bank data at D_171790 is also the start of D_18BE00 */
+bank0CtlRomEnd = 0x18BE00;

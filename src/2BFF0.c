@@ -172,7 +172,32 @@ s32 func_80051BFC(void) {
 
 INCLUDE_ASM("asm/nonmatchings/2BFF0", func_80051C08);
 
-INCLUDE_ASM("asm/nonmatchings/2BFF0", func_80051D8C);
+extern u8 D_171790[];
+extern u8 D_18BE00[];
+extern u8 bank0CtlRomEnd[]; /* = D_18BE00 (extern_syms.txt): end of the bank data D_171790 */
+extern u8 D_D9B9C0[];
+extern u8 D_D9F450[];
+void func_8005ED8C(u8 *arg0);
+void func_8005ECC4(u8 *start, s32 size, u8 *end);
+void func_8005F11C(u8 *start, s32 size);
+void func_8009D8A8(s32 arg0);
+
+/* Sound system init: loads the two ROM banks and clears the channel tables. */
+void func_80051D8C(void) {
+    s32 i;
+
+    func_8005ED8C(NULL);
+    D_800C119C = 0;
+    D_800C0E64 = -1;
+    D_800C11AC = -1;
+    func_8005ECC4(D_171790, bank0CtlRomEnd - D_171790, D_18BE00);
+    func_8005F11C(D_D9B9C0, D_D9F450 - D_D9B9C0);
+    for (i = 0; i < 16; i++) {
+        D_800C0E6C[i] = 0;
+        D_800C0EAC[i] = 0;
+    }
+    func_8009D8A8(5);
+}
 
 /* Stubbed in this build: the game drives the n_ synthesizer (libnaudio), so the
  * libultra entry point only logs that it was called. */
