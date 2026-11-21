@@ -29,6 +29,16 @@ typedef struct Unk800FF570 {
     /* 0x04 */ u8 pad4[0x44];
 } Unk800FF570; /* size = 0x48 */
 
+/* 0x48-byte glyph slots: one positioned character of an on-screen message.
+ * D_800FF570 (Unk800FF570) is the same array seen from +0x40. */
+typedef struct MsgGlyph {
+    /* 0x00 */ Mtx mtx;
+    /* 0x40 */ u16 code;
+    /* 0x42 */ s8 size;
+    /* 0x43 */ s8 owner;
+    /* 0x44 */ u8 pad44[4];
+} MsgGlyph; /* size = 0x48 */
+
 /* 4-byte entries of the array D_800E1C48 points to (see func_80071C9C). */
 typedef struct Unk800E1C48 {
     /* 0x0 */ u16 unk0;
@@ -409,7 +419,85 @@ void func_8007512C(void) {
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_8007515C);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_800754BC);
+extern MsgGlyph D_800FF530[];
+extern u8 D_800FBE18[];
+
+/* Lays out message `msg` for owner `id`, centred on (x0, y0), claiming free
+ * glyph slots. size == -1 frees the owner's slots instead.
+ * Returns (width / 2) << 16 | (height / 2). */
+s32 func_800754BC(s32 id, s32 size, s32 x0, s32 y0, s32 msg) {
+    s32 w, h;
+    s32 i, n, x;
+    s32 start, count, code;
+
+    if (size == -1) {
+        for (i = 0; i != 300; i++) {
+            if (D_800FF530[i].owner == id) {
+                D_800FF530[i].owner = -1;
+            }
+        }
+        return;
+    }
+    start = D_800E1C48[msg + 1].unk0;
+    count = D_800E1C48[msg + 1].unk2;
+    func_8007399C(msg, size, &w, &h, 0);
+    w /= 2;
+    h /= 2;
+    y0 += h;
+    D_800FBE18[id] = count;
+    for (i = 0; i != 300; i++) {
+        if (D_800FF530[i].owner == id) {
+            D_800FF530[i].owner = -1;
+        }
+    }
+    n = 0;
+    x = 0;
+    for (i = 0; n != count; i++) {
+        if (D_800FF530[i].owner == -1) {
+            code = ((u16 *)D_800E1C48)[D_80104FD0 + start + n];
+            if (code < 0x100) {
+                if (code == 0xDE || code == 0xDF) {
+                    guTranslate(&D_800FF530[i].mtx, (f32)(x - w + x0) - 6.0f, (f32)y0 + 4.0f, 0.0f);
+                } else {
+                    guTranslate(&D_800FF530[i].mtx, (f32)(x - w + x0), (f32)y0, 0.0f);
+                    x += D_800C4390[code];
+                }
+                D_800FF530[i].code = code;
+                D_800FF530[i].size = size;
+                D_800FF530[i].owner = id;
+            } else if (code > 0x7FFF) {
+                switch (code) {
+                    case 0x8019:
+                        x = 0;
+                        y0 += -6 - size;
+                        break;
+                    case 0x8000:
+                    case 0x8001:
+                    case 0x8002:
+                    case 0x8003:
+                    case 0x8004:
+                    case 0x8005:
+                    case 0x8006:
+                    case 0x8007:
+                    case 0x8008:
+                    case 0x8009:
+                    case 0x800A:
+                    case 0x800C:
+                    case 0x800D:
+                    case 0x800E:
+                        guTranslate(&D_800FF530[i].mtx, (f32)(x - w + x0), (f32)y0, 0.0f);
+                        x += size;
+                        D_800FF530[i].code = code;
+                        D_800FF530[i].size = size;
+                        D_800FF530[i].owner = id;
+                        break;
+                }
+            }
+            n++;
+        }
+    }
+    return (w << 16) | h;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_8007580C);
 
