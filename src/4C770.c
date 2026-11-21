@@ -7,11 +7,13 @@
 /* 0x2C-byte entries of D_8012F510. splat labels the fields separately
  * (D_8012F51C = unkC, D_8012F524 = unk14, D_8012F52C = unk1C). */
 typedef struct Unk8012F510 {
-    /* 0x00 */ u8 pad0[0xC];
-    /* 0x0C */ s32 unkC;
-    /* 0x10 */ u8 pad10[0x4];
+    /* 0x00 */ s32 x;
+    /* 0x04 */ s32 y;
+    /* 0x08 */ u8 pad8[0x4];
+    /* 0x0C */ s32 unkC; /* characters revealed so far (flags & 1) */
+    /* 0x10 */ s32 flags; /* 1 = reveal one character per frame, 2 = tick sound while revealing, 0x40 = wider advance */
     /* 0x14 */ s32 unk14;
-    /* 0x18 */ u8 pad18[0x4];
+    /* 0x18 */ u8 color[4]; /* RGBA, set by control code 0x8026 */
     /* 0x1C */ s32 unk1C[4];
 } Unk8012F510; /* size = 0x2C */
 
@@ -181,20 +183,427 @@ INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D15AC);
 
 INCLUDE_RODATA("asm/nonmatchings/4C770", D_800D15B0);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80071CE4);
+extern s32 D_80104FD0;
+extern char D_80105118[];
+extern char D_800D1588[];
+extern char D_800D158C[];
+extern char D_800D1590[];
+extern char D_800D1598[];
+extern char D_800D15A0[];
+extern char D_800D15A8[];
+extern char D_800D15AC[];
+extern char D_800D15B0[];
+extern s16 D_80106230[];
+int sprintf(char *, const char *, ...);
+extern s32 D_800FBE74;
+extern s32 D_801B608C;
+extern u8 D_800C4390[];
+s32 func_80050BF0(s32, s32, s32);
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_80072A08);
+/* Draws player `player`'s text box message directly as texture rectangles,
+ * in the 12-pixel proportional font: glyphs, 16x12 pictures for codes
+ * 0x100-0x7FFF, 12x12 icons, colour changes and sprintf substitutions. */
+void func_80071CE4(Gfx **gfxp, s32 player) {
+    Gfx *gfx = *gfxp;
+    Unk8012F510 *box = &D_8012F510[player];
+    s32 i;
+    s32 start, count;
+    s32 mode;
+    s32 adv;
+    s32 x, y;
+    s32 code;
+    u8 c;
+    s32 col, row;
+    s32 s, t;
+    s32 str, icon;
+    s32 score;
+    s32 j;
+    s32 ss, tt;
+
+    mode = 0;
+    x = box->x;
+    y = box->y;
+    count = D_800E1C48[box->unk14 + 1].unk2;
+    start = D_800E1C48[box->unk14 + 1].unk0;
+    if (box->flags & 1) {
+        if (box->unkC < count) {
+            count = box->unkC;
+            box->unkC = box->unkC + 1;
+            if (box->flags & 2) {
+                if (box->unkC % 3 == 0) {
+                    func_80050BF0(0x6C, 2, 0x40);
+                }
+            }
+        }
+    }
+    adv = (box->flags & 0x40) ? 14 : 12;
+    gDPPipeSync(gfx++);
+    for (i = 0; i != count; i++) {
+        code = ((u16 *)D_800E1C48)[start + i + D_80104FD0];
+        if (mode == 1) {
+            gDPSetCombineLERP(gfx++, 0, 0, 0, PRIMITIVE, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, PRIMITIVE, PRIMITIVE, 0,
+                              TEXEL0, 0);
+            gDPPipeSync(gfx++);
+            gDPSetTextureLUT(gfx++, G_TT_NONE);
+            mode = 0;
+        }
+        if (code < 0x100) {
+            row = code / 16;
+            col = code % 16;
+            s = col * 12;
+            t = row * 12;
+            gDPLoadTextureTile_4b(gfx++, (u32)((u8 *)D_800E1C38 + 8) & ~7, G_IM_FMT_I, 192, 0, s, t, s + 11, t + 11,
+                                  0, 0, 0, 0, 0, 0, 0);
+            gDPPipeSync(gfx++);
+            if (code == 0xDE || code == 0xDF) {
+                gSPTextureRectangle(gfx++, (x - 6) << 2, (y - 4) << 2, (x + 6) << 2, (y + 8) << 2, G_TX_RENDERTILE,
+                                    s << 5, t << 5, 1 << 10, 1 << 10);
+            } else {
+                gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 12) << 2, (y + 12) << 2, G_TX_RENDERTILE, s << 5,
+                                    t << 5, 1 << 10, 1 << 10);
+                x += D_800C4390[code];
+            }
+            gDPPipeSync(gfx++);
+        } else if (code <= 0x7FFF) {
+            gDPLoadTextureBlock(gfx++, (u32)((u8 *)D_800E1C44 + ((code - 0x100) * 0xC0 + 8)) & ~7, G_IM_FMT_I,
+                                G_IM_SIZ_8b, 16, 12, 0, 0, 0, 0, 0, 0, 0);
+            gDPPipeSync(gfx++);
+            gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 12) << 2, (y + 12) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10,
+                                1 << 10);
+            gDPPipeSync(gfx++);
+            x += adv;
+        } else {
+            str = 0;
+            icon = -1;
+            switch (code) {
+                case 0x8019:
+                    x = box->x;
+                    y += 6 + adv;
+                    break;
+                case 0x8000:
+                    icon = 0;
+                    break;
+                case 0x8001:
+                    icon = 0x90;
+                    break;
+                case 0x8002:
+                case 0x8003:
+                case 0x8004:
+                case 0x8005:
+                case 0x8006:
+                    icon = 0x1B0;
+                    break;
+                case 0x8007:
+                    icon = 0x360;
+                    break;
+                case 0x8008:
+                    icon = 0x3F0;
+                    break;
+                case 0x8009:
+                    icon = 0x480;
+                    break;
+                case 0x800A:
+                    icon = 0x510;
+                    break;
+                case 0x800C:
+                    icon = 0x120;
+                    break;
+                case 0x800D:
+                    icon = 0x240;
+                    break;
+                case 0x800E:
+                    icon = 0x2D0;
+                    break;
+                case 0x800F:
+                    str = 1;
+                    sprintf(D_80105118, D_800D1588, D_801321B0);
+                    break;
+                case 0x8026:
+                    gDPSetPrimColor(gfx++, 0, 0, box->color[0], box->color[1], box->color[2], box->color[3]);
+                    break;
+                case 0x8022:
+                    gDPSetPrimColor(gfx++, 0, 0, D_8010CFA8[0].unk0, D_8010CFA8[0].unk1, D_8010CFA8[0].unk2, 0xFF);
+                    break;
+                case 0x8023:
+                    gDPSetPrimColor(gfx++, 0, 0, D_8010CFA8[1].unk0, D_8010CFA8[1].unk1, D_8010CFA8[1].unk2, 0xFF);
+                    break;
+                case 0x8024:
+                    gDPSetPrimColor(gfx++, 0, 0, D_8010CFA8[2].unk0, D_8010CFA8[2].unk1, D_8010CFA8[2].unk2, 0xFF);
+                    break;
+                case 0x8025:
+                    gDPSetPrimColor(gfx++, 0, 0, D_8010CFA8[3].unk0, D_8010CFA8[3].unk1, D_8010CFA8[3].unk2, 0xFF);
+                    break;
+                case 0x8014:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[0]);
+                    break;
+                case 0x8015:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[1]);
+                    break;
+                case 0x8016:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[2]);
+                    break;
+                case 0x8017:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[3]);
+                    break;
+                case 0x8018:
+                    score = D_80106230[D_800FBE74];
+                    str = 1;
+                    if (D_801B608C == 2 || D_801B608C == 4) {
+                        if (score == 0) {
+                            sprintf(D_80105118, D_800D1590);
+                        } else if (score < 0) {
+                            sprintf(D_80105118, D_800D1598, score);
+                        } else {
+                            sprintf(D_80105118, D_800D15A0, score);
+                        }
+                    } else if (D_801B608C == 10 || D_801B608C == 11) {
+                        sprintf(D_80105118, D_800D15A8, score);
+                    } else if (score == 0) {
+                        sprintf(D_80105118, D_800D15AC);
+                    } else {
+                        sprintf(D_80105118, D_800D15B0, score);
+                    }
+                    break;
+            }
+            if (str == 1) {
+                for (j = 0; ((u8 *)D_80105118)[j] != 0; j++) {
+                    c = ((u8 *)D_80105118)[j];
+                    ss = (c & 0xF) * 12;
+                    tt = (c >> 4) * 12;
+                    gDPLoadTextureTile_4b(gfx++, (u32)((u8 *)D_800E1C38 + 8) & ~7, G_IM_FMT_I, 192, 0,
+                                          ss, tt, ss + 15, tt + 11, 0, 0,
+                                          0, 0, 0, 0, 0);
+                    gDPPipeSync(gfx++);
+                    if (((u8 *)D_80105118)[j] == 0xDE || ((u8 *)D_80105118)[j] == 0xDF) {
+                        gSPTextureRectangle(gfx++, (x - 6) << 2, (y - 4) << 2, (x + 6) << 2, (y + 8) << 2,
+                                            G_TX_RENDERTILE, ss << 5, tt << 5, 1 << 10,
+                                            1 << 10);
+                    } else {
+                        gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 12) << 2, (y + 12) << 2, G_TX_RENDERTILE,
+                                            ss << 5, tt << 5, 1 << 10, 1 << 10);
+                        x += D_800C4390[((u8 *)D_80105118)[j]];
+                    }
+                }
+            }
+            if (icon != -1) {
+                if (mode == 0) {
+                    gDPPipeSync(gfx++);
+                    gDPSetTextureLUT(gfx++, G_TT_RGBA16);
+                    gDPLoadTLUT_pal256(gfx++, (u32)((u8 *)D_800E1C4C + 8) & ~7);
+                    gDPSetCombineMode(gfx++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+                    mode = 1;
+                }
+                gDPLoadTextureTile(gfx++, (u32)((u8 *)D_800E1C4C + (icon + 0x208)) & ~7, G_IM_FMT_CI, G_IM_SIZ_8b,
+                                   12, 12, 0, 0, 11, 11, 0, 0, 0, 0, 0, 0, 0);
+                gDPPipeSync(gfx++);
+                gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 12) << 2, (y + 12) << 2, G_TX_RENDERTILE, 0, 0,
+                                    1 << 10, 1 << 10);
+                gDPPipeSync(gfx++);
+                x += adv;
+            }
+        }
+    }
+    gDPPipeSync(gfx++);
+    *gfxp = gfx;
+}
+
+/* Draws player `player`'s text box message directly as texture rectangles:
+ * size-10 font glyphs, 12x12 icons for control codes 0x8000-0x800E, and
+ * sprintf substitutions (name, numbers, score) for 0x800F and 0x8014-0x8018. */
+void func_80072A08(Gfx **gfxp, s32 player) {
+    Gfx *gfx = *gfxp;
+    Unk8012F510 *box = &D_8012F510[player];
+    s32 i;
+    s32 start, count;
+    s32 mode;
+    s32 x, y;
+    s32 adv;
+    s32 code;
+    u8 c;
+    s32 col, row;
+    s32 s, t;
+    s32 str, icon;
+    s32 score;
+    s32 j;
+    s32 ss, tt;
+
+    mode = 0;
+    x = box->x;
+    y = box->y;
+    count = D_800E1C48[box->unk14 + 1].unk2;
+    start = D_800E1C48[box->unk14 + 1].unk0;
+    if (box->flags & 1) {
+        if (box->unkC < count) {
+            count = box->unkC;
+            box->unkC = box->unkC + 1;
+        }
+    }
+    adv = 10;
+    if (box->flags & 0x40) {
+        adv = 12;
+    }
+    gDPPipeSync(gfx++);
+    for (i = 0; i != count; i++) {
+        code = ((u16 *)D_800E1C48)[start + i + D_80104FD0];
+        if (mode == 1) {
+            gDPSetCombineLERP(gfx++, 0, 0, 0, PRIMITIVE, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, PRIMITIVE, PRIMITIVE, 0,
+                              TEXEL0, 0);
+            gDPPipeSync(gfx++);
+            gDPSetTextureLUT(gfx++, G_TT_NONE);
+            mode = 0;
+        }
+        if (code < 0x100) {
+            row = code / 16;
+            col = code % 16;
+            s = col * 10;
+            t = row * 10;
+            gDPLoadTextureTile_4b(gfx++, (u32)((u8 *)D_800E1C34 + 8) & ~7, G_IM_FMT_I, 160, 0, s,
+                                  t, s + 11, t + 11, 0, 0, 0, 0, 0, 0,
+                                  0);
+            gDPPipeSync(gfx++);
+            if (code == 0xDE || code == 0xDF) {
+                gSPTextureRectangle(gfx++, (x - 6) << 2, (y - 4) << 2, (x + 4) << 2, (y + 6) << 2, G_TX_RENDERTILE,
+                                    (s) << 5, (t) << 5, 1 << 10, 1 << 10);
+            } else {
+                gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 10) << 2, (y + 10) << 2, G_TX_RENDERTILE,
+                                    (s) << 5, (t) << 5, 1 << 10, 1 << 10);
+                x += adv;
+            }
+            gDPPipeSync(gfx++);
+        } else if (code <= 0x7FFF) {
+            gDPPipeSync(gfx++);
+            x += adv;
+        } else {
+            str = 0;
+            icon = -1;
+            switch (code) {
+                case 0x8019:
+                    x = box->x;
+                    y += 4 + adv;
+                    break;
+                case 0x8000:
+                    icon = 0;
+                    break;
+                case 0x8001:
+                    icon = 0x90;
+                    break;
+                case 0x8002:
+                case 0x8003:
+                case 0x8004:
+                case 0x8005:
+                case 0x8006:
+                    icon = 0x1B0;
+                    break;
+                case 0x8007:
+                    icon = 0x360;
+                    break;
+                case 0x8008:
+                    icon = 0x3F0;
+                    break;
+                case 0x8009:
+                    icon = 0x480;
+                    break;
+                case 0x800A:
+                    icon = 0x510;
+                    break;
+                case 0x800C:
+                    icon = 0x120;
+                    break;
+                case 0x800D:
+                    icon = 0x240;
+                    break;
+                case 0x800E:
+                    icon = 0x2D0;
+                    break;
+                case 0x800F:
+                    str = 1;
+                    sprintf(D_80105118, D_800D1588, D_801321B0);
+                    break;
+                case 0x8014:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[0]);
+                    break;
+                case 0x8015:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[1]);
+                    break;
+                case 0x8016:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[2]);
+                    break;
+                case 0x8017:
+                    str = 1;
+                    sprintf(D_80105118, D_800D158C, box->unk1C[3]);
+                    break;
+                case 0x8018:
+                    score = D_80106230[D_800FBE74];
+                    str = 1;
+                    if (D_801B608C == 2 || D_801B608C == 4) {
+                        if (score == 0) {
+                            sprintf(D_80105118, D_800D1590);
+                        } else if (score < 0) {
+                            sprintf(D_80105118, D_800D1598, score);
+                        } else {
+                            sprintf(D_80105118, D_800D15A0, score);
+                        }
+                    } else if (D_801B608C == 10 || D_801B608C == 11) {
+                        sprintf(D_80105118, D_800D15A8, score);
+                    } else if (score == 0) {
+                        sprintf(D_80105118, D_800D15AC);
+                    } else {
+                        sprintf(D_80105118, D_800D15B0, score);
+                    }
+                    break;
+            }
+            if (str == 1) {
+                for (j = 0; ((u8 *)D_80105118)[j] != 0; j++) {
+                    c = ((u8 *)D_80105118)[j];
+                    ss = (c & 0xF) * 10;
+                    tt = (c >> 4) * 10;
+                    gDPLoadTextureTile_4b(gfx++, (u32)((u8 *)D_800E1C34 + 8) & ~7, G_IM_FMT_I, 160, 0,
+                                          ss, tt, ss + 15, tt + 11, 0, 0,
+                                          0, 0, 0, 0, 0);
+                    gDPPipeSync(gfx++);
+                    if (((u8 *)D_80105118)[j] == 0xDE || ((u8 *)D_80105118)[j] == 0xDF) {
+                        gSPTextureRectangle(gfx++, (x - 5) << 2, (y - 4) << 2, (x + 5) << 2, (y + 6) << 2,
+                                            G_TX_RENDERTILE, ss << 5, tt << 5, 1 << 10, 1 << 10);
+                    } else {
+                        gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 10) << 2, (y + 10) << 2, G_TX_RENDERTILE,
+                                            ss << 5, tt << 5, 1 << 10, 1 << 10);
+                        x += adv;
+                    }
+                }
+            }
+            if (icon != -1) {
+            if (mode == 0) {
+                gDPPipeSync(gfx++);
+                gDPSetTextureLUT(gfx++, G_TT_RGBA16);
+                gDPLoadTLUT_pal256(gfx++, (u32)((u8 *)D_800E1C4C + 8) & ~7);
+                gDPSetCombineMode(gfx++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+                mode = 1;
+            }
+            gDPLoadTextureTile(gfx++, (u32)((u8 *)D_800E1C4C + (icon + 0x208)) & ~7, G_IM_FMT_CI, G_IM_SIZ_8b, 12,
+                               12, 0, 0, 11, 11, 0, 0, 0, 0, 0, 0, 0);
+            gDPPipeSync(gfx++);
+            gSPTextureRectangle(gfx++, x << 2, y << 2, (x + 10) << 2, (y + 10) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10,
+                                1 << 10);
+            gDPPipeSync(gfx++);
+            x += adv;
+            }
+        }
+    }
+    gDPPipeSync(gfx++);
+    *gfxp = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_800734F0);
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_800738BC);
 
-extern char D_800D1588[];
-extern char D_800D158C[];
-extern s32 D_80104FD0;
-extern u8 D_800C4390[];
-extern char D_80105118[];
-int sprintf(char *, const char *, ...);
 u32 func_800738BC(s32, s32, s32);
 s32 func_80073BF0(u8 *);
 
