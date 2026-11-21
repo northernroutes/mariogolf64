@@ -34,9 +34,10 @@ typedef struct Unk800FF570 {
 typedef struct MsgGlyph {
     /* 0x00 */ Mtx mtx;
     /* 0x40 */ u16 code;
-    /* 0x42 */ s8 size;
+    /* 0x42 */ u8 size;
     /* 0x43 */ s8 owner;
-    /* 0x44 */ u8 pad44[4];
+    /* 0x44 */ u8 flags; /* size-12 glyphs: 1 = top half only, 2 = from row 7 down */
+    /* 0x45 */ u8 pad45[3];
 } MsgGlyph; /* size = 0x48 */
 
 /* 4-byte entries of the array D_800E1C48 points to (see func_80071C9C). */
@@ -499,7 +500,137 @@ s32 func_800754BC(s32 id, s32 size, s32 x0, s32 y0, s32 msg) {
     return (w << 16) | h;
 }
 
-INCLUDE_ASM("asm/nonmatchings/4C770", func_8007580C);
+extern Vtx D_800C4490[];
+extern Vtx D_800C44D0[];
+extern Vtx D_800C4510[];
+extern Vtx D_800C4550[];
+extern Vtx D_800C4590[];
+
+/* Draws every glyph slot owned by `id`: font glyphs (codes < 0x100) from the
+ * 4-bit I font for the slot's size, and icons (codes 0x8000-0x800E) as 12x12
+ * CI8 tiles from the D_800E1C4C atlas. */
+void func_8007580C(Gfx **gfxp, s32 id) {
+    Gfx *gfx = *gfxp;
+    s32 mode;
+    s32 i;
+    s32 offset;
+    u32 code;
+    s32 s, t;
+    s32 size, left, top, bottom;
+
+    mode = 0;
+    gDPPipeSync(gfx++);
+    for (i = 0; i != 300; i++) {
+        if (D_800FF530[i].owner == id) {
+            offset = -1;
+            if (mode == 1) {
+                gDPSetCombineLERP(gfx++, 0, 0, 0, PRIMITIVE, PRIMITIVE, 0, TEXEL0, 0, 0, 0, 0, PRIMITIVE, PRIMITIVE, 0,
+                                  TEXEL0, 0);
+                gDPPipeSync(gfx++);
+                gDPSetTextureLUT(gfx++, G_TT_NONE);
+                mode = 0;
+            }
+            code = D_800FF530[i].code;
+            if (code < 0x100) {
+                s = (code & 0xF) * D_800FF530[i].size;
+                t = (code >> 4) * D_800FF530[i].size;
+                gDPPipeSync(gfx++);
+                if (D_800FF530[i].size == 12) {
+                    gDPSetTextureImage(gfx++, G_IM_FMT_I, G_IM_SIZ_8b, 96, (u32)((u8 *)D_800E1C38 + 8) & ~7);
+                } else if (D_800FF530[i].size == 10) {
+                    gDPSetTextureImage(gfx++, G_IM_FMT_I, G_IM_SIZ_8b, 80, (u32)((u8 *)D_800E1C34 + 8) & ~7);
+                } else {
+                    gDPSetTextureImage(gfx++, G_IM_FMT_I, G_IM_SIZ_8b, 64, (u32)((u8 *)D_800E1C30 + 8) & ~7);
+                }
+                gDPSetTile(gfx++, G_IM_FMT_I, G_IM_SIZ_8b, 1, 0, G_TX_LOADTILE, 0, 0, 0, 0, 0, 0, 0);
+                gDPLoadSync(gfx++);
+                gDPLoadTile(gfx++, G_TX_LOADTILE, s << 1, t << 2, (s + 15) << 1, (t + 11) << 2);
+                gDPPipeSync(gfx++);
+                gDPSetTile(gfx++, G_IM_FMT_I, G_IM_SIZ_4b, 1, 0, G_TX_RENDERTILE, 0, 0, 0, 0, 0, 0, 0);
+                gDPSetTileSize(gfx++, G_TX_RENDERTILE, s << 2, t << 2, (s + 15) << 2, (t + 15) << 2);
+            } else if (code > 0x7FFF) {
+                switch (code) {
+                    case 0x8000:
+                        offset = 0;
+                        break;
+                    case 0x8001:
+                        offset = 0x90;
+                        break;
+                    case 0x8002:
+                    case 0x8003:
+                    case 0x8004:
+                    case 0x8005:
+                    case 0x8006:
+                        offset = 0x1B0;
+                        break;
+                    case 0x8007:
+                        offset = 0x360;
+                        break;
+                    case 0x8008:
+                        offset = 0x3F0;
+                        break;
+                    case 0x8009:
+                        offset = 0x480;
+                        break;
+                    case 0x800A:
+                        offset = 0x510;
+                        break;
+                    case 0x800C:
+                        offset = 0x120;
+                        break;
+                    case 0x800D:
+                        offset = 0x240;
+                        break;
+                    case 0x800E:
+                        offset = 0x2D0;
+                        break;
+                }
+                if (mode == 0) {
+                    gDPPipeSync(gfx++);
+                    gDPSetTextureLUT(gfx++, G_TT_RGBA16);
+                    gDPLoadTLUT_pal256(gfx++, (u32)((u8 *)D_800E1C4C + 8) & ~7);
+                    gDPSetCombineMode(gfx++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+                    mode = 1;
+                }
+                gDPLoadTextureTile(gfx++, (u32)((u8 *)D_800E1C4C + (offset + 0x208)) & ~7, G_IM_FMT_CI, G_IM_SIZ_8b,
+                                   12, 12, 0, 0, 11, 11, 0, 0, 0, 0, 0, 0, 0);
+                s = 0;
+                t = 0;
+            }
+            gDPPipeSync(gfx++);
+            gSPMatrix(gfx++, OS_K0_TO_PHYSICAL(&D_800FF530[i].mtx), G_MTX_MODELVIEW | G_MTX_MUL | G_MTX_PUSH);
+            size = D_800FF530[i].size;
+            top = 0;
+            left = 0;
+            bottom = size;
+            if (size == 12) {
+                if (D_800FF530[i].flags & 1) {
+                    gSPVertex(gfx++, D_800C44D0, 4, 0);
+                    bottom = 7;
+                } else if (D_800FF530[i].flags & 2) {
+                    gSPVertex(gfx++, D_800C4510, 4, 0);
+                    bottom = D_800FF530[i].size;
+                    top = 7;
+                } else {
+                    gSPVertex(gfx++, D_800C4490, 4, 0);
+                }
+            } else if (size == 10) {
+                gSPVertex(gfx++, D_800C4550, 4, 0);
+            } else {
+                gSPVertex(gfx++, D_800C4590, 4, 0);
+            }
+            gSPModifyVertex(gfx++, 0, G_MWO_POINT_ST, ((left + s) << 21) | ((top + t) << 5));
+            gSPModifyVertex(gfx++, 1, G_MWO_POINT_ST, ((left + s) << 21) | ((bottom + t) << 5));
+            gSPModifyVertex(gfx++, 2, G_MWO_POINT_ST, ((size + s) << 21) | ((bottom + t) << 5));
+            gSPModifyVertex(gfx++, 3, G_MWO_POINT_ST, ((size + s) << 21) | ((top + t) << 5));
+            gSP2Triangles(gfx++, 0, 1, 2, 0, 0, 2, 3, 0);
+            gDPPipeSync(gfx++);
+            gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
+        }
+    }
+    gDPPipeSync(gfx++);
+    *gfxp = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/4C770", func_80075E48);
 
