@@ -411,6 +411,8 @@ segments:
       - [0xABEC0, rodata]
       - [0xAC760, rodata]
       - [0xAC770, rodata]
+      - [0xAC810, .rodata, 45400]
+      - [0xAC840, rodata]
       - [0xAC988, .rodata, 4C770]
       - [0xACC48, rodata] # 8 bytes of padding after 4C770's .rodata
       - [0xACD00, rodata]

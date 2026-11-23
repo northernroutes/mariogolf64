@@ -659,14 +659,15 @@ SECTIONS
         build/src/42F00.o(.rodata);
         build/src/43140.o(.rodata);
         build/src/43810.o(.rodata);
+        build/asm/data/ABEC0.rodata.o(.rodata);
+        build/asm/data/AC760.rodata.o(.rodata);
+        build/asm/data/AC770.rodata.o(.rodata);
         build/src/45400.o(.rodata);
         build/src/456C0.o(.rodata);
         build/src/49E90.o(.rodata);
         build/src/4A5A0.o(.rodata);
         build/src/4C3D0.o(.rodata);
-        build/asm/data/ABEC0.rodata.o(.rodata);
-        build/asm/data/AC760.rodata.o(.rodata);
-        build/asm/data/AC770.rodata.o(.rodata);
+        build/asm/data/AC840.rodata.o(.rodata);
         build/src/4C770.o(.rodata);
         build/src/51900.o(.rodata);
         build/src/526B0.o(.rodata);
