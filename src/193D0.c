@@ -1,6 +1,17 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/193D0", func_8003DFD0);
+s32 func_8006A0CC(s32, s32);
+
+s32 func_8003DFD0(s32 x, s32 z) {
+    u32 a = func_8006A0CC(x, z);
+
+    if (a < 0x699) {
+        a = 0;
+    } else {
+        a -= 0x699;
+    }
+    return a;
+}
 
 INCLUDE_ASM("asm/nonmatchings/193D0", func_8003E004);
 
