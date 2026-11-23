@@ -89,7 +89,326 @@ void func_80095D70(s32 arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/70E10", func_80095DE0);
+extern s32 D_800BB020;
+
+s32 func_80095DE0(void) {
+    if (D_800BB020 == 30) {
+        return;
+    }
+    switch (D_800E4C50) {
+        case 0:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(8, 0x1AC);
+                    func_80095D70(0x3E, 0x3B);
+                    break;
+                case 13:
+                    func_80095D70(0x20, 0x1B9);
+                    break;
+                case 14:
+                    func_80095D70(0x1E, 0x1A3);
+                    break;
+                case 15:
+                    func_80095D70(0x19, 0x1B7);
+                    break;
+            }
+            break;
+        case 1:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0, 0xCC);
+                    break;
+                case 13:
+                    func_80095D70(0, 0xE1);
+                    func_80095D70(0xA, 0x3F);
+                    break;
+                case 14:
+                    func_80095D70(0xA, 0xD6);
+                    break;
+                case 15:
+                    func_80095D70(0x22, 0xE0);
+                    break;
+            }
+            break;
+        case 2:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0x2C, 0x15D);
+                    func_80095D70(0x5C, 0x3D);
+                    break;
+                case 13:
+                    func_80095D70(0xC, 0x168);
+                    break;
+                case 14:
+                    func_80095D70(0xC, 0x169);
+                    break;
+                case 15:
+                    func_80095D70(8, 0x159);
+                    break;
+            }
+            break;
+        case 3:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0xF, 0xC6);
+                    break;
+                case 13:
+                    func_80095D70(9, 0xC9);
+                    func_80095D70(0x39, 0xCA);
+                    break;
+                case 14:
+                    func_80095D70(0x20, 0xC9);
+                    break;
+                case 15:
+                    func_80095D70(0x28, 0xCB);
+                    break;
+            }
+            break;
+        case 4:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(2, 0x150);
+                    break;
+                case 13:
+                    func_80095D70(0, 0x13F);
+                    break;
+                case 14:
+                    func_80095D70(0x12, 0x14E);
+                    break;
+                case 15:
+                    func_80095D70(7, 0x140);
+                    break;
+            }
+            break;
+        case 5:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0, 0x1A0);
+                    func_80095D70(0x38, 0x3B);
+                    break;
+                case 13:
+                    func_80095D70(6, 0x194);
+                    func_80095D70(6, 0x3C);
+                    break;
+                case 14:
+                    func_80095D70(0xC, 0x18E);
+                    func_80095D70(0x2A, 0x3B);
+                    break;
+                case 15:
+                    func_80095D70(0x10, 0x19F);
+                    break;
+            }
+            break;
+        case 6:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0xE, 0x1C4);
+                    break;
+                case 13:
+                    func_80095D70(2, 0x1D0);
+                    break;
+                case 14:
+                    func_80095D70(7, 0x1D1);
+                    break;
+                case 15:
+                    func_80095D70(0, 0x1C1);
+                    break;
+            }
+            break;
+        case 7:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0, 0x1FF);
+                    func_80095D70(0x15, 0x3C);
+                    func_80095D70(0x58, 0x3B);
+                    break;
+                case 13:
+                    func_80095D70(0, 0x1F2);
+                    break;
+                case 14:
+                    func_80095D70(0x11, 0x1F3);
+                    break;
+                case 15:
+                    func_80095D70(0, 0x1EE);
+                    func_80095D70(0x1C, 0x39);
+                    break;
+            }
+            break;
+        case 8:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0x14, 0x105);
+                    func_80095D70(0x37, 0x3B);
+                    break;
+                case 13:
+                    func_80095D70(0x1B, 0xFF);
+                    break;
+                case 14:
+                    func_80095D70(0x18, 0x103);
+                    break;
+                case 15:
+                    func_80095D70(5, 0xF5);
+                    break;
+            }
+            break;
+        case 9:
+        case 13:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0, 0x180);
+                    func_80095D70(0, 0x3C);
+                    func_80095D70(0x44, 0x38);
+                    break;
+                case 13:
+                    func_80095D70(0, 0x173);
+                    break;
+                case 14:
+                    func_80095D70(0xD, 0x182);
+                    break;
+                case 15:
+                    func_80095D70(0x1A, 0x17F);
+                    break;
+            }
+            break;
+        case 10:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0x42, 0x200);
+                    func_80095D70(0x26, 0x3E);
+                    func_80095D70(0x26, 0x35);
+                    func_80095D70(3, 0x4F);
+                    func_80095D70(0xB, 0x4F);
+                    func_80095D70(0x12, 0x4F);
+                    func_80095D70(0x19, 0x4F);
+                    func_80095D70(0x20, 0x4F);
+                    break;
+                case 13:
+                    func_80095D70(0x28, 0x208);
+                    func_80095D70(0x14, 0x4F);
+                    func_80095D70(0x26, 0x4F);
+                    break;
+                case 14:
+                    func_80095D70(0x1C, 0x209);
+                    break;
+                case 15:
+                    func_80095D70(0, 0x206);
+                    break;
+            }
+            break;
+        case 11:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(7, 0x42);
+                    func_80095D70(0x1E, 0xE2);
+                    func_80095D70(0x23, 0x41);
+                    func_80095D70(0x28, 0x41);
+                    func_80095D70(0x2D, 0x41);
+                    func_80095D70(0x32, 0x41);
+                    func_80095D70(0x37, 0x41);
+                    func_80095D70(0x3C, 0x41);
+                    func_80095D70(0x46, 0xEA);
+                    break;
+                case 13:
+                    func_80095D70(0x23, 0xEA);
+                    func_80095D70(0x16, 0x41);
+                    break;
+                case 14:
+                    func_80095D70(0x23, 0xEA);
+                    func_80095D70(0x11, 0x41);
+                    func_80095D70(0x1F, 0x41);
+                    break;
+                case 15:
+                    func_80095D70(0, 0xE8);
+                    break;
+            }
+            break;
+        case 12:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0x1D, 0x12F);
+                    break;
+                case 13:
+                    func_80095D70(0x2A, 0x136);
+                    break;
+                case 14:
+                    func_80095D70(0, 0x138);
+                    break;
+                case 15:
+                    func_80095D70(0, 0x135);
+                    func_80095D70(0xA, 0x3A);
+                    func_80095D70(0x18, 0x3A);
+                    func_80095D70(0x21, 0x3A);
+                    break;
+            }
+            break;
+        case 14:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0, 0x123);
+                    func_80095D70(0x42, 0x12E);
+                    break;
+                case 13:
+                    func_80095D70(0, 0x12E);
+                    break;
+                case 14:
+                    func_80095D70(0x20, 0x11E);
+                    break;
+                case 15:
+                    func_80095D70(0x19, 0x120);
+                    break;
+            }
+            break;
+        case 15:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0, 0x1DE);
+                    func_80095D70(6, 0x3C);
+                    break;
+                case 13:
+                    func_80095D70(0x14, 0x1D7);
+                    break;
+                case 14:
+                    func_80095D70(0, 0x1D4);
+                    break;
+                case 15:
+                    func_80095D70(0x18, 0x1E8);
+                    break;
+            }
+            break;
+        case 16:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0x19, 0xA7);
+                    break;
+                case 13:
+                    func_80095D70(5, 0xB2);
+                    break;
+                case 14:
+                    func_80095D70(0x26, 0xAE);
+                    break;
+                case 15:
+                    func_80095D70(0, 0xB1);
+                    break;
+            }
+            break;
+        case 17:
+            switch (D_800E4C54) {
+                case 12:
+                    func_80095D70(0xF, 0x11B);
+                    break;
+                case 13:
+                    func_80095D70(6, 0x11A);
+                    break;
+                case 14:
+                    func_80095D70(0, 0x109);
+                    break;
+                case 15:
+                    func_80095D70(0, 0x10C);
+                    break;
+            }
+            break;
+    }
+}
 
 s32 func_80043A04(s32 x, s32 z);
 
@@ -510,7 +829,7 @@ void func_80098310(s32 player, CamPos *cam) {
 void func_800660A0(void);
 void func_8003E628(void);
 void func_8004DA24(char *, s32, s32);
-void func_80095DE0(void);
+s32 func_80095DE0(void);
 int sprintf(char *, const char *, ...);
 void func_80097E30(s32, CamPos *);
 void func_80096C04(s32, CamPos *);
