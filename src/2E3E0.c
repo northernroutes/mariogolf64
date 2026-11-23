@@ -18,9 +18,32 @@ s32 func_80054240(u32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800542A0);
+/* 0x18C-byte slots at D_801F43F0 (see Unk801F4424 in 2FD00). Placeholder. */
+typedef struct Unk801F43F0 {
+    /* 0x000 */ u8 pad0[0x8];
+    /* 0x008 */ s32 unk8;
+    /* 0x00C */ u8 padC[0x28];
+    /* 0x034 */ s32 unk34;
+    /* 0x038 */ u8 pad38[0x154];
+} Unk801F43F0; /* size = 0x18C */
 
-s32 func_800542A0(s32);
+extern Unk801F43F0 D_801F43F0[4];
+extern s32 D_800B67F0;
+
+/* 1 for an invalid index, a slot in use (unk8 != -1), or unk34 equal to
+ * D_800B67F0 or D_800B67F0 - 1. */
+s32 func_800542A0(s32 i) {
+    s32 r;
+
+    if ((u32) i >= 4) {
+        return 1;
+    }
+    r = 0;
+    if (D_801F43F0[i].unk8 != -1 || (u32) (D_800B67F0 - D_801F43F0[i].unk34) < 2) {
+        r = 1;
+    }
+    return r;
+}
 
 s32 func_80054310(void) {
     s32 i;
@@ -32,15 +55,6 @@ s32 func_80054310(void) {
     }
     return 0;
 }
-
-/* 0x18C-byte slots at D_801F43F0 (see Unk801F4424 in 2FD00). Placeholder. */
-typedef struct Unk801F43F0 {
-    /* 0x000 */ u8 pad0[0x8];
-    /* 0x008 */ s32 unk8;
-    /* 0x00C */ u8 padC[0x180];
-} Unk801F43F0; /* size = 0x18C */
-
-extern Unk801F43F0 D_801F43F0[4];
 
 /* Slot i if it is in use (unk8 != -1), else NULL. */
 Unk801F43F0 *func_80054354(u32 i) {
