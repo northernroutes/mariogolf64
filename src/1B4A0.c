@@ -185,7 +185,75 @@ void func_80040E3C(s32 arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040E60);
 
-INCLUDE_ASM("asm/nonmatchings/1B4A0", func_80040EF8);
+s32 func_80040E60(s32, s32, s32);
+extern u16 D_800FF4F8[];
+
+/* Returns the RGBA5551 colour at (x, z) for `kind`, averaged with the surface
+ * type's tint from D_800FF4F8 when it has one. */
+s32 func_80040EF8(s32 x, s32 z, s32 kind) {
+    s32 c1;
+    s32 n;
+    s32 r1, g1, b1, r2, g2, b2;
+
+    c1 = func_80040E60(x, z, kind);
+    n = -1;
+    switch (*func_80032E60(kind)) {
+        case 0:
+        case 1:
+        case 2:
+        case 17:
+            n = 0;
+            break;
+        case 3:
+        case 4:
+            n = 1;
+            break;
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            n = 2;
+            break;
+        case 19:
+            n = 5;
+            break;
+        case 13:
+            n = 7;
+            break;
+        case 11:
+        case 12:
+            n = 6;
+            break;
+        case 16:
+            n = 9;
+            break;
+        case 18:
+        case 20:
+            n = 12;
+            break;
+        case 15:
+            n = 8;
+            break;
+        case 14:
+            n = 4;
+            break;
+    }
+    if (n < 0) {
+        return (u16)c1;
+    }
+    r1 = (u16)c1 >> 11;
+    g1 = ((u16)c1 >> 6) & 0x1F;
+    n = D_800FF4F8[n];
+    /* n now holds the colour c2. Original bug: b1 is taken from c2, and b2 is never set. */
+    b1 = ((u32) n >> 1) & 0x1F;
+    r2 = (u32) n >> 11;
+    g2 = ((u32) n >> 6) & 0x1F;
+    osSyncPrintf("c1(%d,%d,%d) c2(%d,%d,%d)\n", r1, g1, b1, r2, g2, b2);
+    r1 = (r1 + r2) >> 1;
+    g1 = (g1 + g2) >> 1;
+    b1 = (b1 + b2) / 2;
+    return (r1 << 11) | (g1 << 6) | (b1 << 1) | 1;
+}
 
 s32 func_80041058(s32 arg0, s32 arg1, s32 arg2) {
     return func_80040E20(arg0, arg2) == 5;
