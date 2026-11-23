@@ -16,9 +16,35 @@ INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020F794);
 
 INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020F9B8);
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020FD48);
+extern char D_80105118[];
+extern char D_ovl3_802318E0[];
+void func_80071608(Gfx **);
+void func_80074CA8(Gfx **, s32, s32, s32);
+void func_80073F24(Gfx **, s16, s16, char *);
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020FE20);
+void func_ovl3_8020FD48(Gfx **gdl, s32 x, s32 y) {
+    Gfx *gfx = *gdl;
+
+    func_80071608(&gfx);
+    func_80074CA8(&gfx, 0x3F, 0xFF, 0x3F);
+    sprintf(D_80105118, D_ovl3_802318E0, 0x59);
+    func_80073F24(&gfx, x, y, D_80105118);
+    gDPSetCombineMode(gfx++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
+
+void func_ovl3_8020FE20(Gfx **gdl, s32 x, s32 y) {
+    Gfx *gfx = *gdl;
+
+    func_80071608(&gfx);
+    func_80074CA8(&gfx, 0xFF, 0x40, 0xC0);
+    sprintf(D_80105118, D_ovl3_802318E0, 0x25);
+    func_80073F24(&gfx, x, y, D_80105118);
+    gDPSetCombineMode(gfx++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+    gDPPipeSync(gfx++);
+    *gdl = gfx;
+}
 
 INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020FEF8);
 
