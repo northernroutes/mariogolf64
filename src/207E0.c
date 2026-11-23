@@ -121,7 +121,92 @@ INCLUDE_ASM("asm/nonmatchings/207E0", func_80047DBC);
 
 INCLUDE_ASM("asm/nonmatchings/207E0", func_80047E9C);
 
-INCLUDE_ASM("asm/nonmatchings/207E0", func_800484F8);
+void func_800934CC(s32);
+void func_80051C08(s32, s32);
+s32 func_8005244C(s32, s32);
+s32 func_80052220(void);
+extern s8 D_801061CE;
+extern s8 D_801061B8;
+extern s8 D_801061C0;
+extern s8 D_801061C3;
+extern s32 D_801B7F70;
+extern s32 D_801B7F74;
+extern s32 D_800BE694;
+extern f32 D_801B5530;
+extern f32 D_801B5580;
+extern s8 D_801B60B9;
+extern s8 D_801B60C2;
+extern s32 D_801B608C;
+extern s32 D_801B6090;
+extern s32 D_801B6098;
+
+void func_800484F8(void) {
+    func_800934CC(-1);
+    D_801061CE = 1;
+    D_801061B8 = -1;
+    D_801061C0 = 1;
+    D_801061C3 = 1;
+    D_801B7F70 = 0;
+    D_801B7F74 = 0;
+    D_800BE694 = 0;
+    D_801B5530 = 45.0f;
+    D_801B5580 = 45.0f;
+    if (D_801B60B9) {
+        func_80051C08(0x1F, 0x11);
+        return;
+    }
+    switch (D_801B608C) {
+        case 3:
+            func_80051C08(0x1A, 1);
+            break;
+        case 2:
+        case 4:
+            if (func_8005244C(0, 1)) {
+                func_80051C08(0x14, 1);
+            } else {
+                func_80051C08(0x19, 1);
+            }
+            break;
+        case 10:
+            if (func_80052220() == D_801B6098) {
+                func_80051C08(0x14, 1);
+            } else {
+                func_80051C08(0x2E, 1);
+            }
+            break;
+        case 5:
+            func_80051C08(0x0B, 1);
+            break;
+        case 7:
+            func_80051C08(0x18, 1);
+            break;
+        case 9:
+            func_80051C08(0x1D, 1);
+            D_801061C0 = 0;
+            D_801061C3 = 0;
+            return;
+        case 11:
+            if (func_80052220() == D_801B6098) {
+                func_80051C08(0x14, 1);
+            } else {
+                func_80051C08(0x2B, 1);
+            }
+            break;
+        case 0:
+        case 1:
+        case 6:
+        case 8:
+        default:
+            if (D_801B6098 == func_80052220() && D_801B6090 != 1) {
+                func_80051C08(0x14, 1);
+            } else if (D_801B60C2) {
+                func_80051C08(0x2D, 1);
+            } else {
+                func_80051C08(0x1B, 1);
+            }
+            break;
+    }
+}
 
 s32 func_800326FC(s32, s32, s32, s32);
 s32 func_8004887C();
