@@ -296,9 +296,48 @@ INCLUDE_ASM("asm/nonmatchings/456C0", func_8006D4EC);
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006D6D0);
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006DDCC);
+/* Placeholder: 0x74-byte entries at 0xEA4 in the object returned by func_8005AF50. */
+typedef struct Unk8005AF50_Entry {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x70];
+} Unk8005AF50_Entry; /* size = 0x74 */
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006DE44);
+typedef struct Unk8005AF50_456C0 {
+    /* 0x000 */ u8 pad0[0xEA4];
+    /* 0xEA4 */ Unk8005AF50_Entry unkEA4[1];
+} Unk8005AF50_456C0;
+
+/* Same layout as SaveBlob1C in 34FA0.c. */
+typedef struct SaveBlob1C {
+    s32 w[7];
+} SaveBlob1C;
+
+Unk8005AF50_456C0 *func_8005AF50(void);
+extern SaveBlob1C D_800FF4D0;
+extern s32 D_801B6094;
+
+void func_8006DDCC(void) {
+    Unk8005AF50_456C0 *obj = func_8005AF50();
+
+    D_800FF4D0.w[0] = 0;
+    D_800FF4D0.w[1] = 0;
+    D_800FF4D0.w[2] = 0;
+    D_800FF4D0.w[5] = 0;
+    D_800FF4D0.w[3] = (obj->unkEA4 + D_801B6094)->unk0;
+    D_800FF4D0.w[4] = 0;
+    D_800FF4D0.w[6] = 0;
+}
+
+void func_8006DE44(void) {
+    Unk8005AF50_456C0 *obj = func_8005AF50();
+
+    D_800FF4D0.w[0] = 0;
+    D_800FF4D0.w[1] = 0;
+    D_800FF4D0.w[2] = 0;
+    D_800FF4D0.w[5] = 0;
+    D_800FF4D0.w[3] = (obj->unkEA4 + D_801B6094)->unk0;
+    D_800FF4D0.w[6] = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006DEB4);
 
