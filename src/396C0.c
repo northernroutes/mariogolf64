@@ -424,7 +424,29 @@ s32 func_800603A8(void) {
     return (temp_s0 * 0x10) | (temp_s3 * 8) | (temp_s2 * 4) | (temp_s1 * 2) | func_800299F4(0x86);
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_80060434);
+/* The 0x44-byte game state at D_801B6088 (SaveRecordInfo in 34FA0.c). */
+typedef struct GameState44 {
+    s32 w[17];
+} GameState44;
+
+/* The 0xB8-byte per-player entries at D_801B71D0. Placeholder. */
+typedef struct PlayerB8 {
+    s32 w[0xB8 / 4];
+} PlayerB8;
+
+extern GameState44 D_801B55F0;
+extern PlayerB8 D_801B71D0[4];
+extern PlayerB8 D_8012D0C8[4];
+
+/* Saves the game state and the four player entries. */
+void func_80060434(void) {
+    s32 i;
+
+    D_801B55F0 = *(GameState44 *) &D_801B6088;
+    for (i = 0; i < 4; i++) {
+        D_8012D0C8[i] = D_801B71D0[i];
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_800604F4);
 
