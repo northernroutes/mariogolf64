@@ -64,7 +64,26 @@ s32 func_80052324(s32 i) {
     return D_801B71D0[i].unk23 + func_80052264(D_801B6094, D_801B6098, D_801B71D0[i].unk29);
 }
 
-INCLUDE_ASM("asm/nonmatchings/2D5C0", func_80052384);
+void func_8005B150(s32 *vals, s32 *order, s32 n);
+
+/* For each of the 8 tables, ranks the 18 [h][1] values (via func_8005B150's
+ * ordering) and writes the ranks 18..1 back into [h][1]. */
+void func_80052384(void) {
+    s32 vals[18];
+    s32 order[18];
+    s32 k;
+    s32 h;
+
+    for (k = 0; k < 8; k++) {
+        for (h = 0; h < 18; h++) {
+            vals[h] = D_800C1434[k][h][1];
+        }
+        func_8005B150(vals, order, 18);
+        for (h = 0; h < 18; h++) {
+            D_800C1434[k][order[h]][1] = 18 - h;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/2D5C0", func_8005244C);
 
