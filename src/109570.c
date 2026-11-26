@@ -46,7 +46,39 @@ INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220A30);
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220BB0);
 
-INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_80220D68);
+extern s16 D_ovl3_8023B684[5];
+
+/* Next used slot (!= -1) after arg0, forward or backward with wraparound; -1 if none. */
+s16 func_ovl3_80220D68(s8 arg0, u8 forward) {
+    s32 cur = arg0;
+    s32 dir;
+    s32 i;
+
+    if (cur < 0) {
+        return -1;
+    }
+    if (cur >= 5) {
+        return -1;
+    }
+    dir = (forward == 0) ? -1 : 1;
+    cur += dir;
+    for (i = 0; i != 4; i++) {
+        if (cur >= 5) {
+            cur = 0;
+        }
+        if (cur < 0) {
+            cur = 4;
+        }
+        if (D_ovl3_8023B684[cur] != -1) {
+            break;
+        }
+        cur += dir;
+    }
+    if (i == 4) {
+        return -1;
+    }
+    return cur;
+}
 
 u8 *func_8005AF74(void);
 extern s16 D_ovl3_8023B684[];
