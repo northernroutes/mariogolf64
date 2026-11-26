@@ -70,4 +70,15 @@ void func_800679DC(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/414A0", func_80067A60);
+s32 func_80050DA0(s32, s32, s32, s32, s32);
+extern s16 D_800C3130[][34];
+
+void func_80067A60(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 v = (arg0 != 3) ? 0x14 : 0;
+
+    if (arg3 == -1) {
+        func_80050DA0(D_800C3130[arg0][arg2], arg1 + 4, D_800C3130[arg0][arg2 + 1], v, arg4);
+    } else {
+        func_80050DA0(D_800C3130[arg0][arg2], arg1 + 4, arg3, v, arg4);
+    }
+}
