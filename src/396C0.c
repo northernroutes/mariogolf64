@@ -316,9 +316,72 @@ INCLUDE_ASM("asm/nonmatchings/396C0", func_8005FCB8);
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005FE8C);
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_800600C0);
+/* 8-byte entries: a u16 and six s8 values. Placeholder. */
+typedef struct Unk8Entry {
+    /* 0x0 */ u16 unk0;
+    /* 0x2 */ s8 unk2[6];
+} Unk8Entry; /* size = 0x8 */
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_80060128);
+typedef struct Unk800FEDD8 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x30];
+    /* 0x34 */ s32 unk34;
+    /* 0x38 */ s8 unk38;
+    /* 0x39 */ s8 unk39;
+    /* 0x3A */ u8 pad3A[0x4];
+    /* 0x3E */ u8 unk3E;
+    /* 0x3F */ u8 pad3F[0x5];
+    /* 0x44 */ Unk8Entry unk44[4];
+    /* 0x64 */ u8 pad64[0x4];
+} Unk800FEDD8; /* size = 0x68 */
+
+typedef struct Unk80105F40 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ u8 pad4[0x30];
+    /* 0x34 */ s8 unk34;
+    /* 0x35 */ s8 unk35;
+    /* 0x36 */ u8 pad36[0x4];
+    /* 0x3A */ u8 unk3A;
+    /* 0x3B */ u8 pad3B[0x5];
+    /* 0x40 */ Unk8Entry unk40[4];
+    /* 0x60 */ u8 pad60[0x8];
+} Unk80105F40; /* size = 0x68 */
+
+extern Unk800FEDD8 D_800FEDD8;
+extern Unk80105F40 D_80105F40;
+extern u16 D_80104F78;
+extern s32 D_80104F7C;
+extern s32 D_80104F80;
+extern s32 D_80104F84;
+extern s32 D_80104F88;
+extern s32 D_80104F8C;
+extern s32 D_80104F90;
+
+/* Unpacks entry n of D_800FEDD8.unk44 into D_80104F78..D_80104F90. */
+void func_800600C0(s32 n) {
+    Unk800FEDD8 *p = &D_800FEDD8;
+
+    D_80104F78 = p->unk44[n].unk0;
+    D_80104F7C = p->unk44[n].unk2[0];
+    D_80104F80 = p->unk44[n].unk2[1];
+    D_80104F84 = p->unk44[n].unk2[2];
+    D_80104F88 = p->unk44[n].unk2[3];
+    D_80104F8C = p->unk44[n].unk2[4];
+    D_80104F90 = p->unk44[n].unk2[5];
+}
+
+/* Unpacks entry n of D_80105F40.unk40 into D_80104F78..D_80104F90. */
+void func_80060128(s32 n) {
+    Unk80105F40 *p = &D_80105F40;
+
+    D_80104F78 = p->unk40[n].unk0;
+    D_80104F7C = p->unk40[n].unk2[0];
+    D_80104F80 = p->unk40[n].unk2[1];
+    D_80104F84 = p->unk40[n].unk2[2];
+    D_80104F88 = p->unk40[n].unk2[3];
+    D_80104F8C = p->unk40[n].unk2[4];
+    D_80104F90 = p->unk40[n].unk2[5];
+}
 
 extern s8 D_800BAA04;
 extern s32 D_801B608C;
@@ -345,16 +408,6 @@ s32 func_80060190(s32 arg0) {
     return 0;
 }
 
-typedef struct Unk800FEDD8 {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ u8 pad4[0x30];
-    /* 0x34 */ s32 unk34;
-    /* 0x38 */ s8 unk38;
-    /* 0x39 */ s8 unk39;
-    /* 0x3A */ u8 pad3A[0x4];
-    /* 0x3E */ u8 unk3E;
-    /* 0x3F */ u8 pad3F[0x29];
-} Unk800FEDD8; /* size = 0x68 */
 
 extern Unk800FEDD8 D_800FEDD8;
 extern char D_800D1254[];
@@ -373,15 +426,6 @@ void func_80060210(Unk800FEDD8 *src) {
     osSyncPrintf(D_800D1254);
 }
 
-typedef struct Unk80105F40 {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ u8 pad4[0x30];
-    /* 0x34 */ s8 unk34;
-    /* 0x35 */ s8 unk35;
-    /* 0x36 */ u8 pad36[0x4];
-    /* 0x3A */ u8 unk3A;
-    /* 0x3B */ u8 pad3B[0x2D];
-} Unk80105F40; /* size = 0x68 */
 
 extern Unk80105F40 D_80105F40;
 extern s32 D_801B6094;
