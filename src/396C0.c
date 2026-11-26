@@ -430,7 +430,26 @@ INCLUDE_ASM("asm/nonmatchings/396C0", func_800604F4);
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_800605EC);
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_800624F0);
+s32 rand(void);
+extern u8 D_800E12B0[32 * 32];
+
+/* Fills the 32x32 table with rand() % range + base, capped at 255. */
+void func_800624F0(s32 range, s32 base) {
+    s32 i;
+    s32 j;
+    s32 v;
+    s32 k = 0;
+
+    for (i = 0; i < 32; i++) {
+        for (j = 0; j < 32; j++) {
+            v = rand() % range + base;
+            if (v >= 0x100) {
+                v = 0xFF;
+            }
+            D_800E12B0[k++] = v;
+        }
+    }
+}
 
 void func_800625C8(void) {
     if (D_800B67C4 != 0) {
