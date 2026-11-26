@@ -35,7 +35,16 @@ s32 func_80052250(void) {
     return D_801B6094 == 0xC;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2D5C0", func_80052264);
+/* Defined as (void) in 2D290.c; func_80052264 passes it an argument anyway. */
+s32 func_80051FCC();
+extern s8 D_800C1434[][20][10];
+
+s32 func_80052264(s32 arg0, s32 arg1, s32 arg2) {
+    s32 q = -arg2 / 18;
+
+    arg2 %= 18;
+    return q - (arg2 >= D_800C1434[func_80051FCC(arg0)][arg1][1]);
+}
 
 /* 0xB8-byte player records at D_801B71D0. Placeholder. */
 typedef struct Unk801B71D0_2D5C0 {
