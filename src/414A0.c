@@ -40,6 +40,34 @@ void func_800676B0(void) {
 
 INCLUDE_ASM("asm/nonmatchings/414A0", func_80067730);
 
-INCLUDE_ASM("asm/nonmatchings/414A0", func_800679DC);
+/* 0xB8-byte per-player entries (8 bytes below D_801B7250 in BBD00.c). Placeholder. */
+typedef struct Unk801B7248 {
+    /* 0x00 */ s8 unk0[3];
+    /* 0x03 */ u8 pad3[0xB5];
+} Unk801B7248; /* size = 0xB8 */
+
+void func_800674B8(void);
+s32 func_80067730(void);
+extern s8 D_801B60B8;
+extern Unk801B7248 D_801B7248[4];
+
+void func_800679DC(void) {
+    s32 n;
+    s32 i;
+    s32 j;
+
+    func_800674B8();
+    n = func_80067730();
+    if (n >= 3) {
+        n = 3;
+    }
+    if (D_801B60B8 != 2) {
+        for (i = 0; i < 4; i++) {
+            for (j = 0; j < 3; j++) {
+                D_801B7248[i].unk0[j] = j < n;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/414A0", func_80067A60);
