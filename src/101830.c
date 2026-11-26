@@ -28,7 +28,22 @@ INCLUDE_ASM("asm/nonmatchings/101830", func_ovl3_8021C67C);
 
 INCLUDE_ASM("asm/nonmatchings/101830", func_ovl3_8021CBDC);
 
-INCLUDE_ASM("asm/nonmatchings/101830", func_ovl3_8021CF10);
+s32 func_8005062C(s32, s32 *);
+s32 func_800506D4(s32, s32 *);
+extern u16 D_800C2064[];
+extern s32 *D_ovl3_8023B630;
+
+/* Loads resources D_800C2064[0..5] into the handles in out. */
+void func_ovl3_8021CF10(s32 *out) {
+    s32 sp10[8];
+    s16 i;
+
+    D_ovl3_8023B630 = out;
+    for (i = 0; i != 6; i++) {
+        func_8005062C(D_800C2064[i], sp10);
+        func_800506D4(D_ovl3_8023B630[i], sp10);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/101830", func_ovl3_8021CFAC);
 
