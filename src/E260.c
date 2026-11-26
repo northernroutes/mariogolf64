@@ -13,7 +13,38 @@ Unk800B790C *func_80032E60(u32 n) {
     return &D_800B790C[n];
 }
 
-INCLUDE_ASM("asm/nonmatchings/E260", func_80032E88);
+/* 0xB8-byte entries at D_800B7868. Placeholder. */
+typedef struct Unk800B7868 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ s32 unk4;
+    /* 0x08 */ s32 unk8;
+    /* 0x0C */ s32 unkC;
+    /* 0x10 */ s32 unk10;
+    /* 0x14 */ s32 unk14;
+    /* 0x18 */ s32 unk18;
+    /* 0x1C */ u8 pad1C[0x58];
+    /* 0x74 */ s32 unk74;
+    /* 0x78 */ u8 pad78[0x40];
+} Unk800B7868; /* size = 0xB8 */
+
+s32 rand(void);
+extern Unk800B7868 D_800B7868[1];
+
+void func_80032E88(void) {
+    s32 i;
+
+    for (i = 0; i < 1; i++) {
+        D_800B7868[i].unk0 = 0x800;
+        D_800B7868[i].unk4 = -1000;
+        rand();
+        D_800B7868[i].unk8 = 0x1000;
+        D_800B7868[i].unkC = rand() & 0x3FF;
+        D_800B7868[i].unk10 = -100;
+        D_800B7868[i].unk14 = rand() & 0x3FF;
+        D_800B7868[i].unk18 = 0;
+        D_800B7868[i].unk74 = 1;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/E260", func_80032F70);
 
