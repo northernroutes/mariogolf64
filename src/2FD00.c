@@ -33,7 +33,9 @@ typedef struct Unk80054354Def {
 
 typedef struct Unk80054354 {
     /* 0x000 */ Unk80054354Def *unk0;
-    /* 0x004 */ u8 pad4[0xC];
+    /* 0x004 */ void *unk4;
+    /* 0x008 */ s32 unk8;
+    /* 0x00C */ u8 padC[0x4];
     /* 0x010 */ f32 unk10;
     /* 0x014 */ u8 pad14[0x4];
     /* 0x018 */ s32 unk18;
@@ -109,9 +111,63 @@ void func_80054E20(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/2FD00", func_80054E4C);
+void func_8005342C(s32, s32, s32, s32, u32);
+void func_800543DC(s32, s32);
+s32 func_800544B4(s32, s32);
+extern s32 D_800C1DEC;
 
-INCLUDE_ASM("asm/nonmatchings/2FD00", func_80054F1C);
+void func_80054E4C(s32 id, s32 arg1) {
+    Unk80054354 *p = func_80054354(id);
+    s32 r;
+
+    if (p != NULL) {
+        D_800C1DEC = p->unk8;
+        switch (func_800544B4(id, arg1)) {
+            case 0:
+                r = 0;
+                break;
+            case 1:
+                r = 1;
+                break;
+            case 2:
+                r = 2;
+                break;
+            case 3:
+                r = 3;
+                break;
+            default:
+                r = -1;
+                break;
+        }
+        func_8005342C(0, 0, 0x20, 0x2000000, osVirtualToPhysical(p->unk4));
+        func_800543DC(id, r);
+    }
+}
+
+/* Copies (unk2, unk3) of up to 16 records with unk0 == key from table idx of
+ * object id into out; returns how many were copied. */
+s32 func_80054F1C(s32 id, s32 idx, s32 key, u8 (*out)[2]) {
+    Unk80054354 *p = func_80054354(id);
+    Unk80054354Rec *r;
+    s32 n = 0;
+    s32 i;
+
+    if (p != NULL && idx < p->unk1C) {
+        r = p->unk0->unk14[idx].unk0;
+        if (r != NULL) {
+            for (i = 0; r[i].unk0 != -1; i++) {
+                if (r[i].unk0 == key) {
+                    if (n < 16) {
+                        out[n][0] = r[i].unk2;
+                        out[n][1] = r[i].unk3;
+                        n++;
+                    }
+                }
+            }
+        }
+    }
+    return n;
+}
 
 INCLUDE_ASM("asm/nonmatchings/2FD00", func_80054FF4);
 
