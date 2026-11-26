@@ -79,7 +79,41 @@ void func_800543A4(void) {
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800543DC);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_800544B4);
+/* Entry returned by func_800448E0 (Unk800BB258 in 1EEF0.c). Placeholder. */
+typedef struct Unk800448E0_2E3E0 {
+    /* 0x00 */ u8 pad0[0x24];
+    /* 0x24 */ s16 unk24;
+} Unk800448E0_2E3E0;
+
+Unk800448E0_2E3E0 *func_800448E0(s32);
+extern s32 D_800C1DEC;
+
+s32 func_800544B4(u32 i, s32 arg1) {
+    s32 r = -1;
+    Unk801F43F0 *slot = func_80054354(i);
+
+    if (slot != NULL) {
+        D_800C1DEC = slot->unk8;
+        switch (func_800448E0(arg1)->unk24) {
+            case 0:
+                r = 0;
+                break;
+            case 1:
+                r = 1;
+                break;
+            case 2:
+                r = 2;
+                break;
+            case 3:
+                r = 3;
+                break;
+            default:
+                r = -1;
+                break;
+        }
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054550);
 
