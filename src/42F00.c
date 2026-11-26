@@ -1,8 +1,63 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/42F00", func_80067B00);
+/* libultra guMtxF2L (gu/mtxutil.c), changed to clamp each element of mf (in
+ * place) to [-32768, 32766] first. */
+void func_80067B00(f32 mf[4][4], Mtx *m) {
+    s32 i;
+    s32 j;
+    s32 e1;
+    s32 e2;
+    s32 *ai;
+    s32 *af;
 
-INCLUDE_ASM("asm/nonmatchings/42F00", func_80067C0C);
+    ai = (s32 *) &m->m[0][0];
+    af = (s32 *) &m->m[2][0];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 2; j++) {
+            if (mf[i][j * 2] < -32768.0f) {
+                mf[i][j * 2] = -32768.0f;
+            }
+            if (mf[i][j * 2] > 32766.0f) {
+                mf[i][j * 2] = 32766.0f;
+            }
+            if (mf[i][j * 2 + 1] < -32768.0f) {
+                mf[i][j * 2 + 1] = -32768.0f;
+            }
+            if (mf[i][j * 2 + 1] > 32766.0f) {
+                mf[i][j * 2 + 1] = 32766.0f;
+            }
+            e1 = FTOFIX32(mf[i][j * 2]);
+            e2 = FTOFIX32(mf[i][j * 2 + 1]);
+            *(ai++) = (e1 & 0xFFFF0000) | ((e2 >> 16) & 0xFFFF);
+            *(af++) = ((e1 << 16) & 0xFFFF0000) | (e2 & 0xFFFF);
+        }
+    }
+}
+
+/* libultra guMtxL2F (gu/mtxutil.c): fixed-point Mtx to float matrix. */
+void func_80067C0C(f32 mf[4][4], Mtx *m) {
+    s32 i;
+    s32 j;
+    u32 e1;
+    u32 e2;
+    u32 *ai;
+    u32 *af;
+    s32 q1;
+    s32 q2;
+
+    ai = (u32 *) &m->m[0][0];
+    af = (u32 *) &m->m[2][0];
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 2; j++) {
+            e1 = (*ai & 0xFFFF0000) | ((*af >> 16) & 0xFFFF);
+            e2 = ((*(ai++) << 16) & 0xFFFF0000) | (*(af++) & 0xFFFF);
+            q1 = *((s32 *) &e1);
+            q2 = *((s32 *) &e2);
+            mf[i][j * 2] = FIX32TOF(q1);
+            mf[i][j * 2 + 1] = FIX32TOF(q2);
+        }
+    }
+}
 
 void func_80067CB4(f32 m[4][4]) {
     s32 i;
@@ -19,12 +74,12 @@ void func_80067CB4(f32 m[4][4]) {
     }
 }
 
-s32 func_80067B00(s32 *, s32);
+void func_80067B00(f32 mf[4][4], Mtx *m);
 void func_80067CB4(f32 m[4][4]);
 
 void func_80067D04(s32 arg0) {
     f32 m[4][4];
 
     func_80067CB4(m);
-    func_80067B00((s32 *)m, arg0);
+    func_80067B00(m, (Mtx *) arg0);
 }
