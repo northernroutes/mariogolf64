@@ -81,4 +81,13 @@ u16 func_8006A1EC(void *data, s32 len) {
     return crc;
 }
 
-INCLUDE_ASM("asm/nonmatchings/45400", func_8006A274);
+extern f32 D_800C3FB4;
+
+/* Division-error report: prints the caller's address, then returns 1 / D_800C3FB4. */
+s32 func_8006A274(void) {
+    u32 ra;
+
+    __asm__ volatile("move %0, $31" : "=r"(ra));
+    osSyncPrintf("kDivError %x\n", ra);
+    return 1.0f / D_800C3FB4;
+}
