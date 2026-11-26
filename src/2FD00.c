@@ -40,7 +40,8 @@ typedef struct Unk80054354 {
     /* 0x014 */ u8 pad14[0x4];
     /* 0x018 */ s32 unk18;
     /* 0x01C */ s32 unk1C;
-    /* 0x020 */ u8 pad20[0x18];
+    /* 0x020 */ s32 unk20[3];
+    /* 0x02C */ u8 pad2C[0xC];
     /* 0x038 */ f32 unk38;
     /* 0x03C */ f32 unk3C;
     /* 0x040 */ f32 unk40;
@@ -400,7 +401,28 @@ s32 func_800577D0(void) {
     return 0x23680;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2FD00", func_800577DC);
+extern Unk80054354 D_801F43F0[];
+/* "Polychara %d still alive. You can't change buffer.\n" */
+extern char D_800D07F8[];
+
+/* Sets polychara id's buffer base (page-aligned addr) and its three
+ * 0x780-byte sub-buffers from base + 0x20000; refused while it is alive. */
+void func_800577DC(s32 id, s32 addr) {
+    s32 i;
+    s32 j;
+
+    addr = (addr + 0xFFF) & ~0xFFF;
+    if (D_801F43F0[id].unk8 != -1) {
+        for (i = 0; i < 10; i++) {
+            osSyncPrintf(D_800D07F8, id);
+        }
+    } else {
+        D_801F43F0[id].unk4 = (void *) addr;
+        for (j = 0; j < 3; j++) {
+            D_801F43F0[id].unk20[j] = (s32) D_801F43F0[id].unk4 + 0x20000 + j * 0x780;
+        }
+    }
+}
 
 /* 0x18C-byte entries starting at D_801F4424. Placeholder. */
 typedef struct Unk801F4424 {
