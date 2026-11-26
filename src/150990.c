@@ -15,6 +15,8 @@ typedef struct UnkOvl11_80104FD0 {
     /* 0xCC */ s32 unkCC;
     /* 0xD0 */ u8 padD0[0x4];
     /* 0xD4 */ s32 unkD4;
+    /* 0xD8 */ u8 padD8[0xC];
+    /* 0xE4 */ s32 unkE4;
 } UnkOvl11_80104FD0;
 
 extern UnkOvl11_80104FD0 D_80104FD0;
@@ -38,7 +40,34 @@ void func_ovl11_80242FC0(s32 mode) {
 
 INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_80243050);
 
-INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_802433B4);
+extern s8 D_801061B8;
+
+/* Moves the cursor D_801061B8 among unkE4 entries (0x200 = back, 0x100 =
+ * forward, wrapping) and plays a sound pitched by its position. */
+void func_ovl11_802433B4(s32 buttons) {
+    s32 n = D_80104FD0.unkE4;
+    s8 *cur;
+    s32 *se;
+
+    if (n >= 2) {
+        if (buttons & 0x200) {
+            cur = &D_801061B8;
+            if (--*cur < 0) {
+                *cur = n - 1;
+            }
+        } else if (buttons & 0x100) {
+            cur = &D_801061B8;
+            if (++*cur > n - 1) {
+                *cur = 0;
+            }
+        } else {
+            return;
+        }
+        /* Read through a pointer: a direct read schedules the argument loads differently. */
+        se = &D_800C0E60;
+        func_80050DA0(0x5C, *se, 0x64, 0, (*cur + 1) * (0xFF / (n + 1)));
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/150990", func_ovl11_802434A0);
 
