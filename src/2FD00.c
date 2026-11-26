@@ -170,7 +170,27 @@ s32 func_80054F1C(s32 id, s32 idx, s32 key, u8 (*out)[2]) {
     return n;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2FD00", func_80054FF4);
+/* Returns unk0 - table.unk4 of the first record of table idx of object id
+ * whose unk2 is key, or -1. */
+s32 func_80054FF4(s32 id, s32 idx, s32 key) {
+    s32 res = -1;
+    Unk80054354 *p = func_80054354(id);
+    Unk80054354Rec *r;
+    s32 i;
+
+    if (p != NULL && idx < p->unk1C) {
+        r = p->unk0->unk14[idx].unk0;
+        if (r != NULL) {
+            for (i = 0; r[i].unk0 != -1; i++) {
+                if (r[i].unk2 == key) {
+                    res = r[i].unk0 - p->unk0->unk14[idx].unk4;
+                    break;
+                }
+            }
+        }
+    }
+    return res;
+}
 
 void func_800550B8(s32 arg0) {
     func_80054FF4(arg0, 2, 6);
