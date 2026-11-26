@@ -130,7 +130,29 @@ s32 func_8006ADA0(void) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006ADF8);
+s32 func_80050DA0(s32, s32, s32, s32, s32);
+
+void func_8006ADF8(s32 arg0) {
+    if (D_800C4010 == 1) {
+        if (arg0 == 2 || arg0 == 3) {
+            D_800C4014 = 2;
+            D_800C4018 = -1;
+        }
+    } else {
+        D_800C4020 = arg0;
+        switch (arg0) {
+            case 1:
+                D_800C401C = 12.0f;
+                func_80050DA0(0x64, 2, 0x28, 0x14, 0x7F);
+                break;
+            case 2:
+            case 3:
+                D_800C401C = -2.0f;
+                func_80050DA0(0x65, 2, 0x28, 0x14, 0x7F);
+                break;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006AEA4);
 
