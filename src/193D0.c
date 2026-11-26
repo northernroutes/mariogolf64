@@ -1,3 +1,4 @@
+#define F3DEX_GBI_2
 #include "common.h"
 
 s32 func_8006A0CC(s32, s32);
@@ -15,7 +16,21 @@ s32 func_8003DFD0(s32 x, s32 z) {
 
 INCLUDE_ASM("asm/nonmatchings/193D0", func_8003E004);
 
-INCLUDE_ASM("asm/nonmatchings/193D0", func_8003E314);
+extern Gfx *D_801B93DC;
+extern Vtx D_800BA888[];
+
+/* Draws D_800BA888 (18 vertices) as a strip of 16 triangles, shade colour
+ * with shade * texel0 alpha. */
+void func_8003E314(void) {
+    s32 i;
+
+    gDPSetCombineLERP(D_801B93DC++, 0, 0, 0, SHADE, SHADE, 0, TEXEL0, 0, 0, 0, 0, SHADE, SHADE, 0, TEXEL0, 0);
+    gDPPipeSync(D_801B93DC++);
+    gSPVertex(D_801B93DC++, D_800BA888, 18, 0);
+    for (i = 0; i != 8; i++) {
+        gSP2Triangles(D_801B93DC++, i * 2, i * 2 + 2, i * 2 + 1, 0, i * 2 + 1, i * 2 + 2, i * 2 + 3, 0);
+    }
+}
 
 s32 func_8004E2DC(s32);
 s32 func_8005062C(s32, s32 *);
