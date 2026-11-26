@@ -49,7 +49,39 @@ s32 func_8006F2F4(void) {
 
 INCLUDE_ASM("asm/nonmatchings/4A5A0", func_8006F300);
 
-INCLUDE_ASM("asm/nonmatchings/4A5A0", func_8006F404);
+s32 nuContRmbCheck(u32 contNo);
+void nuContRmbModeSet(u32 contNo, u8 mode);
+void func_8006F300(void);
+extern s32 D_80105218;
+extern s32 D_801049C0[];
+extern s32 D_8012D3B0[];
+extern char D_800D150C[]; /* "PFS_ERR_NOPACK\n" */
+extern char D_800D151C[]; /* "PFS_ERR_DEVICE\n" */
+extern char D_800D152C[]; /* "PFS_ERR_CONTRFAIL\n" */
+
+/* Checks each controller's Rumble Pak; D_8012D3B0[i] = 1 if usable. */
+void func_8006F404(void) {
+    s32 i;
+    s32 err;
+
+    for (i = 0; i != D_80105218; i++) {
+        nuContRmbModeSet(D_801049C0[i], 2);
+        err = nuContRmbCheck(D_801049C0[i]);
+        if (err == PFS_ERR_NOPACK) {
+            osSyncPrintf(D_800D150C);
+            D_8012D3B0[i] = 0;
+        } else if (err == PFS_ERR_DEVICE) {
+            osSyncPrintf(D_800D151C);
+            D_8012D3B0[i] = 0;
+        } else if (err == PFS_ERR_CONTRFAIL) {
+            osSyncPrintf(D_800D152C);
+            D_8012D3B0[i] = 0;
+        } else {
+            D_8012D3B0[i] = 1;
+        }
+    }
+    func_8006F300();
+}
 
 s32 nuContRmbForceStop();
 
