@@ -119,10 +119,25 @@ INCLUDE_ASM("asm/nonmatchings/2E3E0", func_80054550);
 
 INCLUDE_ASM("asm/nonmatchings/2E3E0", func_8005470C);
 
-INCLUDE_ASM("asm/nonmatchings/2E3E0", func_8005483C);
+s32 func_80054550(s32, s32, f32 *);
+void func_8005470C(Unk801F43F0 *, f32 (*)[4]);
 
-void func_80054550(s32, s32, s32);
+/* Transforms point arg1 of slot i by the slot's matrix into out; zeroes out
+ * (and returns the negative result) if func_80054550 fails. */
+s32 func_8005483C(s32 i, s32 arg1, f32 *out) {
+    f32 mtx[4][4];
+    f32 v[3];
+    s32 r = func_80054550(i, arg1, v);
 
-void func_800548DC(s32 arg0, s32 arg1) {
+    if (r < 0) {
+        out[0] = out[1] = out[2] = 0.0f;
+    } else {
+        func_8005470C(func_80054354(i), mtx);
+        guMtxXFMF(mtx, v[0], v[1], v[2], &out[0], &out[1], &out[2]);
+    }
+    return r;
+}
+
+void func_800548DC(s32 arg0, f32 *arg1) {
     func_80054550(arg0, 2, arg1);
 }
