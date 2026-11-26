@@ -36,7 +36,37 @@ void func_800690C0(void) {
 
 INCLUDE_ASM("asm/nonmatchings/43810", func_80069124);
 
-INCLUDE_ASM("asm/nonmatchings/43810", func_8006955C);
+s32 func_800299F4(s32);
+void func_80253234(s32);
+void func_80253270(void);
+void func_80057914(void);
+void func_80069124(void);
+extern u32 D_800BA9FC;
+extern s32 D_800BB0E8;
+
+void func_8006955C(void) {
+    s32 n;
+
+    D_800BB0E8 = 1;
+    switch (D_800BA9FC) {
+        case 6:
+            n = 1;
+            break;
+        case 0:
+            n = 2;
+            break;
+        case 10:
+            n = 0;
+            break;
+    }
+    if (!func_800299F4(0x11)) {
+        func_80253234(n);
+    }
+    D_800BB0E8 = 0;
+    func_80253270();
+    func_80057914();
+    func_80069124();
+}
 
 INCLUDE_ASM("asm/nonmatchings/43810", func_800695F8);
 
