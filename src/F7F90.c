@@ -1,6 +1,21 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020E010);
+s32 func_8005062C(s32, s32 *);
+s32 func_800506D4(s32, s32 *);
+extern u16 D_800C2064[];
+extern s32 *D_ovl3_8023A820;
+
+/* Loads resources D_800C2064[0..6] into the handles in out. */
+void func_ovl3_8020E010(s32 *out) {
+    s32 sp10[12];
+    s16 i;
+
+    D_ovl3_8023A820 = out;
+    for (i = 0; i != 7; i++) {
+        func_8005062C(D_800C2064[i], sp10);
+        func_800506D4(D_ovl3_8023A820[i], sp10);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/F7F90", func_ovl3_8020E0AC);
 
