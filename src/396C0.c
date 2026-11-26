@@ -22,7 +22,7 @@ void *__MusIntMemMalloc(s32 size);
 void nuPiReadRom(u32 rom_addr, void *buf_ptr, u32 size);
 s32 func_800299F4(s32 arg0);
 void func_8005B7BC(s32 arg0);
-void func_8005EC48(void);
+void func_8005EC48(s16 type, s32 value);
 void func_8005EC10(void (*arg0)(void));
 void func_8005EDD0(void *arg0);
 void func_8005F048(s32 arg0);
@@ -82,7 +82,27 @@ void func_8005EC10(void (*arg0)(void)) {
     osSetIntMask(mask);
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_8005EC48);
+void func_80099E08(s32, s32);
+void func_8009A3F0(s32);
+extern u8 D_800C2FFC;
+
+/* Callback registered with func_8005EC10. */
+void func_8005EC48(s16 type, s32 value) {
+    switch (type) {
+        case 2:
+            func_80099E08(1, 0);
+            func_8009A3F0(0);
+            break;
+        case 1:
+            if (value == 20) {
+                func_8009A3F0(0);
+            }
+            if (value == 28) {
+                D_800C2FFC = 0;
+            }
+            break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005ECC4);
 
@@ -96,7 +116,7 @@ void func_8005ED8C(u8 *arg0) {
     func_8005EDD0(var_a0);
     func_8005F048(0xC000);
     func_8005F0BC(0x4000);
-    func_8005EC10(func_8005EC48);
+    func_8005EC10((void (*)(void)) func_8005EC48);
 }
 
 INCLUDE_ASM("asm/nonmatchings/396C0", func_8005EDD0);
