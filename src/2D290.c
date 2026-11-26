@@ -107,7 +107,15 @@ s32 func_80051FCC(void) {
     return D_801B6094;
 }
 
-INCLUDE_ASM("asm/nonmatchings/2D290", func_80052070);
+s32 func_80052070(void) {
+    if (D_801B608C == 9) {
+        return D_800C1B28[D_801B6094][D_801B6098][1];
+    }
+    if (D_801B6094 >= 12) {
+        return 0;
+    }
+    return D_801B6098;
+}
 
 extern s32 D_801B6094;
 extern s32 D_801B6098;
