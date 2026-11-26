@@ -78,7 +78,37 @@ INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_80246804);
 
 INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_802478B0);
 
-INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_80247D80);
+typedef struct UnkOvl11_80247D80 {
+    /* 0x0 */ u8 pad0[2];
+    /* 0x2 */ s16 unk2;
+    /* 0x4 */ s8 unk4;
+    /* 0x5 */ u8 unk5;
+} UnkOvl11_80247D80;
+
+extern char D_ovl11_8024C8A8[];
+extern char D_ovl11_8024C8B8[];
+extern char D_ovl11_8024C8C8[];
+extern char D_ovl11_8024C8D4[];
+extern char D_ovl11_8024C8E0[];
+extern char D_ovl11_8024C8E4[];
+
+void func_ovl11_80247D80(char *buf, UnkOvl11_80247D80 *e) {
+    if (e->unk5 & 0x80) {
+        sprintf(buf, D_ovl11_8024C8A8, e->unk5 & 0x7F);
+    } else {
+        sprintf(buf, D_ovl11_8024C8B8, e->unk5);
+    }
+    if (e->unk2 == 0) {
+        sprintf(buf + 0xC, D_ovl11_8024C8C8, 0);
+    } else {
+        sprintf(buf + 0xC, D_ovl11_8024C8D4, e->unk2);
+    }
+    if (e->unk4 == 0) {
+        sprintf(buf + 0x12, D_ovl11_8024C8E0);
+    } else {
+        sprintf(buf + 0x12, D_ovl11_8024C8E4, e->unk4);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/153560", func_ovl11_80247E3C);
 
