@@ -97,7 +97,31 @@ INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F6388);
 void func_ovl15_801F6624(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F662C);
+extern char D_ovl15_801FBDE4[]; /* "PHASE a\n" */
+extern char D_ovl15_801FBDFC[]; /* "PHASE c\n" */
+extern char D_ovl15_801FBE08[]; /* "PHASE d\n" */
+extern char D_ovl15_801FBE14[]; /* "PHASE e\n" */
+
+/* Returns 1 if bytes 0xD..0x17 and 0x2E..0x32 of hdr equal the 16 bytes of ref. */
+s32 func_ovl15_801F662C(u8 *hdr, u8 *ref) {
+    s32 i;
+
+    osSyncPrintf(D_ovl15_801FBDE4);
+    for (i = 0; i != 11; i++) {
+        if ((hdr + i)[0xD] != ref[i]) {
+            return 0;
+        }
+    }
+    osSyncPrintf(D_ovl15_801FBDFC);
+    for (i = 0; i != 5; i++) {
+        if ((hdr + i)[0x2E] != ref[i + 11]) {
+            osSyncPrintf(D_ovl15_801FBE08);
+            return 0;
+        }
+    }
+    osSyncPrintf(D_ovl15_801FBE14);
+    return 1;
+}
 
 INCLUDE_ASM("asm/nonmatchings/165BD0", func_ovl15_801F66EC);
 
