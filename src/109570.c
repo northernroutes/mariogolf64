@@ -1,6 +1,40 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_8021F5F0);
+extern s32 D_ovl3_80230A90;
+extern s32 D_ovl3_80230A94;
+extern s32 D_ovl3_80230A98;
+extern s32 D_ovl3_8023B670;
+extern s32 D_ovl3_8023B674;
+extern s32 D_ovl3_8023B678;
+extern s32 D_ovl3_8023B67C;
+
+void func_ovl3_8021F5F0(s32 arg0, s16 arg1) {
+    s32 sp10[8];
+
+    switch (arg1) {
+        case 1:
+            D_ovl3_8023B670 = arg0;
+            break;
+        case 2:
+            D_ovl3_8023B674 = arg0;
+            func_8005062C(0x5F7, sp10);
+            func_800506D4(D_ovl3_8023B674, sp10);
+            break;
+        case 3:
+            D_ovl3_8023B678 = arg0;
+            func_8005062C(0x70E, sp10);
+            func_800506D4(D_ovl3_8023B678, sp10);
+            break;
+        case 4:
+            D_ovl3_8023B67C = arg0;
+            func_8005062C(0x720, sp10);
+            func_800506D4(D_ovl3_8023B67C, sp10);
+            D_ovl3_80230A90 = 0;
+            D_ovl3_80230A94 = 0;
+            D_ovl3_80230A98 = 0;
+            break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/109570", func_ovl3_8021F6E0);
 
