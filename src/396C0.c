@@ -257,7 +257,27 @@ s32 func_8005F248(s32 arg0) {
     return (arg0 << 8) / 30;
 }
 
-INCLUDE_ASM("asm/nonmatchings/396C0", func_8005F290);
+/* 0x34-byte entries of D_800BB258 (see Unk800BB258 in 1EEF0.c). Placeholder. */
+typedef struct Unk800BB258 {
+    /* 0x00 */ u8 pad0[0x8];
+    /* 0x08 */ s32 unk8;
+    /* 0x0C */ u8 padC[0x28];
+} Unk800BB258; /* size = 0x34 */
+
+Unk800BB258 *func_800448E0(u32 arg0);
+s32 func_80044A8C(s32);
+
+/* For each of 14 entries, out[i] = whether its unk8 flags share a bit with func_80044A8C(1). */
+s32 func_8005F290(s32 arg0, s16 *ids, u8 *out) {
+    s32 i;
+
+    for (i = 0; i < 14; i++) {
+        Unk800BB258 *e = func_800448E0(ids[i]);
+
+        out[i] = (e->unk8 & func_80044A8C(1)) != 0;
+    }
+    return 14;
+}
 
 s32 func_80043A20(void);
 extern s8 D_801B60C2;
