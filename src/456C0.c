@@ -240,7 +240,12 @@ void func_8006C450(void) {
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006C484);
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006C8CC);
+s32 func_8006C8CC(u16 *arg0) {
+    if (D_800C4010 == 0 || D_800C4014 != 0 || (D_800C4018 < 0 && (arg0[2] & 0x8000))) {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/456C0", func_8006C918);
 
