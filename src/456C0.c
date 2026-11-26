@@ -366,7 +366,51 @@ void func_8006DE44(void) {
     D_800FF4D0.w[6] = 0;
 }
 
-INCLUDE_ASM("asm/nonmatchings/456C0", func_8006DEB4);
+/* 0xB8-byte entries starting at D_801B7250 (see BBD00.c). Placeholder. */
+typedef struct Unk801B7250 {
+    /* 0x00 */ s32 unk0;
+    /* 0x04 */ s32 unk4;
+    /* 0x08 */ u8 pad8[0x18];
+    /* 0x20 */ s32 unk20;
+    /* 0x24 */ u8 pad24[0x94];
+} Unk801B7250; /* size = 0xB8 */
+
+extern Unk801B7250 D_801B7250[];
+
+extern s8 D_801B726C;
+extern s8 D_801B71F3;
+extern s8 D_800BAA04;
+extern s32 D_800FF4D4;
+
+typedef struct S32Box {
+    s32 v;
+} S32Box;
+
+void func_8006DEB4(void) {
+    SaveBlob1C *p;
+    S32Box *q;
+
+    func_8005AF50();
+    p = &D_800FF4D0;
+    if (D_801B726C != 0) {
+        if (D_801B71F3 <= D_800BAA04) {
+            p->w[0]++;
+        } else {
+            D_800FF4D4++;
+        }
+    }
+    q = (S32Box *) &D_801B7250[0].unk20;
+    if (q->v >= 0) {
+        p->w[2]++;
+        if (q->v > p->w[3]) {
+            p->w[3] = q->v;
+        }
+        if (p->w[6] == 1) {
+            p->w[5]++;
+            p->w[4] += q->v;
+        }
+    }
+}
 
 /* 0x34-byte entries of D_800BB258 (see Unk800BB258 in 1EEF0.c). Placeholder. */
 typedef struct Unk800BB258 {
@@ -377,17 +421,8 @@ typedef struct Unk800BB258 {
     /* 0x18 */ u8 pad18[0x1C];
 } Unk800BB258; /* size = 0x34 */
 
-/* 0xB8-byte entries starting at D_801B7250 (see BBD00.c). Placeholder. */
-typedef struct Unk801B7250 {
-    /* 0x00 */ s32 unk0;
-    /* 0x04 */ s32 unk4;
-    /* 0x08 */ u8 pad8[0x18];
-    /* 0x20 */ s32 unk20;
-    /* 0x24 */ u8 pad24[0x94];
-} Unk801B7250; /* size = 0xB8 */
 
 Unk800BB258 *func_8004491C(void);
-extern Unk801B7250 D_801B7250[];
 
 s32 func_8006DF84(void) {
     SaveBlob1C *p = &D_800FF4D0;
