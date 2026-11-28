@@ -6987,8 +6987,9 @@ void DrawCourseSelect(Gfx **displayListHead) {
     s32 blue;
     s16 left;
     s16 top;
-    u32 trophyPalette;
-    u32 trophyImage;
+    // As wide as an address, which a native build's are wider than a u32
+    UnsignedAddress trophyPalette;
+    UnsignedAddress trophyImage;
 
     save = GetSaveData();
     gfx = *displayListHead;
