@@ -1263,6 +1263,9 @@ static void TestN64Addresses(void) {
     EXPECT(ResolveRcpAddress(&memory, 0x81000010) == &osPcRdram[0x200010]);
     memory.segments[0xE] = 0xFFFFF0;
     EXPECT(ResolveRcpAddress(&memory, 0x0E000020) == &osPcRdram[0x10]);
+    // Past the N64's 8 MB, it wraps into RDRAM rather than giving the raw
+    // address, which as a host's pointer crashes
+    EXPECT(ResolveRcpAddress(&memory, 0x8081DE30) == &osPcRdram[0x01DE30]);
 }
 
 static void TestRomOrderList(void) {

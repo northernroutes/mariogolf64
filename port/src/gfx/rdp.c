@@ -11,6 +11,7 @@
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_endian.h>
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 #include <ultra64.h>
 
@@ -230,11 +231,27 @@ const void *ResolveRcpAddress(const RcpMemory *memory, uintptr_t address) {
     }
 
     resolved = (resolved + (address & 0x00FFFFFF)) & 0x00FFFFFF;
-    if (resolved < PC_RDRAM_SIZE) {
-        return &osPcRdram[resolved];
+    if (resolved >= PC_RDRAM_SIZE) {
+        // Past the N64's 8 MB, where the console reads no memory of its own
+        // but doesn't stop. As a host's pointer the address would crash, so
+        // it wraps into RDRAM instead, and the first few are logged to find
+        // what drew from there.
+        static int s_LoggedCount = 0;
+
+        if (s_LoggedCount < 8) {
+            s_LoggedCount++;
+            SDL_Log(
+                "The RCP read from %#llx, past the N64's memory, with segment %d's base %#llx",
+                (unsigned long long)address,
+                (int)((address >> 24) & 0xF),
+                (unsigned long long)memory->segments[(address >> 24) & 0xF]
+            );
+        }
+
+        resolved &= PC_RDRAM_SIZE - 1;
     }
 
-    return (const void *)resolved;
+    return &osPcRdram[resolved];
 }
 
 static void SetOtherModes(uint32_t high, uint32_t low) {
