@@ -1114,8 +1114,13 @@ static GfxVertex *BeginPrimitive(
     return AddFrameVertices(&f_Frame, vertexCount, PipelineKey(usesDepth, kind), &scissor);
 }
 
+// The 15 bits reach a little past G_MAXZ: the course select draws its
+// chosen course at 0x7FFF, the farthest, which past the far plane the GPU
+// would clip away, so the depths past it stay at it
 static float PrimitiveDepth(void) {
-    return (float)(f_Rdp.primitiveDepth & PRIMITIVE_DEPTH_MASK) / PRIMITIVE_DEPTH_FAR;
+    float depth = (float)(f_Rdp.primitiveDepth & PRIMITIVE_DEPTH_MASK) / PRIMITIVE_DEPTH_FAR;
+
+    return SDL_min(depth, DEPTH_FAR);
 }
 
 static uint32_t PackShade(const uint8_t color[4]) {
